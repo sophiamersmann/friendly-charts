@@ -5,11 +5,13 @@
 
 	import Svg from '../lib/Svg.svelte';
 	import Arrow from '../lib/BezierArrow.svelte';
+	import Table from '../lib/Table.svelte';
+	import VisuallyHidden from '../lib/VisuallyHidden.svelte';
 
 	import { px, translate } from '../lib/utils';
 	import * as tokens from '../lib/tokens';
 
-	import type { Coordinates } from '../types';
+	import type { Coordinates, TableColumn } from '../types';
 
 	const data = [
 		{ month: 1, rain: 30, rainAvg: 9 },
@@ -41,6 +43,13 @@
 
 	$: x = scaleLinear().domain([0, 13]).range([0, boundedWidth]);
 	$: y = scaleLinear().domain([0, 100]).range([boundedHeight, 0]);
+
+	let tableColumns: TableColumn<typeof data[0]>[];
+	$: tableColumns = [
+		{ name: 'Monat', getValue: (d) => d.month },
+		{ name: 'Regenmenge 2021 (in l/qm)', getValue: (d) => d.rain },
+		{ name: 'Regenmenge 2000-2020 (in l/qm)', getValue: (d) => d.rainAvg }
+	];
 
 	const xTicks = range(1, 13);
 	const xTickLabels = new Map([
@@ -95,123 +104,147 @@
 	<title>Liniendiagramm: Diesjähriger Niederschlag im Sommer deutlich höher als üblich</title>
 </svelte:head>
 
-<hgroup>
-	<h1>Diesjähriger Niederschlag im Sommer deutlich höher als üblich</h1>
+<div class="chart">
+	<hgroup>
+		<h1>Diesjähriger Niederschlag im Sommer deutlich höher als üblich</h1>
 
-	<p class="description">
-		Monatliche Regenmenge in Liter pro Quadratmeter 2021 im Vergleich zum Durchschnitt der Jahre
-		2000 - 2020 in Berlin.
-	</p>
-</hgroup>
+		<p class="description">
+			Monatliche Regenmenge in Liter pro Quadratmeter 2021 im Vergleich zum Durchschnitt der Jahre
+			2000 - 2020 in Berlin.
+		</p>
+	</hgroup>
 
-<div class="chart" bind:clientWidth={width} style:height={px(height)}>
-	<Svg
-		{width}
-		{height}
-		{margin}
-		bind:boundedWidth
-		bind:boundedHeight
-		aria-labelledby="svg-title"
-		aria-describedby="svg-description"
-	>
-		<svelte:fragment slot="header">
-			<title id="svg-title"> Diagramm mit zwei Linien. </title>
-			<desc id="svg-description">
-				Die erste Linie zeigt den monatlichen Niederschlag in Liter pro Quadratmeter 2021 in Berlin.
-				Die Regenmenge steigt in den Sommermonaten 2021 deutlich an und erreicht einen Höchststand
-				von 103 Liter pro Quadratmeter im September. Das ist deutlich höher als die
-				durchschnittliche Regenmenge in den Sommermonaten der letzten zehn Jahre. In diesem Zeitraum
-				has es auch in den Sommermonaten durchschnittlich nie mehr als 25 Liter pro Quadratmeter
-				geregnet.
-			</desc>
-		</svelte:fragment>
+	<div class="svg-wrapper" bind:clientWidth={width} style:height={px(height)}>
+		<Svg
+			{width}
+			{height}
+			{margin}
+			bind:boundedWidth
+			bind:boundedHeight
+			aria-labelledby="svg-title"
+			aria-describedby="svg-description"
+		>
+			<svelte:fragment slot="header">
+				<title id="svg-title"> Diagramm mit zwei Linien. </title>
+				<desc id="svg-description">
+					Die erste Linie zeigt den monatlichen Niederschlag in Liter pro Quadratmeter 2021 in
+					Berlin. Die Regenmenge steigt in den Sommermonaten 2021 deutlich an und erreicht einen
+					Höchststand von 103 Liter pro Quadratmeter im September. Das ist deutlich höher als die
+					durchschnittliche Regenmenge in den Sommermonaten der letzten zehn Jahre. In diesem
+					Zeitraum has es auch in den Sommermonaten durchschnittlich nie mehr als 25 Liter pro
+					Quadratmeter geregnet.
+				</desc>
+			</svelte:fragment>
 
-		<g class="summer-highlight" aria-hidden="true">
-			<rect
-				x={x(summer[0])}
-				y={-margin.top}
-				width={x(summer[1]) - x(summer[0])}
-				height={boundedHeight + margin.top}
-			/>
-			<text
-				x={x(summer[0]) + (x(summer[1]) - x(summer[0])) / 2}
-				y={boundedHeight}
-				dy={-tokens.sPx2}
-			>
-				Sommer
-			</text>
-		</g>
-
-		<g class="axis-y" aria-hidden="true">
-			{#each grid as gridValue}
-				<g class="tick" transform={translate([0, y(gridValue)])}>
-					<line x1={x.range()[0]} x2={x.range()[1]} />
-					{#if yTickLabels.includes(gridValue)}
-						<text dx={-yTickLabelPadding}>{gridValue}</text>
-					{/if}
-				</g>
-			{/each}
-
-			<text class="label" x={-margin.left} dy={-margin.top}> Regen in l/qm </text>
-		</g>
-
-		<g class="axis-x" transform={translate([0, boundedHeight])} aria-hidden="true">
-			<line class="zero-line" x1={x.range()[0]} x2={x.range()[1]} />
-
-			{#each xTicks as tick}
-				<g class="tick" transform={translate([x(tick), 0])}>
-					<line y2={xTickLength} stroke="green" />
-					{#if xTickLabels.has(tick)}
-						<text dy="1em" transform={translate([0, xTickLength + xTickLabelPadding])}>
-							{xTickLabels.get(tick)}
-						</text>
-					{/if}
-				</g>
-			{/each}
-		</g>
-
-		<g class="shapes" aria-hidden="true">
-			<g class="rain rain-avg">
-				<path d={lineRainAvg(data)} />
-				<text x={x(dLast.month)} dx={tokens.sPx2} y={y(dLast.rainAvg)} dy="-1em">
-					2000
-					<tspan x={x(dLast.month)} dx={tokens.sPx2} dy="1em">bis</tspan>
-					<tspan x={x(dLast.month)} dx={tokens.sPx2} dy="1em"> 2020 </tspan>
+			<g class="summer-highlight">
+				<rect
+					x={x(summer[0])}
+					y={-margin.top}
+					width={x(summer[1]) - x(summer[0])}
+					height={boundedHeight + margin.top}
+				/>
+				<text
+					x={x(summer[0]) + (x(summer[1]) - x(summer[0])) / 2}
+					y={boundedHeight}
+					dy={-tokens.sPx2}
+					aria-hidden="true"
+				>
+					Sommer
 				</text>
 			</g>
-			<g class="rain rain-2021">
-				<path d={lineRain(data)} />
-				<text x={x(dLast.month)} y={y(dLast.rain)} dx={tokens.sPx2}> 2021 </text>
+
+			<g class="axis-y">
+				{#each grid as gridValue}
+					<g class="tick" transform={translate([0, y(gridValue)])}>
+						<line x1={x.range()[0]} x2={x.range()[1]} />
+						{#if yTickLabels.includes(gridValue)}
+							<text dx={-yTickLabelPadding} aria-hidden="true">{gridValue}</text>
+						{/if}
+					</g>
+				{/each}
+
+				<text class="label" x={-margin.left} dy={-margin.top} aria-hidden="true">
+					Regen in l/qm
+				</text>
 			</g>
-		</g>
 
-		<g
-			class="annotation"
-			transform={translate([-annotationLength + annotationOffset[0], annotationOffset[1]])}
-			aria-hidden="true"
-		>
-			<text x={x(dHighlight.month)} y={y(dHighlight.rain)}>
-				September war der
-				<tspan x={x(dHighlight.month)} dy="1.15em"> regenreichste Monat </tspan>
-			</text>
-		</g>
+			<g class="axis-x" transform={translate([0, boundedHeight])}>
+				<line class="zero-line" x1={x.range()[0]} x2={x.range()[1]} />
 
-		<Arrow
-			class="arrow"
-			{...computeArrowCoords(
-				[x(dHighlight.month), y(dHighlight.rain)],
-				[
-					x(dHighlight.month) + annotationOffset[0] - annotationLength / 4,
-					y(dHighlight.rain) + annotationOffset[1] / 2
-				]
-			)}
-			color={tokens.cChartAnnotation}
-			aria-hidden="true"
-		/>
-	</Svg>
+				{#each xTicks as tick}
+					<g class="tick" transform={translate([x(tick), 0])}>
+						<line y2={xTickLength} stroke="green" />
+						{#if xTickLabels.has(tick)}
+							<text
+								dy="1em"
+								transform={translate([0, xTickLength + xTickLabelPadding])}
+								aria-hidden="true"
+							>
+								{xTickLabels.get(tick)}
+							</text>
+						{/if}
+					</g>
+				{/each}
+			</g>
+
+			<g class="shapes">
+				<g class="rain rain-avg">
+					<path d={lineRainAvg(data)} />
+					<text
+						x={x(dLast.month)}
+						dx={tokens.sPx2}
+						y={y(dLast.rainAvg)}
+						dy="-1em"
+						aria-hidden="true"
+					>
+						2000
+						<tspan x={x(dLast.month)} dx={tokens.sPx2} dy="1em">bis</tspan>
+						<tspan x={x(dLast.month)} dx={tokens.sPx2} dy="1em"> 2020 </tspan>
+					</text>
+				</g>
+				<g class="rain rain-2021">
+					<path d={lineRain(data)} />
+					<text x={x(dLast.month)} y={y(dLast.rain)} dx={tokens.sPx2} aria-hidden="true">
+						2021
+					</text>
+				</g>
+			</g>
+
+			<g
+				class="annotation"
+				transform={translate([-annotationLength + annotationOffset[0], annotationOffset[1]])}
+			>
+				<text x={x(dHighlight.month)} y={y(dHighlight.rain)} aria-hidden="true">
+					September war der
+					<tspan x={x(dHighlight.month)} dy="1.15em"> regenreichste Monat </tspan>
+				</text>
+			</g>
+
+			<Arrow
+				class="arrow"
+				{...computeArrowCoords(
+					[x(dHighlight.month), y(dHighlight.rain)],
+					[
+						x(dHighlight.month) + annotationOffset[0] - annotationLength / 4,
+						y(dHighlight.rain) + annotationOffset[1] / 2
+					]
+				)}
+				color={tokens.cChartAnnotation}
+			/>
+		</Svg>
+	</div>
+
+	<div class="source">Quelle</div>
 </div>
 
-<div class="source">Quelle</div>
+<VisuallyHidden>
+	<Table
+		{data}
+		columns={tableColumns}
+		caption="Monatliche Regenmenge in Liter pro Quadratmeter in Berlin"
+		class="visually-hidden"
+	/>
+</VisuallyHidden>
 
 <style>
 	h1 {
@@ -238,7 +271,7 @@
 		margin-top: var(--s-px-3);
 	}
 
-	.chart {
+	.svg-wrapper {
 		--c-accent: var(--c-blue-300);
 		font-size: var(--font-size-sm);
 	}
