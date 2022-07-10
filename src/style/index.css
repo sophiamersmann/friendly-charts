@@ -1,0 +1,28 @@
+@import './tokens.css';
+
+* {
+	margin: 0;
+}
+
+*::before,
+*::after {
+	box-sizing: inherit;
+}
+
+html {
+	box-sizing: border-box;
+}
+
+body {
+	font-family: 'Interstate', sans-serif;
+	line-height: var(--line-height-base);
+	-webkit-font-smoothing: antialiased;
+	background-color: var(--c-ui-gray-100);
+}
+
+input,
+button,
+textarea,
+select {
+	font: inherit;
+}
