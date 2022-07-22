@@ -107,7 +107,7 @@
 <div
 	class="chart"
 	use:friendly.chart={{
-		title: '.title-1',
+		title: '.title',
 		subtitle: '.subtitle',
 		description: [
 			'Der Chart zeigt ein Diagramm mit zwei Linien. Die erste Linie zeigt den monatlichen',

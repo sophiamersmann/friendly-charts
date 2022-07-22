@@ -170,6 +170,7 @@ export default function chart(node: HTMLElement | SVGElement, options: Chart) {
 			const layoutDescription = document.createElement('h4');
 			layoutDescription.classList.add(CLASSNAME.CHART_LAYOUT_DESCRIPTION);
 			layoutDescription.textContent = 'Chart Layout Description';
+			a11yElem.appendChild(layoutDescription);
 
 			// general chart information
 			let pGeneral = 'This is a chart.';
@@ -207,7 +208,6 @@ export default function chart(node: HTMLElement | SVGElement, options: Chart) {
 
 				utils.insertAfter(utils.createElement('p', content), layoutDescription);
 			}
-			a11yElem.appendChild(layoutDescription);
 		}
 
 		//
