@@ -2,7 +2,7 @@ import { tick } from 'svelte';
 
 import { CLASSNAME } from './const';
 import * as utils from './utils';
-import type { Chart } from './types';
+import type { Chart, Element, Axis } from './types';
 
 export default function chart(node: HTMLElement | SVGElement, options: Chart) {
 	node.classList.add(CLASSNAME.CHART);
@@ -16,11 +16,11 @@ export default function chart(node: HTMLElement | SVGElement, options: Chart) {
 		const topLevelChartElements = node.querySelectorAll(
 			`.${CLASSNAME.CHART_ELEMENT}[friendly-level="0"]`
 		);
-		const chartElements = Array.from(topLevelChartElements).map(utils.friendlyData);
+		const chartElements = Array.from(topLevelChartElements).map(utils.friendlyData) as Element[];
 
 		// get axis elements from dom
 		const axisElements = node.querySelectorAll('.' + CLASSNAME.CHART_AXIS);
-		const axisList = Array.from(axisElements).map(utils.friendlyData);
+		const axisList = Array.from(axisElements).map(utils.friendlyData) as Axis[];
 
 		const isInteractive = chartElements.length > 0 || axisList.length > 0;
 
@@ -186,7 +186,6 @@ export default function chart(node: HTMLElement | SVGElement, options: Chart) {
 			}
 			utils.insertAfter(utils.createElement('p', pGeneral), layoutDescription);
 
-			// TODO: data is not typed
 			for (let i = 0; i < axisList.length; i++) {
 				const d = axisList[i];
 

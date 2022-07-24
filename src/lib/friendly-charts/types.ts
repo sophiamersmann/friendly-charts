@@ -18,6 +18,7 @@ export interface Axis {
 export type AxisOptions = Omit<Axis, 'ticks'> & { ticks?: string | any[] };
 
 export interface Element {
+	id?: string;
 	type: string;
 	label: string;
 	level: number;

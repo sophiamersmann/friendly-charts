@@ -1,4 +1,9 @@
-function warn(message: string, advice: string) {
+import { customAlphabet } from 'nanoid/non-secure';
+import { alphanumeric } from 'nanoid-dictionary';
+
+const nanoid = customAlphabet(alphanumeric, 6);
+
+export function warn(message: string, advice: string) {
 	console.warn(
 		`%cunfriendly chart: %c${message}\n%c${advice}`,
 		'color: maroon; font-weight: bold',
@@ -77,4 +82,8 @@ export function handlebars(templateString: string, values: Record<string, any>) 
 		/{{\s?([^{}\s]*)\s?}}/g,
 		(_, value) => /** @type {string} */ values[value]
 	);
+}
+
+export function uniqueId() {
+	return nanoid();
 }

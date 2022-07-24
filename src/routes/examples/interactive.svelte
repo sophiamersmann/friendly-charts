@@ -213,7 +213,12 @@
 						<g class="rain rain-2021">
 							<path
 								d={lineRain(data)}
-								use:friendly.element={{ type: 'line', label: '2021', level: 0, position: 1 }}
+								use:friendly.element={{
+									type: 'line',
+									label: '2021',
+									level: 0,
+									position: 1
+								}}
 							/>
 							<text x={x(dLast.month)} y={y(dLast.rain)} dx={tokens.sPx2}> 2021 </text>
 						</g>
