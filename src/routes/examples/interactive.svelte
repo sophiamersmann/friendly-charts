@@ -198,12 +198,25 @@
 							<path
 								d={lineRainAvg(data)}
 								use:friendly.element={{
+									id: 'line-0',
 									type: 'line',
 									label: '2000 bis 2020',
-									level: 0,
 									position: 0
 								}}
 							/>
+							{#each data as d, i}
+								<circle
+									cx={x(d.month)}
+									cy={y(d.rainAvg)}
+									r="4"
+									use:friendly.element={{
+										type: 'circle',
+										label: 'To do',
+										parentId: 'line-0',
+										position: i
+									}}
+								/>
+							{/each}
 							<text x={x(dLast.month)} dx={tokens.sPx2} y={y(dLast.rainAvg)} dy="-1em">
 								2000
 								<tspan x={x(dLast.month)} dx={tokens.sPx2} dy="1em">bis</tspan>
@@ -214,12 +227,25 @@
 							<path
 								d={lineRain(data)}
 								use:friendly.element={{
+									id: 'line-1',
 									type: 'line',
 									label: '2021',
-									level: 0,
 									position: 1
 								}}
 							/>
+							{#each data as d, i}
+								<circle
+									cx={x(d.month)}
+									cy={y(d.rain)}
+									r="6"
+									use:friendly.element={{
+										type: 'circle',
+										label: 'To do',
+										parentId: 'line-1',
+										position: i
+									}}
+								/>
+							{/each}
 							<text x={x(dLast.month)} y={y(dLast.rain)} dx={tokens.sPx2}> 2021 </text>
 						</g>
 					</g>
@@ -354,6 +380,10 @@
 		stroke: var(--c-accent);
 	}
 
+	.shapes .rain-2021 circle {
+		fill: var(--c-accent);
+	}
+
 	.shapes .rain-2021 text {
 		dominant-baseline: middle;
 		fill: var(--c-accent);
@@ -367,6 +397,12 @@
 
 	.shapes .rain-avg text {
 		fill: var(--c-beige-400);
+	}
+
+	.shapes .rain-avg circle {
+		stroke: var(--c-beige-400);
+		fill: white;
+		stroke-width: 2;
 	}
 
 	.annotation text {

@@ -1,8 +1,16 @@
 import { CLASSNAME } from './const';
 import * as utils from './utils';
-import type { AxisOptions } from './types';
 
-export default function axis(node: HTMLElement | SVGElement, options: AxisOptions) {
+export interface FriendlyAxis {
+	label: string;
+	direction?: 'x' | 'y';
+	orientation?: 'horizontal' | 'vertical';
+	ticks?: any[];
+}
+
+type Options = Omit<FriendlyAxis, 'ticks'> & { ticks?: string | any[] };
+
+export default function axis(node: HTMLElement | SVGElement, options: Options) {
 	node.classList.add(CLASSNAME.CHART_AXIS);
 
 	// get label

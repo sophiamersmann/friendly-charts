@@ -73,6 +73,10 @@ export function traverse(node: Element, cb: (node: Element) => void) {
 	}
 }
 
+export function insertBefore(node: Element, refNode: Element) {
+	refNode.parentNode?.insertBefore(node, refNode);
+}
+
 export function insertAfter(node: Element, refNode: Element) {
 	refNode.parentNode?.insertBefore(node, refNode.nextSibling);
 }

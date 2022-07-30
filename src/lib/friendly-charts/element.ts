@@ -1,14 +1,26 @@
 import { CLASSNAME } from './const';
 import * as utils from './utils';
-import type { ElementOptions } from './types';
 
-export default function element(node: HTMLElement | SVGElement, options: ElementOptions) {
+export interface FriendlyElement {
+	id: string;
+	type: string;
+	label: string;
+	parentId: string;
+	position: number;
+}
+
+type Options = Omit<FriendlyElement, 'id' | 'parentId'> & {
+	id?: string;
+	parentId?: string;
+};
+
+export default function element(node: HTMLElement | SVGElement, options: Options) {
 	node.classList.add(CLASSNAME.CHART_ELEMENT);
 
 	let { id } = options;
 
 	if (!id) {
-		id = ['friendly-element', options.type, options.level, options.position].join('-');
+		id = ['friendly-element', utils.uniqueId()].join('-');
 	}
 
 	if (node.id && node.id !== id) {
@@ -19,6 +31,7 @@ export default function element(node: HTMLElement | SVGElement, options: Element
 	}
 
 	node.id = id;
+	options.id = id;
 
 	// set data on the dom element
 	utils.setFriendlyData(node, options);

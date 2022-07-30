@@ -2,7 +2,19 @@ import { tick } from 'svelte';
 
 import { CLASSNAME } from './const';
 import * as utils from './utils';
-import type { Chart, Element, Axis } from './types';
+
+import type { FriendlyAxis } from './axis';
+import type { FriendlyElement } from './element';
+
+interface Chart {
+	title: string;
+	subtitle: string;
+	summary?: string;
+	purpose?: string;
+	description?: string;
+	context?: string;
+	structureNotes?: string;
+}
 
 export default function chart(node: HTMLElement | SVGElement, options: Chart) {
 	node.classList.add(CLASSNAME.CHART);
@@ -16,11 +28,13 @@ export default function chart(node: HTMLElement | SVGElement, options: Chart) {
 		const topLevelChartElements = node.querySelectorAll(
 			`.${CLASSNAME.CHART_ELEMENT}[friendly-level="0"]`
 		);
-		const chartElements = Array.from(topLevelChartElements).map(utils.friendlyData) as Element[];
+		const chartElements = Array.from(topLevelChartElements).map(
+			utils.friendlyData
+		) as FriendlyElement[];
 
 		// get axis elements from dom
 		const axisElements = node.querySelectorAll('.' + CLASSNAME.CHART_AXIS);
-		const axisList = Array.from(axisElements).map(utils.friendlyData) as Axis[];
+		const axisList = Array.from(axisElements).map(utils.friendlyData) as FriendlyAxis[];
 
 		const isInteractive = chartElements.length > 0 || axisList.length > 0;
 
@@ -37,6 +51,7 @@ export default function chart(node: HTMLElement | SVGElement, options: Chart) {
 
 		let titleElem;
 		if (title) {
+			title = title.trim();
 			titleElem = utils.createElement('h2', 'Chart title: ' + title);
 			titleElem.classList.add(CLASSNAME.CHART_TITLE);
 		}
@@ -54,6 +69,7 @@ export default function chart(node: HTMLElement | SVGElement, options: Chart) {
 
 		let subtitleElem;
 		if (subtitle) {
+			subtitle = subtitle.trim();
 			subtitleElem = utils.createElement('h2', 'Chart subtitle: ' + subtitle);
 			subtitleElem.classList.add(CLASSNAME.CHART_SUBTITLE);
 		}
