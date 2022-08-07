@@ -71,7 +71,32 @@ function createTree(friendlyElements: FriendlyElement[]) {
 	return root;
 }
 
-export default function visual(node: HTMLElement | SVGElement) {
+interface BoundingBox {
+	top: number;
+	left: number;
+	width: number;
+	height: number;
+}
+
+function defaultFocus(focusElement: HTMLElement, bbox: BoundingBox) {
+	const padding = 4;
+	focusElement.style.width = utils.px(bbox.width + 2 * padding);
+	focusElement.style.height = utils.px(bbox.height + 2 * padding);
+	focusElement.style.top = utils.px(bbox.top - padding);
+	focusElement.style.left = utils.px(bbox.left - padding);
+	focusElement.style.border = '2px solid black';
+}
+
+interface VisualOptions {
+	focus: (focusElement: HTMLElement, bbox: BoundingBox) => void;
+}
+
+export default function visual(
+	node: HTMLElement | SVGElement,
+	{ focus }: VisualOptions = {
+		focus: defaultFocus
+	}
+) {
 	node.setAttribute('role', 'presentation');
 
 	// TODO: does this make sense?
@@ -122,7 +147,17 @@ export default function visual(node: HTMLElement | SVGElement) {
 	controller.setAttribute('aria-label', controllerLabel);
 	controller.setAttribute('role', 'application');
 	controller.tabIndex = 0;
-	controller.style.outline = 'none';
+	controller.style.cssText = `
+		outline: none;
+		border: 0;
+		clip: rect(0 0 0 0);
+		height: 1px;
+		width: 1px;
+		margin: -1px;
+		overflow: hidden;
+		padding: 0;
+		position: absolute;
+	`;
 	utils.insertBefore(controller, node);
 
 	// focus element for the controller
@@ -134,25 +169,17 @@ export default function visual(node: HTMLElement | SVGElement) {
 		position: absolute;
 		top: 0;
 		left: 0;
-		border: 2px solid black;
 		display: none;
 	`;
 	document.body.appendChild(focusElement);
-
-	function showFocus(bbox: { top: number; left: number; width: number; height: number }) {
-		focusElement.style.width = utils.px(bbox.width);
-		focusElement.style.height = utils.px(bbox.height);
-		focusElement.style.top = utils.px(bbox.top);
-		focusElement.style.left = utils.px(bbox.left);
-		focusElement.style.display = 'block';
-	}
 
 	function hideFocus() {
 		focusElement.style.display = 'none';
 	}
 
 	function handleFocus() {
-		showFocus(node.getBoundingClientRect());
+		focus(focusElement, node.getBoundingClientRect());
+		focusElement.style.display = 'block';
 
 		// initially, only the root element is accessible
 		const rootElement = root.createControlElement();
@@ -240,7 +267,10 @@ export default function visual(node: HTMLElement | SVGElement) {
 
 			// update focus
 			const bbox = nextActiveNode.boundingBox;
-			if (bbox) showFocus(bbox);
+			if (bbox) {
+				focus(focusElement, bbox);
+				focusElement.style.display = 'block';
+			}
 		} else if (nextActiveId === null) {
 			controller.removeAttribute('aria-activedescendant');
 
@@ -252,7 +282,8 @@ export default function visual(node: HTMLElement | SVGElement) {
 			const rootElement = root.createControlElement();
 			controller.appendChild(rootElement);
 
-			showFocus(node.getBoundingClientRect());
+			focus(focusElement, node.getBoundingClientRect());
+			focusElement.style.display = 'block';
 		}
 	}
 
