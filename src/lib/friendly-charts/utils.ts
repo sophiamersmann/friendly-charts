@@ -91,3 +91,7 @@ export function handlebars(templateString: string, values: Record<string, any>) 
 export function uniqueId() {
 	return nanoid();
 }
+
+export function px(n: number) {
+	return `${n}px`;
+}

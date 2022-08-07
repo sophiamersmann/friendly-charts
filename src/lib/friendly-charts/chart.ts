@@ -26,7 +26,7 @@ export default function chart(node: HTMLElement | SVGElement, options: Chart) {
 
 		// get chart elements from dom
 		const topLevelChartElements = node.querySelectorAll(
-			`.${CLASSNAME.CHART_ELEMENT}[friendly-level="0"]`
+			`.${CLASSNAME.CHART_ELEMENT}:not([friendly-parentId])`
 		);
 		const chartElements = Array.from(topLevelChartElements).map(
 			utils.friendlyData
@@ -200,7 +200,8 @@ export default function chart(node: HTMLElement | SVGElement, options: Chart) {
 					}
 				);
 			}
-			utils.insertAfter(utils.createElement('p', pGeneral), layoutDescription);
+			const layoutDescriptionParagraph = utils.createElement('p', pGeneral);
+			utils.insertAfter(layoutDescriptionParagraph, layoutDescription);
 
 			for (let i = 0; i < axisList.length; i++) {
 				const d = axisList[i];
@@ -221,7 +222,7 @@ export default function chart(node: HTMLElement | SVGElement, options: Chart) {
 					content += '.';
 				}
 
-				utils.insertAfter(utils.createElement('p', content), layoutDescription);
+				utils.insertAfter(utils.createElement('p', content), layoutDescriptionParagraph);
 			}
 		}
 
