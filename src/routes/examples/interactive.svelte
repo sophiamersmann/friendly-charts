@@ -13,6 +13,21 @@
 
 	import type { Coordinates, TableColumn } from 'src/types';
 
+	const MONTHS = [
+		'Januar',
+		'Februar',
+		'März',
+		'April',
+		'Mai',
+		'Juni',
+		'Juli',
+		'August',
+		'September',
+		'Oktober',
+		'November',
+		'Dezember'
+	];
+
 	const data = [
 		{ month: 1, rain: 30, rainAvg: 9 },
 		{ month: 2, rain: 25, rainAvg: 8 },
@@ -211,7 +226,7 @@
 									r="4"
 									use:friendly.element={{
 										type: 'circle',
-										label: 'To do',
+										label: `${MONTHS[d.month - 1]}. ${d.rainAvg} Liter pro Quadratmeter`,
 										parentId: 'line-0',
 										position: i
 									}}
@@ -240,7 +255,7 @@
 									r="6"
 									use:friendly.element={{
 										type: 'circle',
-										label: 'To do',
+										label: `${MONTHS[d.month - 1]}. ${d.rain} Liter pro Quadratmeter`,
 										parentId: 'line-1',
 										position: i
 									}}

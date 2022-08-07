@@ -9,6 +9,7 @@ export default class FriendlyNode {
 	up: FriendlyNode | null;
 	down: FriendlyNode | null;
 	data: FriendlyElement;
+	label: string;
 
 	constructor(data: FriendlyElement) {
 		this.parent = null;
@@ -19,6 +20,7 @@ export default class FriendlyNode {
 		this.up = null;
 		this.down = null;
 		this.data = data;
+		this.label = '';
 	}
 
 	/** find a child at position closest to the given position */
@@ -27,6 +29,16 @@ export default class FriendlyNode {
 		const minDiff = Math.min(...diff);
 		const index = diff.indexOf(minDiff);
 		return this.children[index];
+	}
+
+	get controlId() {
+		return this.data.id + '_control';
+	}
+
+	static toId(controlId: string | null) {
+		return controlId && controlId.endsWith('_control')
+			? controlId.slice(0, -'_control'.length)
+			: null;
 	}
 
 	/** compute bounding box that encloses the DOM element */
@@ -68,11 +80,11 @@ export default class FriendlyNode {
 
 	createControlElement() {
 		const element = document.createElement('div');
-		element.id = this.data.id;
+		element.id = this.controlId;
 		element.tabIndex = -1;
 		element.setAttribute('role', 'img');
-		element.setAttribute('aria-label', this.data.label);
-		element.textContent = this.data.label;
+		element.setAttribute('aria-label', this.label);
+		element.textContent = this.label;
 
 		const fig = document.createElement('figure');
 		fig.setAttribute('role', 'figure');

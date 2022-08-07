@@ -10,7 +10,7 @@ function createTree(friendlyElements: FriendlyElement[]) {
 	const root = new FriendlyNode({
 		id: rootId,
 		type: 'root',
-		label: 'TODO Group of lines',
+		label: '',
 		parentId: '',
 		position: 0
 	});
@@ -89,19 +89,35 @@ export default function visual(node: HTMLElement | SVGElement) {
 	// define relationship between chart elements
 	const root = createTree(friendlyElements);
 
-	// assign a meaningful label to the root element grouping the top-level elements
-	const chartType = root.children[0].data.type;
-	root.data.label = utils.handlebars(
-		'{{ TYPE }} group which contains {{ N_ELEMENTS }} interactive {{ TYPE }}s.',
-		{
-			TYPE: chartType,
-			N_ELEMENTS: root.children.length
+	// assign meaningful labels
+	map(root, (node) => {
+		if (node.children.length > 0) {
+			const { type } = node.children[0].data;
+			node.label = utils.handlebars(
+				'Group{{ SPACE }}{{ LABEL }}. Contains {{ N_ELEMENTS }} interactive {{ TYPE }}s.',
+				{
+					SPACE: node.data.label ? ' ' : '',
+					LABEL: node.data.label,
+					TYPE: type,
+					N_ELEMENTS: root.children.length
+				}
+			);
+		} else {
+			const parent = node.parent as FriendlyNode;
+			node.label = utils.handlebars('{{ LABEL }}. {{ TYPE }} {{ POS }} of {{ SIZE }}.', {
+				LABEL: node.data.label,
+				TYPE: node.data.type,
+				POS: parent.children.indexOf(node) + 1,
+				SIZE: parent.children.length
+			});
 		}
-	);
+	});
 
 	// controller of the keyboard-accessible application
 	const controller = document.createElement('div');
-	const controllerLabel = utils.handlebars('Interactive {{ TYPE }} chart.', { TYPE: chartType });
+	const controllerLabel = utils.handlebars('Interactive {{ TYPE }} chart.', {
+		TYPE: root.children[0].data.type
+	});
 	controller.textContent = controllerLabel;
 	controller.setAttribute('aria-label', controllerLabel);
 	controller.setAttribute('role', 'application');
@@ -135,17 +151,22 @@ export default function visual(node: HTMLElement | SVGElement) {
 		focusElement.style.display = 'none';
 	}
 
-	// initially, only the root element is accessible
-	const rootElement = root.createControlElement();
-	controller.appendChild(rootElement);
-
 	function handleFocus() {
 		showFocus(node.getBoundingClientRect());
+
+		// initially, only the root element is accessible
+		const rootElement = root.createControlElement();
+		controller.appendChild(rootElement);
 	}
 
 	function handleBlur() {
 		controller.removeAttribute('aria-activedescendant');
 		hideFocus();
+
+		// clear controller
+		while (controller.lastChild) {
+			controller.removeChild(controller.lastChild);
+		}
 	}
 
 	function handleKeyDown(e: KeyboardEvent) {
@@ -192,17 +213,44 @@ export default function visual(node: HTMLElement | SVGElement) {
 			}
 		}
 
-		const nextActiveId = activeOnKeyDown(activeId, e.key);
+		const nextActiveId = activeOnKeyDown(FriendlyNode.toId(activeId), e.key);
 		if (nextActiveId) {
 			const nextActiveNode = root.descendants.get(nextActiveId);
+			if (!nextActiveNode) return;
 
-			controller.setAttribute('aria-activedescendant', nextActiveId);
+			// clear controller
+			while (controller.lastChild) {
+				controller.removeChild(controller.lastChild);
+			}
+
+			// update control elements
+			if (
+				nextActiveNode.left &&
+				(!nextActiveNode.right || nextActiveNode.right.data.id !== nextActiveNode.left.data.id)
+			) {
+				controller.appendChild(nextActiveNode.left.createControlElement());
+			}
+			controller.appendChild(nextActiveNode.createControlElement());
+			if (nextActiveNode.right) {
+				controller.appendChild(nextActiveNode.right.createControlElement());
+			}
+
+			// update active element
+			controller.setAttribute('aria-activedescendant', nextActiveNode.controlId);
 
 			// update focus
-			const bbox = nextActiveNode?.boundingBox;
+			const bbox = nextActiveNode.boundingBox;
 			if (bbox) showFocus(bbox);
 		} else if (nextActiveId === null) {
 			controller.removeAttribute('aria-activedescendant');
+
+			// clear controller
+			while (controller.lastChild) {
+				controller.removeChild(controller.lastChild);
+			}
+
+			const rootElement = root.createControlElement();
+			controller.appendChild(rootElement);
 
 			showFocus(node.getBoundingClientRect());
 		}
