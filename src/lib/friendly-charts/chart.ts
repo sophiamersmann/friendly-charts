@@ -36,7 +36,14 @@ export default function chart(node: HTMLElement | SVGElement, options: Chart) {
 		const axisElements = node.querySelectorAll('.' + CLASSNAME.CHART_AXIS);
 		const axisList = Array.from(axisElements).map(utils.friendlyData) as FriendlyAxis[];
 
-		const isInteractive = chartElements.length > 0 || axisList.length > 0;
+		// check if chart has interactive elements
+		const isInteractive = chartElements.length > 0;
+		if (isInteractive && axisList.length === 0) {
+			utils.warn(
+				'Axis description missing for an interactive chart.',
+				'Please provide axis descriptions via use:axis.'
+			);
+		}
 
 		//
 		// title
@@ -79,15 +86,10 @@ export default function chart(node: HTMLElement | SVGElement, options: Chart) {
 		//
 
 		if (isInteractive) {
-			const chartType = chartElements.length > 0 ? chartElements[0].type : undefined;
-
 			// general chart information
-			let srInfo = 'Keyboard interactive chart';
-			if (chartType) {
-				srInfo = utils.handlebars('Keyboard interactive {{ TYPE }} chart', {
-					TYPE: chartType
-				});
-			}
+			let srInfo = utils.handlebars('Keyboard interactive {{ TYPE }} chart', {
+				TYPE: chartElements[0].type
+			});
 
 			// add title if given
 			if (title) {
@@ -96,11 +98,9 @@ export default function chart(node: HTMLElement | SVGElement, options: Chart) {
 				srInfo += '.';
 			}
 
-			// TODO: this is not yet true
 			srInfo += [
 				' This section contains additional information about this chart.',
-				'Pressing TAB will focus the keyboard instructions menu.',
-				'Tabbing again takes you to the chart area.'
+				'Pressing TAB takes you to the chart area.'
 			].join(' ');
 
 			const srInfoElem = document.createElement('p');
@@ -189,17 +189,14 @@ export default function chart(node: HTMLElement | SVGElement, options: Chart) {
 			a11yElem.appendChild(layoutDescription);
 
 			// general chart information
-			let pGeneral = 'This is a chart.';
-			if (chartElements.length > 0) {
-				pGeneral = utils.handlebars(
-					'This is a {{ TYPE }} chart with {{ N_ELEMENTS }} {{ TYPE }}{{ TYPE_PLURAL }}.',
-					{
-						TYPE: chartElements[0].type,
-						N_ELEMENTS: chartElements.length,
-						TYPE_PLURAL: chartElements.length > 1 ? 's' : ''
-					}
-				);
-			}
+			const pGeneral = utils.handlebars(
+				'This is a {{ TYPE }} chart with {{ N_ELEMENTS }} {{ TYPE }}{{ TYPE_PLURAL }}.',
+				{
+					TYPE: chartElements[0].type,
+					N_ELEMENTS: chartElements.length,
+					TYPE_PLURAL: chartElements.length > 1 ? 's' : ''
+				}
+			);
 			const layoutDescriptionParagraph = utils.createElement('p', pGeneral);
 			utils.insertAfter(layoutDescriptionParagraph, layoutDescription);
 

@@ -1,0 +1,23 @@
+{
+	"chart": {
+		"screenReaderInformation": "Keyboard interactive {{ CHART_TYPE }} chart, titled {{ CHART_TITLE }}. Pressing TAB takes you to the chart area.",
+		"title": "Chart title: {{ CHART_TITLE }}",
+		"subtitle": "Chart subtitle: {{ CHART_SUBTITLE }}",
+		"purpose": "Purpose",
+		"description": "Description",
+		"chartLayoutDescription": {
+			"title": "Chart Layout Description",
+			"content": {
+				"general": "This is a {{ CHART_TYPE }} chart with {{ N_ELEMENTS }} {{ CHART_TYPE }}{{ CHART_TYPE_PLURAL }}.",
+				"axis": "This chart has a {{ ORIENTATION }} {{ DIRECTION }} axis, titled {{ LABEL }}",
+				"ticks": " with a range that starts with {{ START_TICK }} and ends with {{ END_TICK }}."
+			}
+		},
+		"structure": "Notes about the chart structure"
+	},
+	"application": {
+		"title": "Interactive {{ TYPE }} chart.",
+		"group": "Group{{ SPACE }}{{ LABEL }}. Contains {{ N_ELEMENTS }} interactive {{ TYPE }}s.",
+		"element": "{{ LABEL }}. {{ TYPE }} {{ POS }} of {{ SIZE }}."
+	}
+}

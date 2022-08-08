@@ -8,10 +8,10 @@ export default class FriendlyNode {
 	right: FriendlyNode | null;
 	up: FriendlyNode | null;
 	down: FriendlyNode | null;
-	data: FriendlyElement;
+	data;
 	label: string;
 
-	constructor(data: FriendlyElement) {
+	constructor(data: Omit<FriendlyElement, 'type'> & { type: FriendlyElement['type'] | 'root' }) {
 		this.parent = null;
 		this.children = [];
 		this.descendants = new Map();

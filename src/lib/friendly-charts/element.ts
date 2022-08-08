@@ -3,7 +3,7 @@ import * as utils from './utils';
 
 export interface FriendlyElement {
 	id: string;
-	type: string;
+	type: 'line' | 'circle' | 'bar';
 	label: string;
 	parentId: string;
 	position: number;
