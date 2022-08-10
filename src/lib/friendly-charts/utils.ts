@@ -3,13 +3,11 @@ import { alphanumeric } from 'nanoid-dictionary';
 
 const nanoid = customAlphabet(alphanumeric, 6);
 
-export function warn(message: string, advice: string) {
-	console.warn(
-		`%cunfriendly chart: %c${message}\n%c${advice}`,
-		'color: maroon; font-weight: bold',
-		'color: maroon',
-		'color: maroon; font-style: italic'
-	);
+export function warn(message: string, advice?: string) {
+	const styles = ['color: maroon; font-weight: bold', 'color: maroon'];
+	if (advice) styles.push('color: maroon; font-style: italic');
+
+	console.warn(`%cunfriendly chart: %c${message}` + (advice ? `\n%c${advice}` : ''), ...styles);
 }
 
 export function createElement(tagName: string, content: string) {
@@ -23,14 +21,19 @@ export function isSelector(s: string) {
 }
 
 export function querySelector(node: Element, selector: string) {
-	const result = node.querySelector(selector);
+	let result;
+	try {
+		result = node.querySelector(selector);
 
-	if (!result) {
-		warn(
-			`Element specified by "${selector}" not found.`,
-			`Check if an element with "${selector}" exists.`
-		);
-		return;
+		if (!result) {
+			warn(
+				`Element specified by "${selector}" not found.`,
+				`Check if an element with "${selector}" exists.`
+			);
+			return;
+		}
+	} catch (error) {
+		warn(`"${selector}" is not a valid selector.`);
 	}
 
 	return result;
