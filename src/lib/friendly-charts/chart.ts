@@ -4,7 +4,7 @@ import { CLASSNAME } from './const';
 import * as utils from './utils';
 
 import type { FriendlyAxis } from './axis';
-import type { FriendlyElement } from './element';
+import type { FriendlySymbol } from './symbol';
 
 interface Chart {
 	title: string;
@@ -28,20 +28,20 @@ export default function chart(node: HTMLElement | SVGElement, options: Chart) {
 		const topLevelChartElements = node.querySelectorAll(
 			`.${CLASSNAME.CHART_ELEMENT}:not([friendly-parentId])`
 		);
-		const chartElements = Array.from(topLevelChartElements).map(
+		const chartSymbols = Array.from(topLevelChartElements).map(
 			utils.friendlyData
-		) as FriendlyElement[];
+		) as FriendlySymbol[];
 
 		// get axis elements from dom
 		const axisElements = node.querySelectorAll('.' + CLASSNAME.CHART_AXIS);
 		const axisList = Array.from(axisElements).map(utils.friendlyData) as FriendlyAxis[];
 
 		// check if chart has interactive elements
-		const isInteractive = chartElements.length > 0;
+		const isInteractive = chartSymbols.length > 0;
 		if (isInteractive && axisList.length === 0) {
 			utils.warn(
 				'Axis description missing for an interactive chart.',
-				'Please provide axis descriptions via use:axis.'
+				'Please provide axis descriptions via use:friendly.axis.'
 			);
 		}
 
@@ -88,7 +88,7 @@ export default function chart(node: HTMLElement | SVGElement, options: Chart) {
 		if (isInteractive) {
 			// general chart information
 			let srInfo = utils.handlebars('Keyboard interactive {{ TYPE }} chart', {
-				TYPE: chartElements[0].type
+				TYPE: chartSymbols[0].type
 			});
 
 			// add title if given
@@ -192,9 +192,9 @@ export default function chart(node: HTMLElement | SVGElement, options: Chart) {
 			const pGeneral = utils.handlebars(
 				'This is a {{ TYPE }} chart with {{ N_ELEMENTS }} {{ TYPE }}{{ TYPE_PLURAL }}.',
 				{
-					TYPE: chartElements[0].type,
-					N_ELEMENTS: chartElements.length,
-					TYPE_PLURAL: chartElements.length > 1 ? 's' : ''
+					TYPE: chartSymbols[0].type,
+					N_ELEMENTS: chartSymbols.length,
+					TYPE_PLURAL: chartSymbols.length > 1 ? 's' : ''
 				}
 			);
 			const layoutDescriptionParagraph = utils.createElement('p', pGeneral);

@@ -212,7 +212,7 @@
 						<g class="rain rain-avg">
 							<path
 								d={lineRainAvg(data)}
-								use:friendly.element={{
+								use:friendly.symbol={{
 									id: 'line-0',
 									type: 'line',
 									label: '2000 bis 2020',
@@ -224,8 +224,8 @@
 									cx={x(d.month)}
 									cy={y(d.rainAvg)}
 									r="4"
-									use:friendly.element={{
-										type: 'circle',
+									use:friendly.symbol={{
+										type: 'point',
 										label: `${MONTHS[d.month - 1]}. ${d.rainAvg} Liter pro Quadratmeter`,
 										parentId: 'line-0',
 										position: i
@@ -241,7 +241,7 @@
 						<g class="rain rain-2021">
 							<path
 								d={lineRain(data)}
-								use:friendly.element={{
+								use:friendly.symbol={{
 									id: 'line-1',
 									type: 'line',
 									label: '2021',
@@ -253,8 +253,8 @@
 									cx={x(d.month)}
 									cy={y(d.rain)}
 									r="6"
-									use:friendly.element={{
-										type: 'circle',
+									use:friendly.symbol={{
+										type: 'point',
 										label: `${MONTHS[d.month - 1]}. ${d.rain} Liter pro Quadratmeter`,
 										parentId: 'line-1',
 										position: i

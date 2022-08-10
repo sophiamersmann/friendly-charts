@@ -1,4 +1,4 @@
-import type { FriendlyElement } from './element';
+import type { FriendlySymbol } from './symbol';
 
 export default class FriendlyNode {
 	parent: FriendlyNode | null;
@@ -11,7 +11,7 @@ export default class FriendlyNode {
 	data;
 	label: string;
 
-	constructor(data: Omit<FriendlyElement, 'type'> & { type: FriendlyElement['type'] | 'root' }) {
+	constructor(data: Omit<FriendlySymbol, 'type'> & { type: FriendlySymbol['type'] | 'root' }) {
 		this.parent = null;
 		this.children = [];
 		this.descendants = new Map();

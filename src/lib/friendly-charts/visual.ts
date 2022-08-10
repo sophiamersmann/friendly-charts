@@ -2,9 +2,9 @@ import * as utils from './utils';
 import { CLASSNAME } from './const';
 import FriendlyNode, { map } from './friendly-node';
 
-import type { FriendlyElement } from './element';
+import type { FriendlySymbol } from './symbol';
 
-function createTree(friendlyElements: FriendlyElement[]) {
+function createTree(friendlySymbols: FriendlySymbol[]) {
 	// create root element with a unique id
 	const rootId = ['root', utils.uniqueId()].join('-');
 	const root = new FriendlyNode({
@@ -17,7 +17,7 @@ function createTree(friendlyElements: FriendlyElement[]) {
 	root.descendants.set(root.data.id, root);
 
 	const unprocessedNodesInTree = [root];
-	const remainingNodes = friendlyElements.map((e) => new FriendlyNode(e));
+	const remainingNodes = friendlySymbols.map((e) => new FriendlyNode(e));
 
 	while (unprocessedNodesInTree.length > 0 && remainingNodes.length > 0) {
 		const currFriendlyNode = unprocessedNodesInTree[0];
@@ -107,12 +107,12 @@ export default function visual(
 
 	// get chart elements from DOM
 	const elements = node.querySelectorAll('.' + CLASSNAME.CHART_ELEMENT);
-	const friendlyElements = Array.from(elements).map(utils.friendlyData) as FriendlyElement[];
+	const friendlySymbols = Array.from(elements).map(utils.friendlyData) as FriendlySymbol[];
 
-	if (friendlyElements.length === 0) return;
+	if (friendlySymbols.length === 0) return;
 
 	// define relationship between chart elements
-	const root = createTree(friendlyElements);
+	const root = createTree(friendlySymbols);
 
 	// assign meaningful labels
 	map(root, (node) => {
