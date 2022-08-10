@@ -167,7 +167,6 @@
 						class="axis-y"
 						use:friendly.axis={{
 							direction: 'y',
-							orientation: 'vertical',
 							label: 'Regen in Liter pro Quadratmeter',
 							ticks: '.tick text'
 						}}
@@ -189,7 +188,6 @@
 						transform={translate([0, boundedHeight])}
 						use:friendly.axis={{
 							direction: 'x',
-							orientation: 'horizontal',
 							label: 'Monat',
 							ticks: '.tick text'
 						}}

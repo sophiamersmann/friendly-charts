@@ -4,7 +4,6 @@ import * as utils from './utils';
 export interface FriendlyAxis {
 	label: string;
 	direction?: 'x' | 'y';
-	orientation?: 'horizontal' | 'vertical';
 	ticks?: any[];
 }
 
@@ -32,7 +31,6 @@ export default function axis(node: HTMLElement | SVGElement, options: Options) {
 	// set data on the dom element
 	utils.setFriendlyData(node, {
 		direction: options.direction,
-		orientation: options.orientation,
 		label,
 		ticks
 	});
