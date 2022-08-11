@@ -10,5 +10,6 @@ export const CLASSNAME = {
 	CHART_LAYOUT_DESCRIPTION: 'friendly-chart-layout-description',
 	CHART_STRUCTURE_NOTES: 'friendly-chart-structure-notes',
 	CHART_AXIS: 'friendly-chart-axis',
-	CHART_ELEMENT: 'friendly-chart-element'
+	CHART_GROUP: 'friendly-chart-group',
+	CHART_SYMBOL: 'friendly-chart-symbol'
 };

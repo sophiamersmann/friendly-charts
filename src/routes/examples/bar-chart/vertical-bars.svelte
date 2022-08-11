@@ -69,7 +69,7 @@
 
 					<g
 						class="axis-y"
-						use:friendly.axis={{ label: 'Frequency', direction: 'y', ticks: '.tick text' }}
+						use:friendly.axis={{ label: '.label', direction: 'y', ticks: '.tick text' }}
 					>
 						{#each range(0, Math.ceil(maxFreq * 100)) as freq}
 							<g class="tick" transform={translate([0, y(freq / 100)])}>
@@ -78,7 +78,7 @@
 							</g>
 						{/each}
 
-						<text class="label" x={-margin.left} dy={-margin.top}>↑ Frequency</text>
+						<text class="label" x={-margin.left} dy={-margin.top}>Frequency</text>
 					</g>
 
 					<g class="bars">
@@ -96,8 +96,6 @@
 							/>
 						{/each}
 					</g>
-
-					<g class="shapes" />
 				</g>
 			</svg>
 		{/if}

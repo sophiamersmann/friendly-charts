@@ -1,6 +1,8 @@
 import { CLASSNAME } from './const';
 import * as utils from './utils';
 
+// TODO: position should be optional
+
 export interface FriendlySymbol {
 	id: string;
 	type: 'line' | 'point' | 'bar';
@@ -15,7 +17,7 @@ type Options = Omit<FriendlySymbol, 'id' | 'parentId'> & {
 };
 
 export default function symbol(node: HTMLElement | SVGElement, options: Options) {
-	node.classList.add(CLASSNAME.CHART_ELEMENT);
+	node.classList.add(CLASSNAME.CHART_SYMBOL);
 
 	let { id } = options;
 

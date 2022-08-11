@@ -26,7 +26,7 @@ export default function chart(node: HTMLElement | SVGElement, options: Chart) {
 
 		// get chart elements from dom
 		const topLevelChartElements = node.querySelectorAll(
-			`.${CLASSNAME.CHART_ELEMENT}:not([friendly-parentId])`
+			`.${CLASSNAME.CHART_SYMBOL}:not([friendly-parentId])`
 		);
 		const chartSymbols = Array.from(topLevelChartElements).map(
 			utils.friendlyData
