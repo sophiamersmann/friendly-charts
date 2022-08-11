@@ -75,11 +75,9 @@ function createTree(friendlyElements: (FriendlyGroup | FriendlySymbol)[]) {
 }
 
 export default function visual(node: HTMLElement | SVGElement) {
-	node.setAttribute('role', 'presentation');
+	node.setAttribute('role', 'application');
 	node.setAttribute('aria-hidden', 'false');
 	node.tabIndex = 0;
-
-	// TODO: needs a label
 
 	tick().then(() => {
 		utils.traverse(node, (child) => {
@@ -115,7 +113,8 @@ export default function visual(node: HTMLElement | SVGElement) {
 					{
 						SPACE: friendlyNode.data.label ? ' ' : '',
 						LABEL: friendlyNode.data.label,
-						TYPE: type,
+						// TODO
+						TYPE: type || 'group',
 						N_ELEMENTS: root.children.length
 					}
 				);
@@ -129,5 +128,9 @@ export default function visual(node: HTMLElement | SVGElement) {
 				});
 			}
 		});
+
+		node.setAttribute('aria-label', root.label);
+		// TODO explanation
+		node.setAttribute('aria-describedby', 'TODO');
 	});
 }
