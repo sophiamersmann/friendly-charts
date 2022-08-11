@@ -30,8 +30,8 @@ export default function axis(node: HTMLElement | SVGElement, options: Options) {
 
 	// set data on the dom element
 	utils.setFriendlyData(node, {
-		direction: options.direction,
+		direction: options.direction || '',
 		label,
-		ticks
+		ticks: ticks || []
 	});
 }

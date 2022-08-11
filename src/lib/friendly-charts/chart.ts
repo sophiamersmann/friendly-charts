@@ -36,6 +36,13 @@ export default function chart(node: HTMLElement | SVGElement, options: Chart) {
 		const axisElements = node.querySelectorAll('.' + CLASSNAME.CHART_AXIS);
 		const axisList = Array.from(axisElements).map(utils.friendlyData) as FriendlyAxis[];
 
+		// sort: first x axis, then y axis, then other axes
+		axisList.sort((a, b) => {
+			if (!a.direction) return 1;
+			if (!b.direction) return -1;
+			return a.direction > b.direction ? 1 : -1;
+		});
+
 		// check if chart has interactive elements
 		const isInteractive = chartSymbols.length > 0;
 		if (isInteractive && axisList.length === 0) {
@@ -200,6 +207,7 @@ export default function chart(node: HTMLElement | SVGElement, options: Chart) {
 			const layoutDescriptionParagraph = utils.createElement('p', pGeneral);
 			utils.insertAfter(layoutDescriptionParagraph, layoutDescription);
 
+			let anchor = layoutDescriptionParagraph;
 			for (let i = 0; i < axisList.length; i++) {
 				const d = axisList[i];
 
@@ -219,7 +227,9 @@ export default function chart(node: HTMLElement | SVGElement, options: Chart) {
 					content += '.';
 				}
 
-				utils.insertAfter(utils.createElement('p', content), layoutDescriptionParagraph);
+				const element = utils.createElement('p', content);
+				utils.insertAfter(element, anchor);
+				anchor = element;
 			}
 		}
 

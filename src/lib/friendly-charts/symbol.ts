@@ -3,6 +3,8 @@ import * as utils from './utils';
 
 // TODO: position should be optional
 
+// TODO: if these is a symbol, there must be a visual
+
 export interface FriendlySymbol {
 	id: string;
 	type: 'line' | 'point' | 'bar';
