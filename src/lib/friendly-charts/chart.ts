@@ -213,7 +213,9 @@ export default function chart(node: HTMLElement | SVGElement, options: Chart) {
 
 				// information about an axis
 				let content = utils.handlebars(
-					'This chart has a {{ DIRECTION }} axis, titled {{ LABEL }}',
+					d.direction
+						? 'This chart has a {{ DIRECTION }} axis, titled {{ LABEL }}'
+						: 'This chart has an axis, titled {{ LABEL }}',
 					{ DIRECTION: d.direction, LABEL: d.label }
 				);
 
