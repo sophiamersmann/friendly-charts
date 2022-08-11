@@ -1,3 +1,4 @@
+import { tick } from 'svelte';
 import { CLASSNAME } from './const';
 import * as utils from './utils';
 
@@ -5,21 +6,29 @@ import * as utils from './utils';
 
 // TODO: if these is a symbol, there must be a visual
 
+type SymbolType = 'line' | 'point' | 'bar';
+
 export interface FriendlySymbol {
 	id: string;
-	type: 'line' | 'point' | 'bar';
+	type: SymbolType;
 	label: string;
 	parentId: string;
 	position: number;
 }
 
-type Options = Omit<FriendlySymbol, 'id' | 'parentId'> & {
+type Options = {
 	id?: string;
-	parentId?: string;
+	type: FriendlySymbol['type'];
+	label: FriendlySymbol['label'];
+	position: FriendlySymbol['position'];
 };
 
 export default function symbol(node: HTMLElement | SVGElement, options: Options) {
 	node.classList.add(CLASSNAME.CHART_SYMBOL);
+
+	node.setAttribute('role', 'img');
+	node.setAttribute('aria-hidden', 'false');
+	node.tabIndex = -1;
 
 	let { id } = options;
 
@@ -35,8 +44,17 @@ export default function symbol(node: HTMLElement | SVGElement, options: Options)
 	}
 
 	node.id = id;
-	options.id = id;
 
-	// set data on the dom element
-	utils.setFriendlyData(node, options);
+	tick().then(() => {
+		const parent = node.closest('.' + CLASSNAME.CHART_GROUP);
+
+		const data: FriendlySymbol = {
+			...options,
+			id: id as string,
+			parentId: parent?.id || ''
+		};
+
+		// set data on the dom element
+		utils.setFriendlyData(node, data);
+	});
 }

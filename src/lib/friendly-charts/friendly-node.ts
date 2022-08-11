@@ -11,7 +11,7 @@ export default class FriendlyNode {
 	data;
 	label: string;
 
-	constructor(data: Omit<FriendlySymbol, 'type'> & { type: FriendlySymbol['type'] | 'root' }) {
+	constructor(data: Omit<FriendlySymbol, 'type'> & { type?: FriendlySymbol['type'] | 'root' }) {
 		this.parent = null;
 		this.children = [];
 		this.descendants = new Map();

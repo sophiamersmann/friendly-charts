@@ -5,8 +5,9 @@ import { CLASSNAME } from './const';
 import FriendlyNode, { map } from './friendly-node';
 
 import type { FriendlySymbol } from './symbol';
+import type { FriendlyGroup } from './group';
 
-function createTree(friendlySymbols: FriendlySymbol[]) {
+function createTree(friendlyElements: (FriendlyGroup | FriendlySymbol)[]) {
 	// create root element with a unique id
 	const rootId = ['root', utils.uniqueId()].join('-');
 	const root = new FriendlyNode({
@@ -19,7 +20,7 @@ function createTree(friendlySymbols: FriendlySymbol[]) {
 	root.descendants.set(root.data.id, root);
 
 	const unprocessedNodesInTree = [root];
-	const remainingNodes = friendlySymbols.map((e) => new FriendlyNode(e));
+	const remainingNodes = friendlyElements.map((e) => new FriendlyNode(e));
 
 	while (unprocessedNodesInTree.length > 0 && remainingNodes.length > 0) {
 		const currFriendlyNode = unprocessedNodesInTree[0];
@@ -75,45 +76,58 @@ function createTree(friendlySymbols: FriendlySymbol[]) {
 
 export default function visual(node: HTMLElement | SVGElement) {
 	node.setAttribute('role', 'presentation');
+	node.setAttribute('aria-hidden', 'false');
+	node.tabIndex = 0;
 
-	// TODO: does this make sense?
+	// TODO: needs a label
+
 	tick().then(() => {
 		utils.traverse(node, (child) => {
-			child.setAttribute('role', 'presentation');
-			child.setAttribute('aria-hidden', 'true');
+			const isGroup = child.classList.contains(CLASSNAME.CHART_GROUP);
+			const isSymbol = child.classList.contains(CLASSNAME.CHART_SYMBOL);
+
+			// hide all elements other than chart groups and symbols from screen readers
+			if (!isGroup && !isSymbol) {
+				child.setAttribute('role', 'presentation');
+				child.setAttribute('aria-hidden', 'true');
+			}
 		});
-	});
 
-	// get chart elements from DOM
-	const elements = node.querySelectorAll('.' + CLASSNAME.CHART_SYMBOL);
-	const friendlySymbols = Array.from(elements).map(utils.friendlyData) as FriendlySymbol[];
+		// get chart elements from DOM
+		const friendlyGroups = Array.from(node.querySelectorAll('.' + CLASSNAME.CHART_GROUP)).map(
+			utils.friendlyData
+		) as FriendlyGroup[];
+		const friendlySymbols = Array.from(node.querySelectorAll('.' + CLASSNAME.CHART_SYMBOL)).map(
+			utils.friendlyData
+		) as FriendlySymbol[];
 
-	if (friendlySymbols.length === 0) return;
+		if (friendlySymbols.length === 0) return;
 
-	// define relationship between chart elements
-	const root = createTree(friendlySymbols);
+		// define relationship between chart elements
+		const root = createTree([...friendlyGroups, ...friendlySymbols]);
 
-	// assign meaningful labels
-	map(root, (node) => {
-		if (node.children.length > 0) {
-			const { type } = node.children[0].data;
-			node.label = utils.handlebars(
-				'Group{{ SPACE }}{{ LABEL }}. Contains {{ N_ELEMENTS }} interactive {{ TYPE }}s.',
-				{
-					SPACE: node.data.label ? ' ' : '',
-					LABEL: node.data.label,
-					TYPE: type,
-					N_ELEMENTS: root.children.length
-				}
-			);
-		} else {
-			const parent = node.parent as FriendlyNode;
-			node.label = utils.handlebars('{{ LABEL }}. {{ TYPE }} {{ POS }} of {{ SIZE }}.', {
-				LABEL: node.data.label,
-				TYPE: node.data.type,
-				POS: parent.children.indexOf(node) + 1,
-				SIZE: parent.children.length
-			});
-		}
+		// assign meaningful labels
+		map(root, (friendlyNode) => {
+			if (friendlyNode.children.length > 0) {
+				const { type } = friendlyNode.children[0].data;
+				friendlyNode.label = utils.handlebars(
+					'Group{{ SPACE }}{{ LABEL }}. Contains {{ N_ELEMENTS }} interactive {{ TYPE }}s.',
+					{
+						SPACE: friendlyNode.data.label ? ' ' : '',
+						LABEL: friendlyNode.data.label,
+						TYPE: type,
+						N_ELEMENTS: root.children.length
+					}
+				);
+			} else {
+				const parent = friendlyNode.parent as FriendlyNode;
+				friendlyNode.label = utils.handlebars('{{ LABEL }}. {{ TYPE }} {{ POS }} of {{ SIZE }}.', {
+					LABEL: friendlyNode.data.label,
+					TYPE: friendlyNode.data.type,
+					POS: parent.children.indexOf(friendlyNode) + 1,
+					SIZE: parent.children.length
+				});
+			}
+		});
 	});
 }
