@@ -85,8 +85,8 @@ export default function visual(node: HTMLElement | SVGElement) {
 			const isSymbol = child.classList.contains(CLASSNAME.CHART_SYMBOL);
 
 			// hide all elements other than chart groups and symbols from screen readers
-			if (!isGroup && !isSymbol) {
-				child.setAttribute('role', 'presentation');
+			if (child.tagName === 'text' && !isGroup && !isSymbol) {
+				// child.setAttribute('role', 'presentation');
 				child.setAttribute('aria-hidden', 'true');
 			}
 		});
@@ -106,18 +106,36 @@ export default function visual(node: HTMLElement | SVGElement) {
 
 		// assign meaningful labels
 		map(root, (friendlyNode) => {
-			if (friendlyNode.children.length > 0) {
-				const { type } = friendlyNode.children[0].data;
-				friendlyNode.label = utils.handlebars(
-					'Group{{ SPACE }}{{ LABEL }}. Contains {{ N_ELEMENTS }} interactive {{ TYPE }}s.',
-					{
-						SPACE: friendlyNode.data.label ? ' ' : '',
-						LABEL: friendlyNode.data.label,
-						// TODO
-						TYPE: type || 'group',
-						N_ELEMENTS: root.children.length
-					}
-				);
+			if (friendlyNode.data.type === 'root') {
+				friendlyNode.label =
+					'Interactive chart. TODO: Title. TODO: Subtitle. Navigate into the chart area by pressing ENTER.';
+			} else if (friendlyNode.children.length > 0) {
+				const { type: childType } = friendlyNode.children[0].data;
+
+				let grandchildType;
+				if (!childType && friendlyNode.children[0].children.length > 0) {
+					grandchildType = friendlyNode.children[0].children[0].data.type;
+				}
+
+				if (grandchildType) {
+					friendlyNode.label = utils.handlebars(
+						'{{ LABEL }}. Group that contains {{ N_ELEMENTS }} interactive {{ TYPE }} groups.',
+						{
+							LABEL: friendlyNode.data.label,
+							TYPE: grandchildType,
+							N_ELEMENTS: friendlyNode.children.length
+						}
+					);
+				} else {
+					friendlyNode.label = utils.handlebars(
+						'{{ LABEL }}. Group that contains {{ N_ELEMENTS }} interactive {{ TYPE }}s.',
+						{
+							LABEL: friendlyNode.data.label,
+							TYPE: childType || 'group',
+							N_ELEMENTS: friendlyNode.children.length
+						}
+					);
+				}
 			} else {
 				const parent = friendlyNode.parent as FriendlyNode;
 				friendlyNode.label = utils.handlebars('{{ LABEL }}. {{ TYPE }} {{ POS }} of {{ SIZE }}.', {
@@ -127,6 +145,9 @@ export default function visual(node: HTMLElement | SVGElement) {
 					SIZE: parent.children.length
 				});
 			}
+
+			// assign label to the node
+			document.getElementById(friendlyNode.data.id)?.setAttribute('aria-label', friendlyNode.label);
 		});
 
 		node.setAttribute('aria-label', root.label);

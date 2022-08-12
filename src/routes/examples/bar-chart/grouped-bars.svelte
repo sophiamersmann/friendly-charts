@@ -2,6 +2,7 @@
 	import { scaleBand, scaleLinear, scaleOrdinal } from 'd3-scale';
 	import { max, range, groups } from 'd3-array';
 	import { schemeSpectral } from 'd3-scale-chromatic';
+	import { format } from 'd3-format';
 
 	import * as friendly from '$lib/friendly-charts';
 
@@ -81,9 +82,9 @@
 					</g>
 
 					<g class="shapes">
-						{#each data as [state, _data] (state)}
-							<g class="bar-group" use:friendly.group={{ label: state }}>
-								{#each _data as d, i}
+						{#each data as [state, _data], i (state)}
+							<g class="bar-group" use:friendly.group={{ label: state, position: i }}>
+								{#each _data as d, j}
 									<rect
 										width={z.bandwidth()}
 										height={y(0) - y(d.population / 1e6)}
@@ -92,8 +93,8 @@
 										fill={color(d.age)}
 										use:friendly.symbol={{
 											type: 'bar',
-											label: `${d.age}. ${d.population} millions.`,
-											position: i
+											label: `${d.age}, ${format('.1f')(d.population / 1e6)} millions`,
+											position: j
 										}}
 									/>
 								{/each}
