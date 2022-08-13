@@ -31,16 +31,6 @@ export default class FriendlyNode {
 		return this.children[index];
 	}
 
-	get controlId() {
-		return this.data.id + '_control';
-	}
-
-	static toId(controlId: string | null) {
-		return controlId && controlId.endsWith('_control')
-			? controlId.slice(0, -'_control'.length)
-			: null;
-	}
-
 	/** compute bounding box that encloses the DOM element */
 	get boundingBox() {
 		// the root's bounding box is computed from the root's children's boxes
@@ -76,21 +66,6 @@ export default class FriendlyNode {
 			width: bbox.width,
 			height: bbox.height
 		};
-	}
-
-	createControlElement() {
-		const element = document.createElement('div');
-		element.id = this.controlId;
-		element.tabIndex = -1;
-		element.setAttribute('role', 'img');
-		element.setAttribute('aria-label', this.label);
-		element.textContent = this.label;
-
-		const fig = document.createElement('figure');
-		fig.setAttribute('role', 'figure');
-		fig.appendChild(element);
-
-		return fig;
 	}
 }
 
