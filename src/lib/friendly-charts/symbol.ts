@@ -1,9 +1,6 @@
-import { CLASSNAME } from './const';
 import * as utils from './utils';
 
 // TODO: position should be optional
-
-// TODO: if these is a symbol, there must be a visual
 
 type SymbolType = 'line' | 'point' | 'bar';
 
@@ -24,12 +21,6 @@ type Options = {
 };
 
 export default function symbol(node: HTMLElement | SVGElement, options: Options) {
-	node.classList.add(CLASSNAME.CHART_SYMBOL);
-
-	node.setAttribute('role', 'img');
-	node.setAttribute('aria-hidden', 'false');
-	node.tabIndex = -1;
-
 	let { id } = options;
 
 	if (!id) {
@@ -53,38 +44,4 @@ export default function symbol(node: HTMLElement | SVGElement, options: Options)
 
 	// set data on the dom element
 	utils.setFriendlyData(node, data);
-
-	const setParentId = () => {
-		const parent = node.closest('[friendly-element="group"]');
-
-		utils.setFriendlyData(node, {
-			parentId: parent?.id || ''
-		});
-	};
-
-	queueMicrotask(() => {
-		setParentId();
-
-		const observer = new MutationObserver((mutationList) => {
-			for (const mutation of mutationList) {
-				if (
-					mutation.type === 'attributes' &&
-					(mutation.target as Element).getAttribute('friendly-element') === 'group'
-				) {
-					setParentId();
-				}
-			}
-		});
-
-		const visual = node.closest('.' + CLASSNAME.CHART_VISUAL);
-		if (visual) {
-			observer.observe(visual, {
-				attributes: true,
-				subtree: true,
-				attributeFilter: ['friendly-element']
-			});
-		}
-
-		// TODO: call disconnect
-	});
 }

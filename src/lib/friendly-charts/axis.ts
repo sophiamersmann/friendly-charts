@@ -1,17 +1,19 @@
-import { CLASSNAME } from './const';
 import * as utils from './utils';
 
 export interface FriendlyAxis {
+	element: 'axis';
 	label: string;
 	direction?: 'x' | 'y';
 	ticks?: any[];
 }
 
-type Options = Omit<FriendlyAxis, 'ticks'> & { ticks?: string | any[] };
+interface Options {
+	label: FriendlyAxis['label'];
+	direction?: FriendlyAxis['direction'];
+	ticks?: FriendlyAxis['ticks'] | string;
+}
 
 export default function axis(node: HTMLElement | SVGElement, options: Options) {
-	node.classList.add(CLASSNAME.CHART_AXIS);
-
 	// get label
 	let { label } = options;
 	if (label && utils.isSelector(label)) {
