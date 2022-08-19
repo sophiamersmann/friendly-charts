@@ -56,7 +56,12 @@ export function friendlyData(element: Element) {
 	for (let i = 0; i < attrs.length; i++) {
 		const attrName = attrs[i].nodeName;
 		if (attrName.startsWith('friendly') && attrs[i].nodeValue) {
-			data[attrName.replace('friendly-', '')] = JSON.parse(attrs[i].nodeValue as string);
+			// data[attrName.replace('friendly-', '')] = JSON.parse(attrs[i].nodeValue as string);
+			try {
+				data[attrName.replace('friendly-', '')] = JSON.parse(attrs[i].nodeValue as string);
+			} catch {
+				data[attrName.replace('friendly-', '')] = attrs[i].nodeValue;
+			}
 		}
 	}
 	return data;
@@ -64,7 +69,10 @@ export function friendlyData(element: Element) {
 
 export function setFriendlyData(element: Element, data: Record<string, any>) {
 	for (const [key, value] of Object.entries(data)) {
-		element.setAttribute('friendly-' + key, JSON.stringify(value));
+		element.setAttribute(
+			'friendly-' + key,
+			typeof value === 'string' ? value : JSON.stringify(value)
+		);
 	}
 }
 
@@ -76,11 +84,11 @@ export function traverse(node: Element, cb: (node: Element) => void) {
 	}
 }
 
-export function insertBefore(node: Element, refNode: Element) {
+export function insertBefore(node: Node, refNode: Node) {
 	refNode.parentNode?.insertBefore(node, refNode);
 }
 
-export function insertAfter(node: Element, refNode: Element) {
+export function insertAfter(node: Node, refNode: Node) {
 	refNode.parentNode?.insertBefore(node, refNode.nextSibling);
 }
 

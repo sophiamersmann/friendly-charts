@@ -1,5 +1,3 @@
-import { tick } from 'svelte';
-
 import { CLASSNAME } from './const';
 import * as utils from './utils';
 
@@ -19,14 +17,185 @@ interface Chart {
 export default function chart(node: HTMLElement | SVGElement, options: Chart) {
 	node.classList.add(CLASSNAME.CHART);
 
-	tick().then(() => {
-		// create container
-		const a11yElem = document.createElement('div');
-		a11yElem.classList.add(CLASSNAME.CHART_INSTRUCTIONS);
+	// create container
+	const a11yElem = document.createElement('div');
+	a11yElem.classList.add(CLASSNAME.CHART_INSTRUCTIONS);
+
+	//
+	// title
+	//
+
+	let { title } = options;
+	if (utils.isSelector(title)) {
+		const element = utils.querySelector(node, title);
+		title = element?.textContent || '';
+		if (title) element?.setAttribute('aria-hidden', 'true');
+	}
+
+	let titleElem;
+	if (title) {
+		title = title.trim();
+		titleElem = utils.createElement('h2', 'Chart title: ' + title);
+		titleElem.classList.add(CLASSNAME.CHART_TITLE);
+	}
+
+	if (titleElem) a11yElem.appendChild(titleElem);
+
+	//
+	// subtitle
+	//
+
+	let { subtitle } = options;
+	if (utils.isSelector(subtitle)) {
+		const element = utils.querySelector(node, subtitle);
+		subtitle = element?.textContent || '';
+		if (subtitle) element?.setAttribute('aria-hidden', 'true');
+	}
+
+	let subtitleElem;
+	if (subtitle) {
+		subtitle = subtitle.trim();
+		subtitleElem = utils.createElement('h3', 'Chart subtitle: ' + subtitle);
+		subtitleElem.classList.add(CLASSNAME.CHART_SUBTITLE);
+	}
+
+	if (subtitleElem) a11yElem.appendChild(subtitleElem);
+
+	//
+	// summary
+	//
+
+	let { summary } = options;
+	if (summary && utils.isSelector(summary)) {
+		const element = utils.querySelector(node, summary);
+		summary = element?.textContent || '';
+	}
+
+	if (summary) {
+		const element = utils.createElement('p', summary);
+		element.classList.add(CLASSNAME.CHART_SUMMARY);
+		a11yElem.appendChild(element);
+	}
+
+	//
+	// purpose
+	//
+
+	let { purpose } = options;
+	if (purpose && utils.isSelector(purpose)) {
+		const element = utils.querySelector(node, purpose);
+		purpose = element?.textContent || '';
+	}
+
+	if (purpose) {
+		const element = utils.createElement('h3', 'Purpose');
+		element.classList.add(CLASSNAME.CHART_PURPOSE);
+		a11yElem.appendChild(element);
+		a11yElem.appendChild(utils.createElement('p', purpose));
+	}
+
+	//
+	// description
+	//
+
+	let { description } = options;
+	if (description && utils.isSelector(description)) {
+		const element = utils.querySelector(node, description);
+		description = element?.textContent || '';
+	}
+
+	if (description) {
+		const element = utils.createElement('h3', 'Description');
+		element.classList.add(CLASSNAME.CHART_DESCRIPTION);
+		a11yElem.appendChild(element);
+		a11yElem.appendChild(utils.createElement('p', description));
+	}
+
+	//
+	// context
+	//
+
+	let { context } = options;
+	if (context && utils.isSelector(context)) {
+		const element = utils.querySelector(node, context);
+		context = element?.textContent || '';
+	}
+
+	if (context) {
+		const element = utils.createElement('p', context);
+		element.classList.add(CLASSNAME.CHART_CONTEXT);
+		a11yElem.appendChild(element);
+	}
+
+	//
+	// structure
+	//
+
+	let { structureNotes: structure } = options;
+	if (structure && utils.isSelector(structure)) {
+		const element = utils.querySelector(node, structure);
+		structure = element?.textContent || '';
+	}
+
+	if (structure) {
+		const element = utils.createElement('h4', 'Notes about the chart structure');
+		element.classList.add(CLASSNAME.CHART_STRUCTURE_NOTES);
+		a11yElem.appendChild(element);
+		a11yElem.appendChild(utils.createElement('p', structure));
+	}
+
+	// hide the a11y instructions visually
+	// a11yElem.style.cssText = `
+	// 			border: 0;
+	// 			clip: rect(0 0 0 0);
+	// 			height: 1px;
+	// 			width: 1px;
+	// 			margin: -1px;
+	// 			overflow: hidden;
+	// 			padding: 0;
+	// 			position: absolute;
+	// 		`;
+
+	// insert a11y instructions at the beginning of the chart
+	if (!node.firstChild) {
+		node.appendChild(a11yElem);
+	} else {
+		node.insertBefore(a11yElem, node.firstChild);
+	}
+
+	queueMicrotask(() => {
+		// TODO: set up here, as good as possible
+		// TODO: within mutation observer, update text
+
+		const observer = new MutationObserver((mutationList) => {
+			for (const mutation of mutationList) {
+				if (mutation.type !== 'attributes') continue;
+				if (
+					mutation.attributeName === 'friendly-element' &&
+					(mutation.target as Element).getAttribute('friendly-element') === 'axis'
+				) {
+					console.log('axis', { mutation });
+				}
+				if (mutation.attributeName === 'friendly-parentId') {
+					console.log('parentId', { mutation });
+				}
+			}
+		});
+
+		const visual = document.querySelector('.' + CLASSNAME.CHART_VISUAL);
+		if (visual) {
+			observer.observe(visual, {
+				attributes: true,
+				subtree: true,
+				attributeFilter: ['friendly-element', 'friendly-parentId']
+			});
+		}
 
 		// get chart elements from dom
+		// TODO: none have parentId at the beginning
+		// TODO: extract into mutation observer
 		const topLevelChartElements = node.querySelectorAll(
-			`.${CLASSNAME.CHART_SYMBOL}:not([friendly-parentId])`
+			`.${CLASSNAME.CHART_GROUP}:not([friendly-parentId]), .${CLASSNAME.CHART_SYMBOL}:not([friendly-parentId])`
 		);
 		const chartSymbols = Array.from(topLevelChartElements).map(
 			utils.friendlyData
@@ -35,6 +204,8 @@ export default function chart(node: HTMLElement | SVGElement, options: Chart) {
 		// get axis elements from dom
 		const axisElements = node.querySelectorAll('.' + CLASSNAME.CHART_AXIS);
 		const axisList = Array.from(axisElements).map(utils.friendlyData) as FriendlyAxis[];
+
+		console.log({ axisList, chartSymbols });
 
 		// sort: first x axis, then y axis, then other axes
 		axisList.sort((a, b) => {
@@ -50,42 +221,6 @@ export default function chart(node: HTMLElement | SVGElement, options: Chart) {
 				'Axis description missing for an interactive chart.',
 				'Please provide axis descriptions via use:friendly.axis.'
 			);
-		}
-
-		//
-		// title
-		//
-
-		let { title } = options;
-		if (utils.isSelector(title)) {
-			const element = utils.querySelector(node, title);
-			title = element?.textContent || '';
-			if (title) element?.setAttribute('aria-hidden', 'true');
-		}
-
-		let titleElem;
-		if (title) {
-			title = title.trim();
-			titleElem = utils.createElement('h2', 'Chart title: ' + title);
-			titleElem.classList.add(CLASSNAME.CHART_TITLE);
-		}
-
-		//
-		// subtitle
-		//
-
-		let { subtitle } = options;
-		if (utils.isSelector(subtitle)) {
-			const element = utils.querySelector(node, subtitle);
-			subtitle = element?.textContent || '';
-			if (subtitle) element?.setAttribute('aria-hidden', 'true');
-		}
-
-		let subtitleElem;
-		if (subtitle) {
-			subtitle = subtitle.trim();
-			subtitleElem = utils.createElement('h2', 'Chart subtitle: ' + subtitle);
-			subtitleElem.classList.add(CLASSNAME.CHART_SUBTITLE);
 		}
 
 		//
@@ -112,77 +247,12 @@ export default function chart(node: HTMLElement | SVGElement, options: Chart) {
 
 			const srInfoElem = document.createElement('p');
 			srInfoElem.textContent = srInfo;
-			a11yElem.appendChild(srInfoElem);
-		}
 
-		// add title and subtitle
-		if (titleElem) a11yElem.appendChild(titleElem);
-		if (subtitleElem) a11yElem.appendChild(subtitleElem);
-
-		//
-		// summary
-		//
-
-		let { summary } = options;
-		if (summary && utils.isSelector(summary)) {
-			const element = utils.querySelector(node, summary);
-			summary = element?.textContent || '';
-		}
-
-		if (summary) {
-			const element = utils.createElement('p', summary);
-			element.classList.add(CLASSNAME.CHART_SUMMARY);
-			a11yElem.appendChild(element);
-		}
-
-		//
-		// purpose
-		//
-
-		let { purpose } = options;
-		if (purpose && utils.isSelector(purpose)) {
-			const element = utils.querySelector(node, purpose);
-			purpose = element?.textContent || '';
-		}
-
-		if (purpose) {
-			const element = utils.createElement('h3', 'Purpose');
-			element.classList.add(CLASSNAME.CHART_PURPOSE);
-			a11yElem.appendChild(element);
-			a11yElem.appendChild(utils.createElement('p', purpose));
-		}
-
-		//
-		// description
-		//
-
-		let { description } = options;
-		if (description && utils.isSelector(description)) {
-			const element = utils.querySelector(node, description);
-			description = element?.textContent || '';
-		}
-
-		if (description) {
-			const element = utils.createElement('h3', 'Description');
-			element.classList.add(CLASSNAME.CHART_DESCRIPTION);
-			a11yElem.appendChild(element);
-			a11yElem.appendChild(utils.createElement('p', description));
-		}
-
-		//
-		// context
-		//
-
-		let { context } = options;
-		if (context && utils.isSelector(context)) {
-			const element = utils.querySelector(node, context);
-			context = element?.textContent || '';
-		}
-
-		if (context) {
-			const element = utils.createElement('p', context);
-			element.classList.add(CLASSNAME.CHART_CONTEXT);
-			a11yElem.appendChild(element);
+			if (a11yElem.firstChild) {
+				utils.insertBefore(srInfoElem, a11yElem.firstChild);
+			} else {
+				a11yElem.appendChild(srInfoElem);
+			}
 		}
 
 		//
@@ -233,42 +303,6 @@ export default function chart(node: HTMLElement | SVGElement, options: Chart) {
 				utils.insertAfter(element, anchor);
 				anchor = element;
 			}
-		}
-
-		//
-		// structure
-		//
-
-		let { structureNotes: structure } = options;
-		if (structure && utils.isSelector(structure)) {
-			const element = utils.querySelector(node, structure);
-			structure = element?.textContent || '';
-		}
-
-		if (structure) {
-			const element = utils.createElement('h4', 'Notes about the chart structure');
-			element.classList.add(CLASSNAME.CHART_STRUCTURE_NOTES);
-			a11yElem.appendChild(element);
-			a11yElem.appendChild(utils.createElement('p', structure));
-		}
-
-		// hide the a11y instructions visually
-		a11yElem.style.cssText = `
-		  border: 0;
-		  clip: rect(0 0 0 0);
-		  height: 1px;
-		  width: 1px;
-		  margin: -1px;
-		  overflow: hidden;
-		  padding: 0;
-		  position: absolute;
-		`;
-
-		// insert a11y instructions at the beginning of the chart
-		if (!node.firstChild) {
-			node.appendChild(a11yElem);
-		} else {
-			node.insertBefore(a11yElem, node.firstChild);
 		}
 	});
 }

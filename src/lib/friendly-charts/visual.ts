@@ -75,6 +75,7 @@ function createTree(friendlyElements: (FriendlyGroup | FriendlySymbol)[]) {
 }
 
 export default function visual(node: HTMLElement | SVGElement) {
+	node.classList.add(CLASSNAME.CHART_VISUAL);
 	node.setAttribute('role', 'application');
 	node.setAttribute('aria-hidden', 'false');
 	node.tabIndex = 0;

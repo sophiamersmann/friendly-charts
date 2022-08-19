@@ -1,5 +1,6 @@
 export const CLASSNAME = {
 	CHART: 'friendly-chart',
+	CHART_VISUAL: 'friendly-visual',
 	CHART_INSTRUCTIONS: 'friendly-instructions',
 	CHART_TITLE: 'friendly-title',
 	CHART_SUBTITLE: 'friendly-subtitle',

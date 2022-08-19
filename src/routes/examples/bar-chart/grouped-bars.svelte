@@ -81,7 +81,7 @@
 						<text class="label" x={-margin.left} dy={-margin.top}>Population (millions)</text>
 					</g>
 
-					<g class="shapes">
+					<g class="shapes" use:friendly.group={{ label: 'whatever', position: 0 }}>
 						{#each data as [state, _data], i (state)}
 							<g class="bar-group" use:friendly.group={{ label: state, position: i }}>
 								{#each _data as d, j}

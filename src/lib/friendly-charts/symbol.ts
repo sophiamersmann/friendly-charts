@@ -1,4 +1,3 @@
-import { tick } from 'svelte';
 import { CLASSNAME } from './const';
 import * as utils from './utils';
 
@@ -9,6 +8,7 @@ import * as utils from './utils';
 type SymbolType = 'line' | 'point' | 'bar';
 
 export interface FriendlySymbol {
+	element: 'symbol';
 	id: string;
 	type: SymbolType;
 	label: string;
@@ -45,16 +45,46 @@ export default function symbol(node: HTMLElement | SVGElement, options: Options)
 
 	node.id = id;
 
-	tick().then(() => {
-		const parent = node.closest('.' + CLASSNAME.CHART_GROUP);
+	const data = {
+		...options,
+		element: 'symbol',
+		id: id as string
+	};
 
-		const data: FriendlySymbol = {
-			...options,
-			id: id as string,
+	// set data on the dom element
+	utils.setFriendlyData(node, data);
+
+	const setParentId = () => {
+		const parent = node.closest('[friendly-element="group"]');
+
+		utils.setFriendlyData(node, {
 			parentId: parent?.id || ''
-		};
+		});
+	};
 
-		// set data on the dom element
-		utils.setFriendlyData(node, data);
+	queueMicrotask(() => {
+		setParentId();
+
+		const observer = new MutationObserver((mutationList) => {
+			for (const mutation of mutationList) {
+				if (
+					mutation.type === 'attributes' &&
+					(mutation.target as Element).getAttribute('friendly-element') === 'group'
+				) {
+					setParentId();
+				}
+			}
+		});
+
+		const visual = node.closest('.' + CLASSNAME.CHART_VISUAL);
+		if (visual) {
+			observer.observe(visual, {
+				attributes: true,
+				subtree: true,
+				attributeFilter: ['friendly-element']
+			});
+		}
+
+		// TODO: call disconnect
 	});
 }
