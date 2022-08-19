@@ -2,7 +2,7 @@ import * as utils from './utils';
 
 // TODO: position should be optional
 
-type SymbolType = 'line' | 'point' | 'bar';
+export type SymbolType = 'line' | 'point' | 'bar';
 
 export interface FriendlySymbol {
 	element: 'symbol';

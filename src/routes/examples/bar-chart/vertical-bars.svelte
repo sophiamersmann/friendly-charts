@@ -81,7 +81,7 @@
 						<text class="label" x={-margin.left} dy={-margin.top}>Frequency</text>
 					</g>
 
-					<g class="bars">
+					<g class="bars" use:friendly.group={{ label: 'For testing', position: 0 }}>
 						{#each alphabet as { letter, frequency }, i (letter)}
 							<rect
 								width={x.bandwidth()}
