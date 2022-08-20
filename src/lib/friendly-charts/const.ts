@@ -9,6 +9,8 @@ export const CLASSNAME = {
 	CHART_DESCRIPTION: 'friendly-description',
 	CHART_CONTEXT: 'friendly-context',
 	CHART_LAYOUT_DESCRIPTION: 'friendly-layout-description',
+	CHART_GENERAL_LAYOUT_DESCRIPTION: 'friendly-layout-description-general',
+	CHART_AXIS_DESCRIPTION: 'friendly-layout-description-axis',
 	CHART_STRUCTURE_NOTES: 'friendly-structure-notes',
 	CHART_AXIS: 'friendly-axis',
 	CHART_GROUP: 'friendly-group',

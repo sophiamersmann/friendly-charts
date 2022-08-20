@@ -23,10 +23,10 @@ export default function chart(node: HTMLElement | SVGElement, options: Chart) {
 	const groups = getDataFromDOM('group') as FriendlyGroup[];
 	const symbols = getDataFromDOM('symbol') as FriendlySymbol[];
 
-	initChartDescription(node, options);
+	const { title } = initChartDescription(node, options);
 
 	let root = createTree([...groups, ...symbols]);
-	updateChartDescription(axes, root);
+	updateChartDescription({ axes, tree: root, title });
 
 	const observer = new MutationObserver((mutationList) => {
 		const dirty = { axis: false, tree: false };
@@ -60,12 +60,12 @@ export default function chart(node: HTMLElement | SVGElement, options: Chart) {
 		}
 
 		if (dirty.axis) {
-			updateChartDescription(axes, root);
+			updateChartDescription({ axes, title });
 		}
 
 		if (dirty.tree) {
 			root = createTree([...groups, ...symbols]);
-			updateChartDescription(axes, root);
+			updateChartDescription({ tree: root, title });
 		}
 	});
 
@@ -74,6 +74,26 @@ export default function chart(node: HTMLElement | SVGElement, options: Chart) {
 		attributes: true,
 		attributeFilter: ['friendly-element']
 	});
+}
+
+function screenReaderInfoText({ title, chartType }: { title?: string; chartType?: string }) {
+	let srInfo = chartType
+		? utils.handlebars('Keyboard interactive {{ TYPE }} chart', { TYPE: chartType })
+		: 'Keyboard interactive chart';
+
+	// add title if given
+	if (title) {
+		srInfo += utils.handlebars(', titled {{ TITLE }}.', { TITLE: title });
+	} else {
+		srInfo += '.';
+	}
+
+	srInfo += [
+		' This section contains additional information about this chart.',
+		'Pressing TAB takes you to the chart area.'
+	].join(' ');
+
+	return srInfo;
 }
 
 function initChartDescription(node: HTMLElement | SVGElement, options: Chart) {
@@ -125,23 +145,9 @@ function initChartDescription(node: HTMLElement | SVGElement, options: Chart) {
 	// general chart information
 	//
 
-	let srInfo = 'Keyboard interactive chart';
-
-	// add title if given
-	if (title) {
-		srInfo += utils.handlebars(', titled {{ TITLE }}.', { TITLE: title });
-	} else {
-		srInfo += '.';
-	}
-
-	srInfo += [
-		' This section contains additional information about this chart.',
-		'Pressing TAB takes you to the chart area.'
-	].join(' ');
-
 	const srInfoElem = document.createElement('p');
 	srInfoElem.classList.add(CLASSNAME.CHART_SR_INFORMATION);
-	srInfoElem.textContent = srInfo;
+	srInfoElem.textContent = screenReaderInfoText({ title });
 
 	if (a11yElem.firstChild) {
 		utils.insertBefore(srInfoElem, a11yElem.firstChild);
@@ -234,101 +240,135 @@ function initChartDescription(node: HTMLElement | SVGElement, options: Chart) {
 	} else {
 		node.insertBefore(a11yElem, node.firstChild);
 	}
+
+	return { title, subtitle };
 }
 
-function updateChartDescription(axes: FriendlyAxis[], tree: FriendlyNode) {
-	const symbols = findAll(tree, (node) => node.data.element === 'symbol');
+function updateChartDescription({
+	tree,
+	axes,
+	title
+}: {
+	tree?: FriendlyNode;
+	axes?: FriendlyAxis[];
+	title?: string;
+}) {
+	function handleTreeUpdate(tree: FriendlyNode) {
+		const symbols = findAll(tree, (node) => node.data.element === 'symbol');
 
-	// check if chart has interactive elements
-	const isInteractive = symbols.length > 0;
+		// a non-interactive chart does not need a layout description
+		if (symbols.length === 0) return;
 
-	// a non-interactive chart does not need a layout description
-	if (!isInteractive) return;
+		// find top level symbols
+		const depths = symbols.map((symbol) => findDepth(symbol));
+		const minDepth = Math.min(...depths);
+		const topLevelSymbols = symbols.filter((_, i) => depths[i] === minDepth);
+		const chartType = topLevelSymbols[0].data.type;
 
-	// warn if axis descriptions are missing
-	if (isInteractive && axes.length === 0) {
-		utils.warn(
-			'Axis description missing for an interactive chart.',
-			'Please consider providing axis descriptions via use:friendly.axis.'
-		);
-	}
+		//
+		// screen reader information
+		//
 
-	// find top level symbols
-	const depths = symbols.map((symbol) => findDepth(symbol));
-	const minDepth = Math.min(...depths);
-	const topLevelSymbols = symbols.filter((_, i) => depths[i] === minDepth);
-	const chartType = topLevelSymbols[0].data.type;
-
-	// sort: first x axis, then y axis, then other axes
-	axes.sort((a, b) => {
-		if (!a.direction) return 1;
-		if (!b.direction) return -1;
-		return a.direction > b.direction ? 1 : -1;
-	});
-
-	//
-	// screen reader information
-	//
-
-	const srInfoElem = document.querySelector('.' + CLASSNAME.CHART_SR_INFORMATION);
-	// TODO: breaks easily
-	if (srInfoElem) {
-		const srInfo = srInfoElem.textContent;
-		srInfoElem.textContent = srInfo?.replace(
-			/^Keyboard interactive/,
-			utils.handlebars('Keyboard interactive {{ TYPE }}', {
-				TYPE: chartType
-			})
-		) as string;
-	}
-
-	//
-	// layout description
-	//
-
-	const a11yElem = document.querySelector('.' + CLASSNAME.CHART_INSTRUCTIONS) as Element;
-
-	const layoutDescription = document.createElement('h4');
-	layoutDescription.classList.add(CLASSNAME.CHART_LAYOUT_DESCRIPTION);
-	layoutDescription.textContent = 'Chart Layout Description';
-	a11yElem.appendChild(layoutDescription);
-
-	// general chart information
-	const pGeneral = utils.handlebars(
-		'This is a {{ TYPE }} chart with {{ N_ELEMENTS }} {{ TYPE }}{{ TYPE_PLURAL }}.',
-		{
-			TYPE: chartType,
-			N_ELEMENTS: topLevelSymbols.length,
-			TYPE_PLURAL: topLevelSymbols.length > 1 ? 's' : ''
+		const srInfoElem = document.querySelector('.' + CLASSNAME.CHART_SR_INFORMATION);
+		if (srInfoElem) {
+			srInfoElem.textContent = screenReaderInfoText({ chartType, title });
 		}
-	);
-	const layoutDescriptionParagraph = utils.createElement('p', pGeneral);
-	utils.insertAfter(layoutDescriptionParagraph, layoutDescription);
 
-	let anchor = layoutDescriptionParagraph;
-	for (let i = 0; i < axes.length; i++) {
-		const d = axes[i];
+		//
+		// layout description
+		//
 
-		// information about an axis
-		let content = utils.handlebars(
-			d.direction
-				? 'This chart has a {{ DIRECTION }} axis, titled {{ LABEL }}'
-				: 'This chart has an axis, titled {{ LABEL }}',
-			{ DIRECTION: d.direction, LABEL: d.label }
+		const a11yElem = document.querySelector('.' + CLASSNAME.CHART_INSTRUCTIONS) as Element;
+		let layoutDescription = document.querySelector('.' + CLASSNAME.CHART_LAYOUT_DESCRIPTION);
+
+		if (!layoutDescription) {
+			layoutDescription = document.createElement('h4');
+			layoutDescription.classList.add(CLASSNAME.CHART_LAYOUT_DESCRIPTION);
+			layoutDescription.textContent = 'Chart Layout Description';
+			a11yElem.appendChild(layoutDescription);
+		}
+
+		let generalLayout = document.querySelector('.' + CLASSNAME.CHART_GENERAL_LAYOUT_DESCRIPTION);
+
+		if (!generalLayout) {
+			generalLayout = document.createElement('p');
+			utils.insertAfter(generalLayout, layoutDescription);
+		}
+
+		// general chart information
+		generalLayout.textContent = utils.handlebars(
+			'This is a {{ TYPE }} chart with {{ N_ELEMENTS }} {{ TYPE }}{{ TYPE_PLURAL }}.',
+			{
+				TYPE: chartType,
+				N_ELEMENTS: topLevelSymbols.length,
+				TYPE_PLURAL: topLevelSymbols.length > 1 ? 's' : ''
+			}
 		);
+	}
 
-		// information about the axis range
-		if (d.ticks && d.ticks.length > 0) {
-			content += utils.handlebars(
-				' with a range that starts with {{ START_TICK }} and ends with {{ END_TICK }}.',
-				{ START_TICK: d.ticks[0], END_TICK: d.ticks[d.ticks.length - 1] }
+	function handleAxesUpdate(axes: FriendlyAxis[]) {
+		// sort: first x axis, then y axis, then other axes
+		axes.sort((a, b) => {
+			if (!a.direction) return 1;
+			if (!b.direction) return -1;
+			return a.direction > b.direction ? 1 : -1;
+		});
+
+		//
+		// layout description
+		//
+
+		const a11yElem = document.querySelector('.' + CLASSNAME.CHART_INSTRUCTIONS) as Element;
+		let layoutDescription = document.querySelector('.' + CLASSNAME.CHART_LAYOUT_DESCRIPTION);
+		let generalLayout = document.querySelector('.' + CLASSNAME.CHART_GENERAL_LAYOUT_DESCRIPTION);
+
+		if (!layoutDescription) {
+			layoutDescription = document.createElement('h4');
+			layoutDescription.classList.add(CLASSNAME.CHART_LAYOUT_DESCRIPTION);
+			layoutDescription.textContent = 'Chart Layout Description';
+			a11yElem.appendChild(layoutDescription);
+		}
+
+		if (!generalLayout) {
+			generalLayout = document.createElement('p');
+			utils.insertAfter(generalLayout, layoutDescription);
+		}
+
+		// remove all axis related information
+		const axisElements = document.getElementsByClassName(CLASSNAME.CHART_AXIS_DESCRIPTION);
+		while (axisElements[0]) {
+			axisElements[0].parentNode?.removeChild(axisElements[0]);
+		}
+
+		let anchor = generalLayout;
+		for (let i = 0; i < axes.length; i++) {
+			const d = axes[i];
+
+			// information about an axis
+			let content = utils.handlebars(
+				d.direction
+					? 'This chart has a {{ DIRECTION }} axis, titled {{ LABEL }}'
+					: 'This chart has an axis, titled {{ LABEL }}',
+				{ DIRECTION: d.direction, LABEL: d.label }
 			);
-		} else {
-			content += '.';
-		}
 
-		const element = utils.createElement('p', content);
-		utils.insertAfter(element, anchor);
-		anchor = element;
+			// information about the axis range
+			if (d.ticks && d.ticks.length > 0) {
+				content += utils.handlebars(
+					' with a range that starts with {{ START_TICK }} and ends with {{ END_TICK }}.',
+					{ START_TICK: d.ticks[0], END_TICK: d.ticks[d.ticks.length - 1] }
+				);
+			} else {
+				content += '.';
+			}
+
+			const element = utils.createElement('p', content);
+			element.classList.add(CLASSNAME.CHART_AXIS_DESCRIPTION);
+			utils.insertAfter(element, anchor);
+			anchor = element;
+		}
 	}
+
+	if (tree) handleTreeUpdate(tree);
+	if (axes) handleAxesUpdate(axes);
 }
