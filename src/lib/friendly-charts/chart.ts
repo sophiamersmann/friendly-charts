@@ -25,6 +25,7 @@ export default function chart(node: HTMLElement | SVGElement, options: Chart) {
 
 	const { title } = initChartDescription(node, options);
 
+	// TODO: groups and symbols might not have a parent id yet
 	let root = createTree([...groups, ...symbols]);
 	updateChartDescription({ axes, tree: root, title });
 
@@ -74,6 +75,12 @@ export default function chart(node: HTMLElement | SVGElement, options: Chart) {
 		attributes: true,
 		attributeFilter: ['friendly-element']
 	});
+
+	return {
+		destroy: () => {
+			observer.disconnect();
+		}
+	};
 }
 
 function screenReaderInfoText({ title, chartType }: { title?: string; chartType?: string }) {
