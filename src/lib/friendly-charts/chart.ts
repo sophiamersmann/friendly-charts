@@ -15,9 +15,21 @@ interface Chart {
 	context?: string;
 }
 
-export default function chart(node: HTMLElement | SVGElement, options: Chart) {
-	const getDataFromDOM = (friendly: 'axis' | 'group' | 'symbol') =>
-		Array.from(node.querySelectorAll(`[friendly-element="${friendly}"]`)).map(utils.friendlyData);
+export default async function chart(node: HTMLElement | SVGElement, options: Chart) {
+	const getDataFromDOM = (friendly: 'axis' | 'group' | 'symbol') => {
+		let toFriendlyData = utils.friendlyData;
+		if (friendly === 'group' || friendly === 'symbol') {
+			toFriendlyData = (element: Element) => {
+				const data = utils.friendlyData(element);
+				const parent = element.parentElement?.closest('[friendly-element="group"]');
+				data.parentId = parent?.id || '';
+				return data;
+			};
+		}
+
+		const nodes = node.querySelectorAll(`[friendly-element="${friendly}"]`);
+		return Array.from(nodes).map(toFriendlyData);
+	};
 
 	const axes = getDataFromDOM('axis') as FriendlyAxis[];
 	const groups = getDataFromDOM('group') as FriendlyGroup[];
@@ -25,7 +37,6 @@ export default function chart(node: HTMLElement | SVGElement, options: Chart) {
 
 	const { title } = initChartDescription(node, options);
 
-	// TODO: groups and symbols might not have a parent id yet
 	let root = createTree([...groups, ...symbols]);
 	updateChartDescription({ axes, tree: root, title });
 
