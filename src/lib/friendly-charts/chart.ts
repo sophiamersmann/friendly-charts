@@ -15,13 +15,25 @@ interface Chart {
 	context?: string;
 }
 
+function checkIfParentExists(parentId: string) {
+	// check if an element with parent id exists
+	if (!document.getElementById(parentId)) {
+		utils.warn(
+			`No element with the given parent id ("${parentId}") exists.`,
+			`Please make sure that a group or symbol with id ${parentId} exists.`
+		);
+		return false;
+	}
+	return true;
+}
+
 export default function chart(node: HTMLElement | SVGElement, options: Chart) {
 	const getDataFromDOM = (friendly: 'axis' | 'group' | 'symbol') => {
 		let toFriendlyData = utils.friendlyData;
 		if (friendly === 'group' || friendly === 'symbol') {
 			toFriendlyData = (element: Element) => {
 				const data = utils.friendlyData(element);
-				if (!data.parentId) {
+				if (!data.parentId || (data.parentId && !checkIfParentExists(data.parentId))) {
 					const parent = element.parentElement?.closest('[friendly-element="group"]');
 					data.parentId = parent?.id || '';
 				}
@@ -52,7 +64,10 @@ export default function chart(node: HTMLElement | SVGElement, options: Chart) {
 				const data = utils.friendlyData(target);
 
 				// find parent of friendly element
-				if (!data.parentId && (friendly === 'group' || friendly === 'symbol')) {
+				if (
+					(!data.parentId || (data.parentId && !checkIfParentExists(data.parentId))) &&
+					(friendly === 'group' || friendly === 'symbol')
+				) {
 					const parent = target.parentElement?.closest('[friendly-element="group"]');
 					data.parentId = parent?.id || '';
 				}
