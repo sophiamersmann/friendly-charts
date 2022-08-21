@@ -57,11 +57,11 @@
 		<p class="subtitle">Population in millions in California, Texas and Florida by age</p>
 	</hgroup>
 
-	<div use:friendly.hidden>TODO: Legend</div>
+	<div>TODO: Legend</div>
 
 	<div class="svg-wrapper" bind:clientWidth={width} style:height={px(height)}>
 		{#if width}
-			<svg {width} {height} viewBox={[0, 0, width, height].join(' ')} use:friendly.visual>
+			<svg {width} {height} viewBox={[0, 0, width, height].join(' ')}>
 				<g transform={translate([margin.left, margin.top])}>
 					<g
 						class="axis-y"
@@ -81,7 +81,7 @@
 						<text class="label" x={-margin.left} dy={-margin.top}>Population (millions)</text>
 					</g>
 
-					<g class="shapes" use:friendly.group={{ label: 'whatever', position: 0 }}>
+					<g class="shapes">
 						{#each data as [state, _data], i (state)}
 							<g class="bar-group" use:friendly.group={{ label: state, position: i }}>
 								{#each _data as d, j}

@@ -21,8 +21,10 @@ export default function chart(node: HTMLElement | SVGElement, options: Chart) {
 		if (friendly === 'group' || friendly === 'symbol') {
 			toFriendlyData = (element: Element) => {
 				const data = utils.friendlyData(element);
-				const parent = element.parentElement?.closest('[friendly-element="group"]');
-				data.parentId = parent?.id || '';
+				if (!data.parentId) {
+					const parent = element.parentElement?.closest('[friendly-element="group"]');
+					data.parentId = parent?.id || '';
+				}
 				return data;
 			};
 		}
@@ -50,7 +52,7 @@ export default function chart(node: HTMLElement | SVGElement, options: Chart) {
 				const data = utils.friendlyData(target);
 
 				// find parent of friendly element
-				if (friendly === 'group' || friendly === 'symbol') {
+				if (!data.parentId && (friendly === 'group' || friendly === 'symbol')) {
 					const parent = target.parentElement?.closest('[friendly-element="group"]');
 					data.parentId = parent?.id || '';
 				}

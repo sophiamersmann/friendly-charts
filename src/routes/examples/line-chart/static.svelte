@@ -130,7 +130,7 @@
 
 	<div class="svg-wrapper" bind:clientWidth={width} style:height={px(height)}>
 		{#if width}
-			<svg {width} {height} viewBox={[0, 0, width, height].join(' ')} use:friendly.visual>
+			<svg {width} {height} viewBox={[0, 0, width, height].join(' ')}>
 				<g transform={translate([margin.left, margin.top])}>
 					<g class="summer-highlight">
 						<rect

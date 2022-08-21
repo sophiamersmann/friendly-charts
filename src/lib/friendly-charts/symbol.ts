@@ -17,12 +17,14 @@ type Options = {
 	id?: string;
 	type: FriendlySymbol['type'];
 	label: FriendlySymbol['label'];
+	parentId?: FriendlySymbol['parentId'];
 	position: FriendlySymbol['position'];
 };
 
 export default function symbol(node: HTMLElement | SVGElement, options: Options) {
-	let { id } = options;
+	let { id, parentId } = options;
 
+	// generate random id if not given
 	if (!id) {
 		id = ['friendly-symbol', utils.uniqueId()].join('-');
 	}
@@ -35,6 +37,15 @@ export default function symbol(node: HTMLElement | SVGElement, options: Options)
 	}
 
 	node.id = id;
+
+	// check if an element with parent id exists
+	if (parentId && !document.getElementById(parentId)) {
+		utils.warn(
+			`No element with the give parent id ("${parentId}") exists.`,
+			`Please make sure that a group or symbol with id ${parentId} exists.`
+		);
+		parentId = undefined;
+	}
 
 	const data = {
 		...options,

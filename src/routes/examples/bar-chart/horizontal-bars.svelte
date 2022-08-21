@@ -29,16 +29,13 @@
 	use:friendly.chart={{
 		title: 'The letter E is used most frequently, followed by T and A',
 		subtitle: 'Relative frequency of letters in the English language'
+		// axes: [
+		// 	{ label: 'Letters', direction: 'y', ticks: alphabet.map((d) => d.letter) },
+		// 	{ label: 'Frequency', direction: 'x', ticks: alphabet.map((d) => d.frequency) }
+		// ]
 	}}
 >
-	<div
-		use:friendly.visual={{
-			axes: [
-				{ label: 'Letters', direction: 'y', ticks: alphabet.map((d) => d.letter) },
-				{ label: 'Frequency', direction: 'x', ticks: alphabet.map((d) => d.frequency) }
-			]
-		}}
-	>
+	<div>
 		{#if width}
 			{#each alphabet as { letter, frequency }, i (letter)}
 				<div class="unit">
