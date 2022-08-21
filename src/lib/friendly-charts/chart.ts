@@ -15,7 +15,7 @@ interface Chart {
 	context?: string;
 }
 
-export default async function chart(node: HTMLElement | SVGElement, options: Chart) {
+export default function chart(node: HTMLElement | SVGElement, options: Chart) {
 	const getDataFromDOM = (friendly: 'axis' | 'group' | 'symbol') => {
 		let toFriendlyData = utils.friendlyData;
 		if (friendly === 'group' || friendly === 'symbol') {
