@@ -327,6 +327,7 @@ function updateChartDescription({
 
 		if (!generalLayout) {
 			generalLayout = document.createElement('p');
+			generalLayout.classList.add(CLASSNAME.CHART_GENERAL_LAYOUT_DESCRIPTION);
 			utils.insertAfter(generalLayout, layoutDescription);
 		}
 
