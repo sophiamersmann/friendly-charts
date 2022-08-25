@@ -164,15 +164,70 @@ export function createTree(friendlyElements: (FriendlyGroup | FriendlySymbol)[])
 		}
 	}
 
-	map(root, (node) => {
-		if (!node.parent) return;
+	function constructSymbolLabel(node: FriendlyNode) {
+		const parent = node.parent as FriendlyNode;
+		return utils.handlebars('{{ LABEL }}. {{ TYPE }} {{ POS }} of {{ SIZE }}.', {
+			LABEL: node.data.label,
+			TYPE: node.data.type,
+			POS: parent.children.indexOf(node) + 1,
+			SIZE: parent.children.length
+		});
+	}
 
-		const position = node.data.position;
-		if (node.parent.right) {
-			node.up = node.parent.right.findChild(position);
+	function constructGroupLabel(node: FriendlyNode) {
+		let label = '';
+		if (node.data.type) {
+			label += 'Group that';
+		} else {
+			utils.handlebars('Group {{ LABEL }}.', { LABEL: node.data.label });
 		}
-		if (node.parent.left) {
-			node.down = node.parent.left.findChild(position);
+
+		if (node.children.length === 0) {
+			return label + ' Empty.';
+		}
+
+		const child = node.children[0];
+		if (child.data.element === 'group') {
+			return (
+				label +
+				utils.handlebars(' contains {{ N_ELEMENTS }} groups.', {
+					N_ELEMENTS: node.children.length
+				})
+			);
+		}
+		if (child.data.element === 'symbol') {
+			return (
+				label +
+				utils.handlebars(' contains {{ N_ELEMENTS }} interactive {{ TYPE }}s.', {
+					N_ELEMENTS: node.children.length,
+					TYPE: child.data.type
+				})
+			);
+		}
+	}
+
+	map(root, (node) => {
+		// add related nodes
+		if (node.parent) {
+			const position = node.data.position;
+			if (node.parent.right) {
+				node.up = node.parent.right.findChild(position);
+			}
+			if (node.parent.left) {
+				node.down = node.parent.left.findChild(position);
+			}
+		}
+
+		// assign labels
+		if (node.data.element === 'group') {
+			let label = '';
+			if (node.data.type) {
+				label = constructSymbolLabel(node) + ' ';
+			}
+			label += constructGroupLabel(node);
+			node.label = label;
+		} else if (node.data.element === 'symbol') {
+			node.label = constructSymbolLabel(node);
 		}
 	});
 
