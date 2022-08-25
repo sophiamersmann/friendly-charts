@@ -1,14 +1,11 @@
-import { tick } from 'svelte';
-import { CLASSNAME } from './const';
 import * as utils from './utils';
 
 // TODO: position should be optional
 
-// TODO: if these is a symbol, there must be a visual
-
-type SymbolType = 'line' | 'point' | 'bar';
+export type SymbolType = 'line' | 'point' | 'bar';
 
 export interface FriendlySymbol {
+	element: 'symbol';
 	id: string;
 	type: SymbolType;
 	label: string;
@@ -20,18 +17,14 @@ type Options = {
 	id?: string;
 	type: FriendlySymbol['type'];
 	label: FriendlySymbol['label'];
+	parentId?: FriendlySymbol['parentId'];
 	position: FriendlySymbol['position'];
 };
 
 export default function symbol(node: HTMLElement | SVGElement, options: Options) {
-	node.classList.add(CLASSNAME.CHART_SYMBOL);
-
-	node.setAttribute('role', 'img');
-	node.setAttribute('aria-hidden', 'false');
-	node.tabIndex = -1;
-
 	let { id } = options;
 
+	// generate random id if not given
 	if (!id) {
 		id = ['friendly-symbol', utils.uniqueId()].join('-');
 	}
@@ -45,16 +38,12 @@ export default function symbol(node: HTMLElement | SVGElement, options: Options)
 
 	node.id = id;
 
-	tick().then(() => {
-		const parent = node.closest('.' + CLASSNAME.CHART_GROUP);
+	const data = {
+		...options,
+		element: 'symbol',
+		id: id as string
+	};
 
-		const data: FriendlySymbol = {
-			...options,
-			id: id as string,
-			parentId: parent?.id || ''
-		};
-
-		// set data on the dom element
-		utils.setFriendlyData(node, data);
-	});
+	// set data on the dom element
+	utils.setFriendlyData(node, data);
 }

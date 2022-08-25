@@ -145,7 +145,7 @@
 
 	<div class="svg-wrapper" bind:clientWidth={width} style:height={px(height)}>
 		{#if width}
-			<svg {width} {height} viewBox={[0, 0, width, height].join(' ')} use:friendly.visual>
+			<svg {width} {height} viewBox={[0, 0, width, height].join(' ')}>
 				<g transform={translate([margin.left, margin.top])}>
 					<g class="summer-highlight">
 						<rect
@@ -210,7 +210,7 @@
 						<g class="rain rain-avg">
 							<path
 								d={lineRainAvg(data)}
-								use:friendly.symbol={{
+								use:friendly.group={{
 									id: 'line-0',
 									type: 'line',
 									label: '2000 bis 2020',
@@ -239,7 +239,7 @@
 						<g class="rain rain-2021">
 							<path
 								d={lineRain(data)}
-								use:friendly.symbol={{
+								use:friendly.group={{
 									id: 'line-1',
 									type: 'line',
 									label: '2021',

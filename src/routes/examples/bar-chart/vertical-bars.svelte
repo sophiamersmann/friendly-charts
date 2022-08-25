@@ -48,7 +48,7 @@
 
 	<div class="svg-wrapper" bind:clientWidth={width} style:height={px(height)}>
 		{#if width}
-			<svg {width} {height} viewBox={[0, 0, width, height].join(' ')} use:friendly.visual>
+			<svg {width} {height} viewBox={[0, 0, width, height].join(' ')}>
 				<g transform={translate([margin.left, margin.top])}>
 					<g
 						class="axis-x"
@@ -81,7 +81,7 @@
 						<text class="label" x={-margin.left} dy={-margin.top}>Frequency</text>
 					</g>
 
-					<g class="bars">
+					<g class="bars" use:friendly.group={{ label: 'For testing', position: 0 }}>
 						{#each alphabet as { letter, frequency }, i (letter)}
 							<rect
 								width={x.bandwidth()}
