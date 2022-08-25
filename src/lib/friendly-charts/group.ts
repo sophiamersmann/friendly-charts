@@ -1,8 +1,11 @@
 import * as utils from './utils';
 
+import type { SymbolType } from './symbol';
+
 export interface FriendlyGroup {
 	element: 'group';
 	id: string;
+	type?: SymbolType;
 	label: string;
 	parentId: string;
 	position: number;
@@ -10,6 +13,7 @@ export interface FriendlyGroup {
 
 interface Options {
 	id?: FriendlyGroup['id'];
+	type?: FriendlyGroup['type'];
 	label: FriendlyGroup['label'];
 	position: FriendlyGroup['position'];
 }

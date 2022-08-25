@@ -210,7 +210,7 @@
 						<g class="rain rain-avg">
 							<path
 								d={lineRainAvg(data)}
-								use:friendly.symbol={{
+								use:friendly.group={{
 									id: 'line-0',
 									type: 'line',
 									label: '2000 bis 2020',
@@ -239,7 +239,7 @@
 						<g class="rain rain-2021">
 							<path
 								d={lineRain(data)}
-								use:friendly.symbol={{
+								use:friendly.group={{
 									id: 'line-1',
 									type: 'line',
 									label: '2021',

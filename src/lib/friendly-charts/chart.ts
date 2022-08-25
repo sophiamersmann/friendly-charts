@@ -289,7 +289,7 @@ function updateChartDescription({
 	title?: string;
 }) {
 	function handleTreeUpdate(tree: FriendlyNode) {
-		const symbols = findAll(tree, (node) => node.data.element === 'symbol');
+		const symbols = findAll(tree, (node) => node.data.type !== undefined);
 
 		// a non-interactive chart does not need a layout description
 		if (symbols.length === 0) return;

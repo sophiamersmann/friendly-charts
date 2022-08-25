@@ -15,9 +15,8 @@ export default class FriendlyNode {
 	label: string;
 
 	constructor(
-		data: Omit<FriendlySymbol | FriendlyGroup, 'element' | 'type'> & {
+		data: Omit<FriendlySymbol | FriendlyGroup, 'element'> & {
 			element?: FriendlySymbol['element'] | FriendlyGroup['element'] | 'root';
-			type?: FriendlySymbol['type'] | 'root';
 		}
 	) {
 		this.parent = null;
@@ -42,7 +41,7 @@ export default class FriendlyNode {
 	/** compute bounding box that encloses the DOM element */
 	get boundingBox() {
 		// the root's bounding box is computed from the root's children's boxes
-		if (this.data.type === 'root') {
+		if (this.data.element === 'root') {
 			if (this.children.length === 0) return null;
 
 			const bbox = { top: Infinity, left: Infinity, bottom: -Infinity, right: -Infinity };
@@ -119,7 +118,6 @@ export function createTree(friendlyElements: (FriendlyGroup | FriendlySymbol)[])
 	const root = new FriendlyNode({
 		id: rootId,
 		element: 'root',
-		type: 'root',
 		label: '',
 		parentId: '',
 		position: 0
