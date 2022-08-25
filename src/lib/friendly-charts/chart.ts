@@ -28,6 +28,13 @@ function checkIfParentExists(parentId: string) {
 }
 
 export default function chart(node: HTMLElement | SVGElement, options: Chart) {
+	if (node instanceof SVGElement) {
+		throw new Error(
+			'friendly.chart applied to an SVG element. ' +
+				'Apply friendly.chart to a wrapper HTML instead.'
+		);
+	}
+
 	const getDataFromDOM = (friendly: 'axis' | 'group' | 'symbol') => {
 		let toFriendlyData = utils.friendlyData;
 		if (friendly === 'group' || friendly === 'symbol') {
@@ -269,7 +276,6 @@ function initChartDescription(node: HTMLElement | SVGElement, options: Chart) {
 	`;
 
 	// insert a11y instructions at the beginning of the chart
-	// TODO: what if node is a SVG?
 	if (!node.firstChild) {
 		node.appendChild(a11yElem);
 	} else {
