@@ -1,6 +1,7 @@
 import { CLASSNAME } from './const';
 import * as utils from './utils';
-import FriendlyNode, { createTree, findAll, findDepth } from './node';
+import FriendlyNode, { createTree, getChartFeatures } from './node';
+import Controller from './controller';
 
 import type { FriendlyAxis } from './axis';
 import type { FriendlySymbol } from './symbol';
@@ -35,6 +36,12 @@ export default function chart(node: HTMLElement | SVGElement, options: Chart) {
 		);
 	}
 
+	// hide all content from screen readers
+	utils.traverse(node, (child) => {
+		child.setAttribute('role', 'presentation');
+		child.setAttribute('aria-hidden', 'true');
+	});
+
 	const getDataFromDOM = (friendly: 'axis' | 'group' | 'symbol') => {
 		let toFriendlyData = utils.friendlyData;
 		if (friendly === 'group' || friendly === 'symbol') {
@@ -56,10 +63,12 @@ export default function chart(node: HTMLElement | SVGElement, options: Chart) {
 	const groups = getDataFromDOM('group') as FriendlyGroup[];
 	const symbols = getDataFromDOM('symbol') as FriendlySymbol[];
 
-	const { title } = initChartDescription(node, options);
+	const { element: instructionsElement, title, subtitle } = initChartDescription(node, options);
+	const controller = new Controller(instructionsElement, { title, subtitle });
 
 	let root = createTree([...groups, ...symbols]);
 	updateChartDescription({ axes, tree: root, title });
+	controller.update(root);
 
 	const observer = new MutationObserver((mutationList) => {
 		const dirty = { axis: false, tree: false };
@@ -102,6 +111,7 @@ export default function chart(node: HTMLElement | SVGElement, options: Chart) {
 		if (dirty.tree) {
 			root = createTree([...groups, ...symbols]);
 			updateChartDescription({ tree: root, title });
+			controller.update(root);
 		}
 	});
 
@@ -282,7 +292,7 @@ function initChartDescription(node: HTMLElement | SVGElement, options: Chart) {
 		node.insertBefore(a11yElem, node.firstChild);
 	}
 
-	return { title, subtitle };
+	return { element: a11yElem, title, subtitle };
 }
 
 function updateChartDescription({
@@ -295,16 +305,10 @@ function updateChartDescription({
 	title?: string;
 }) {
 	function handleTreeUpdate(tree: FriendlyNode) {
-		const symbols = findAll(tree, (node) => node.data.type !== undefined);
+		const { nElements, type: chartType } = getChartFeatures(tree);
 
 		// a non-interactive chart does not need a layout description
-		if (symbols.length === 0) return;
-
-		// find top level symbols
-		const depths = symbols.map((symbol) => findDepth(symbol));
-		const minDepth = Math.min(...depths);
-		const topLevelSymbols = symbols.filter((_, i) => depths[i] === minDepth);
-		const chartType = topLevelSymbols[0].data.type;
+		if (nElements === 0) return;
 
 		//
 		// screen reader information
@@ -342,8 +346,8 @@ function updateChartDescription({
 			'This is a {{ TYPE }} chart with {{ N_ELEMENTS }} {{ TYPE }}{{ TYPE_PLURAL }}.',
 			{
 				TYPE: chartType,
-				N_ELEMENTS: topLevelSymbols.length,
-				TYPE_PLURAL: topLevelSymbols.length > 1 ? 's' : ''
+				N_ELEMENTS: nElements,
+				TYPE_PLURAL: nElements > 1 ? 's' : ''
 			}
 		);
 	}
