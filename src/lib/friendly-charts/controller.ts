@@ -1,9 +1,10 @@
-import { insertAfter, handlebars, px } from './utils';
+import { insertAfter, handlebars, px, warn } from './utils';
 import FriendlyNode from './node';
 import { getChartFeatures } from './node';
 
 export default class Controller {
 	chartElement;
+	chartBoundingBox;
 	element;
 	focusElement;
 	tree: FriendlyNode | null;
@@ -12,10 +13,25 @@ export default class Controller {
 
 	constructor(
 		chartElement: HTMLElement,
-		anchor: HTMLElement,
-		{ title, subtitle }: { title: string; subtitle: string }
+		{
+			title,
+			subtitle,
+			anchor,
+			focusElement
+		}: { title: string; subtitle: string; anchor: HTMLElement; focusElement?: HTMLElement }
 	) {
 		this.chartElement = chartElement;
+		this.chartBoundingBox = this.chartElement.getBoundingClientRect();
+
+		// necessary since the focus element is absolutely positioned
+		if (this.chartElement.style.position) {
+			warn(
+				`The chart's position ("${this.chartElement.style.position}") ` +
+					'is overwritten with position: relative'
+			);
+		}
+		this.chartElement.style.position = 'relative';
+
 		this.tree = null;
 		this.chartFeatures = null;
 		this.chartDescription = { title, subtitle };
@@ -23,12 +39,22 @@ export default class Controller {
 		this.element = document.createElement('div');
 		this.#initElement();
 
-		this.focusElement = document.createElement('div');
-		this.#initFocusElement();
+		if (focusElement) {
+			this.focusElement = focusElement;
+			this.#initFocusElement({ defaultStyle: false });
+		} else {
+			this.focusElement = document.createElement('div');
+			this.#initFocusElement();
+
+			if (this.chartElement.lastChild) {
+				insertAfter(this.focusElement, this.chartElement.lastChild);
+			} else {
+				this.chartElement.appendChild(this.focusElement);
+			}
+		}
 
 		// add elements to dom
 		insertAfter(this.element, anchor);
-		document.body.appendChild(this.focusElement);
 	}
 
 	#initElement() {
@@ -54,14 +80,16 @@ export default class Controller {
 		`;
 	}
 
-	#initFocusElement() {
+	#initFocusElement({ defaultStyle = true } = {}) {
+		this.focusElement.removeAttribute('role');
 		this.focusElement.setAttribute('aria-hidden', 'true');
-		this.focusElement.style.cssText = `
-		  position: absolute;
-			outline: 2px solid black;
-			outline-offset: 2px;
-			display: none;
-		`;
+		this.focusElement.style.position = 'absolute';
+		this.focusElement.style.display = 'none';
+
+		if (defaultStyle) {
+			this.focusElement.style.outline = '2px solid black';
+			this.focusElement.style.outlineOffset = '2px';
+		}
 	}
 
 	#reset() {
@@ -93,8 +121,8 @@ export default class Controller {
 	#focus(bbox: { width: number; height: number; top: number; left: number }) {
 		this.focusElement.style.width = px(bbox.width);
 		this.focusElement.style.height = px(bbox.height);
-		this.focusElement.style.top = px(bbox.top);
-		this.focusElement.style.left = px(bbox.left);
+		this.focusElement.style.top = px(bbox.top - this.chartBoundingBox.top);
+		this.focusElement.style.left = px(bbox.left - this.chartBoundingBox.left);
 		this.focusElement.style.display = 'block';
 	}
 

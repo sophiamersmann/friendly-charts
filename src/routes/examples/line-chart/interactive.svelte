@@ -290,6 +290,8 @@
 	</div>
 
 	<div class="source">Quelle: Ausgedachte Daten</div>
+
+	<div use:friendly.focus style="outline: 4px solid black; outline-offset: 4px; display: none;" />
 </div>
 
 <VisuallyHidden>
