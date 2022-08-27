@@ -2,6 +2,9 @@
 	import '../style/index.css';
 </script>
 
+<a href="/">Home</a>
+<a href="/examples">Examples</a>
+
 <main>
 	<slot />
 </main>

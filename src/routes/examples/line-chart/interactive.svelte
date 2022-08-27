@@ -13,6 +13,21 @@
 
 	import type { Coordinates, TableColumn } from 'src/types';
 
+	const MONTHS = [
+		'Januar',
+		'Februar',
+		'März',
+		'April',
+		'Mai',
+		'Juni',
+		'Juli',
+		'August',
+		'September',
+		'Oktober',
+		'November',
+		'Dezember'
+	];
+
 	const data = [
 		{ month: 1, rain: 30, rainAvg: 9 },
 		{ month: 2, rain: 25, rainAvg: 8 },
@@ -107,7 +122,7 @@
 <div
 	class="chart"
 	use:friendly.chart={{
-		title: '.title-1',
+		title: '.title',
 		subtitle: '.subtitle',
 		description: [
 			'Der Chart zeigt ein Diagramm mit zwei Linien. Die erste Linie zeigt den monatlichen',
@@ -130,7 +145,7 @@
 
 	<div class="svg-wrapper" bind:clientWidth={width} style:height={px(height)}>
 		{#if width}
-			<svg {width} {height} viewBox={[0, 0, width, height].join(' ')} use:friendly.visual>
+			<svg {width} {height} viewBox={[0, 0, width, height].join(' ')}>
 				<g transform={translate([margin.left, margin.top])}>
 					<g class="summer-highlight">
 						<rect
@@ -152,7 +167,6 @@
 						class="axis-y"
 						use:friendly.axis={{
 							direction: 'y',
-							orientation: 'vertical',
 							label: 'Regen in Liter pro Quadratmeter',
 							ticks: '.tick text'
 						}}
@@ -174,7 +188,6 @@
 						transform={translate([0, boundedHeight])}
 						use:friendly.axis={{
 							direction: 'x',
-							orientation: 'horizontal',
 							label: 'Monat',
 							ticks: '.tick text'
 						}}
@@ -197,13 +210,26 @@
 						<g class="rain rain-avg">
 							<path
 								d={lineRainAvg(data)}
-								use:friendly.element={{
+								use:friendly.group={{
+									id: 'line-0',
 									type: 'line',
 									label: '2000 bis 2020',
-									level: 0,
 									position: 0
 								}}
 							/>
+							{#each data as d, i}
+								<circle
+									cx={x(d.month)}
+									cy={y(d.rainAvg)}
+									r="4"
+									use:friendly.symbol={{
+										type: 'point',
+										label: `${MONTHS[d.month - 1]}. ${d.rainAvg} Liter pro Quadratmeter`,
+										parentId: 'line-0',
+										position: i
+									}}
+								/>
+							{/each}
 							<text x={x(dLast.month)} dx={tokens.sPx2} y={y(dLast.rainAvg)} dy="-1em">
 								2000
 								<tspan x={x(dLast.month)} dx={tokens.sPx2} dy="1em">bis</tspan>
@@ -213,8 +239,26 @@
 						<g class="rain rain-2021">
 							<path
 								d={lineRain(data)}
-								use:friendly.element={{ type: 'line', label: '2021', level: 0, position: 1 }}
+								use:friendly.group={{
+									id: 'line-1',
+									type: 'line',
+									label: '2021',
+									position: 1
+								}}
 							/>
+							{#each data as d, i}
+								<circle
+									cx={x(d.month)}
+									cy={y(d.rain)}
+									r="6"
+									use:friendly.symbol={{
+										type: 'point',
+										label: `${MONTHS[d.month - 1]}. ${d.rain} Liter pro Quadratmeter`,
+										parentId: 'line-1',
+										position: i
+									}}
+								/>
+							{/each}
 							<text x={x(dLast.month)} y={y(dLast.rain)} dx={tokens.sPx2}> 2021 </text>
 						</g>
 					</g>
@@ -246,6 +290,8 @@
 	</div>
 
 	<div class="source">Quelle: Ausgedachte Daten</div>
+
+	<div use:friendly.focus style="outline: 4px solid black; outline-offset: 4px; display: none;" />
 </div>
 
 <VisuallyHidden>
@@ -349,6 +395,10 @@
 		stroke: var(--c-accent);
 	}
 
+	.shapes .rain-2021 circle {
+		fill: var(--c-accent);
+	}
+
 	.shapes .rain-2021 text {
 		dominant-baseline: middle;
 		fill: var(--c-accent);
@@ -362,6 +412,12 @@
 
 	.shapes .rain-avg text {
 		fill: var(--c-beige-400);
+	}
+
+	.shapes .rain-avg circle {
+		stroke: var(--c-beige-400);
+		fill: white;
+		stroke-width: 2;
 	}
 
 	.annotation text {

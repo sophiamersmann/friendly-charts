@@ -1,10 +1,19 @@
-import { CLASSNAME } from './const';
 import * as utils from './utils';
-import type { AxisOptions } from './types';
 
-export default function axis(node: HTMLElement | SVGElement, options: AxisOptions) {
-	node.classList.add(CLASSNAME.CHART_AXIS);
+export interface FriendlyAxis {
+	element: 'axis';
+	label: string;
+	direction?: 'x' | 'y';
+	ticks?: any[];
+}
 
+interface Options {
+	label: FriendlyAxis['label'];
+	direction?: FriendlyAxis['direction'];
+	ticks?: FriendlyAxis['ticks'] | string;
+}
+
+export default function axis(node: HTMLElement | SVGElement, options: Options) {
 	// get label
 	let { label } = options;
 	if (label && utils.isSelector(label)) {
@@ -23,9 +32,9 @@ export default function axis(node: HTMLElement | SVGElement, options: AxisOption
 
 	// set data on the dom element
 	utils.setFriendlyData(node, {
-		direction: options.direction,
-		orientation: options.orientation,
+		element: 'axis',
+		direction: options.direction || '',
 		label,
-		ticks
+		ticks: ticks || []
 	});
 }
