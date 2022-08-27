@@ -1,45 +1,77 @@
-import { insertAfter, handlebars } from './utils';
+import { insertAfter, handlebars, px } from './utils';
 import FriendlyNode from './node';
 import { getChartFeatures } from './node';
 
 export default class Controller {
+	chartElement;
 	element;
+	focusElement;
 	tree: FriendlyNode | null;
 	chartFeatures: ReturnType<typeof getChartFeatures> | null;
 	chartDescription;
 
-	constructor(anchor: HTMLElement, { title, subtitle }: { title: string; subtitle: string }) {
+	constructor(
+		chartElement: HTMLElement,
+		anchor: HTMLElement,
+		{ title, subtitle }: { title: string; subtitle: string }
+	) {
+		this.chartElement = chartElement;
 		this.tree = null;
 		this.chartFeatures = null;
 		this.chartDescription = { title, subtitle };
 
 		this.element = document.createElement('div');
-		this.#init();
+		this.#initElement();
 
+		this.focusElement = document.createElement('div');
+		this.#initFocusElement();
+
+		// add elements to dom
 		insertAfter(this.element, anchor);
+		document.body.appendChild(this.focusElement);
 	}
 
-	#init() {
+	#initElement() {
 		this.element.setAttribute('role', 'application');
 		this.element.tabIndex = 0;
-
 		this.element.setAttribute('aria-label', this.#label);
+		this.element.style.outline = 'none';
+
+		this.element.addEventListener('focus', this.handleFocus);
+		this.element.addEventListener('blur', this.handleBlur);
 		this.element.addEventListener('keydown', this.handleKeydown);
 
-		// this.element.style.cssText = `
-		//   outline: none;
-		//   border: 0;
-		//   clip: rect(0 0 0 0);
-		//   height: 1px;
-		//   width: 1px;
-		//   margin: -1px;
-		//   overflow: hidden;
-		//   padding: 0;
-		//   position: absolute;
-		// `;
+		this.element.style.cssText = `
+		  outline: none;
+		  border: 0;
+		  clip: rect(0 0 0 0);
+		  height: 1px;
+		  width: 1px;
+		  margin: -1px;
+		  overflow: hidden;
+		  padding: 0;
+		  position: absolute;
+		`;
 	}
 
-	#clear() {
+	#initFocusElement() {
+		this.focusElement.setAttribute('aria-hidden', 'true');
+		this.focusElement.style.cssText = `
+		  position: absolute;
+			outline: 2px solid black;
+			outline-offset: 2px;
+			display: none;
+		`;
+	}
+
+	#reset() {
+		this.#clearChildren();
+		this.element.removeAttribute('aria-activedescendant');
+		this.focusElement.style.display = 'none';
+		this.element.setAttribute('aria-label', this.#label);
+	}
+
+	#clearChildren() {
 		while (this.element.lastElementChild) {
 			this.element.removeChild(this.element.lastElementChild);
 		}
@@ -57,6 +89,22 @@ export default class Controller {
 			TYPE: this.chartFeatures?.type
 		});
 	}
+
+	#focus(bbox: { width: number; height: number; top: number; left: number }) {
+		this.focusElement.style.width = px(bbox.width);
+		this.focusElement.style.height = px(bbox.height);
+		this.focusElement.style.top = px(bbox.top);
+		this.focusElement.style.left = px(bbox.left);
+		this.focusElement.style.display = 'block';
+	}
+
+	handleFocus = () => {
+		this.#focus(this.chartElement.getBoundingClientRect());
+	};
+
+	handleBlur = () => {
+		this.#reset();
+	};
 
 	handleKeydown = (e: KeyboardEvent) => {
 		if (!this.tree) return;
@@ -76,7 +124,7 @@ export default class Controller {
 		e.preventDefault();
 
 		const activeOnEnter = (nodeId: string | null) => {
-			if (!nodeId) return tree.children.length > 0 ? tree.children[0].data.id : null;
+			if (!nodeId) return tree.data.id;
 			const node = tree.descendants.get(nodeId);
 			if (node && node.children.length > 0) return node.children[0].data.id;
 			return nodeId;
@@ -131,14 +179,15 @@ export default class Controller {
 
 		if (!nextActiveId) {
 			this.element.removeAttribute('aria-activedescendant');
-			this.#clear();
+			this.#clearChildren();
+			this.#focus(this.chartElement.getBoundingClientRect());
 			return;
 		}
 
 		const nextActiveNode = this.tree.descendants.get(nextActiveId);
 		if (!nextActiveNode) return;
 
-		this.#clear();
+		this.#clearChildren();
 
 		// update control elements
 		if (
@@ -154,6 +203,10 @@ export default class Controller {
 
 		// update active element
 		this.element.setAttribute('aria-activedescendant', nextActiveNode.controlId);
+
+		// update focus
+		const bbox = nextActiveNode.boundingBox;
+		if (bbox) this.#focus(bbox);
 	};
 
 	update(tree: FriendlyNode) {

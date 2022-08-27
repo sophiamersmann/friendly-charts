@@ -64,7 +64,7 @@ export default function chart(node: HTMLElement | SVGElement, options: Chart) {
 	const symbols = getDataFromDOM('symbol') as FriendlySymbol[];
 
 	const { element: instructionsElement, title, subtitle } = initChartDescription(node, options);
-	const controller = new Controller(instructionsElement, { title, subtitle });
+	const controller = new Controller(node, instructionsElement, { title, subtitle });
 
 	let root = createTree([...groups, ...symbols]);
 	updateChartDescription({ axes, tree: root, title });
