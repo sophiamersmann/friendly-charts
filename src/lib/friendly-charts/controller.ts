@@ -242,4 +242,10 @@ export default class Controller {
 		this.chartFeatures = getChartFeatures(this.tree);
 		this.element.textContent = this.#shortLabel;
 	}
+
+	destroy() {
+		this.element.removeEventListener('focus', this.handleFocus);
+		this.element.removeEventListener('blur', this.handleBlur);
+		this.element.removeEventListener('keydown', this.handleKeydown);
+	}
 }

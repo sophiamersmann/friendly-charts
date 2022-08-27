@@ -129,6 +129,7 @@ export default function chart(node: HTMLElement | SVGElement, options: Chart) {
 	return {
 		destroy: () => {
 			observer.disconnect();
+			controller.destroy();
 		}
 	};
 }
