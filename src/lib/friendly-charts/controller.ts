@@ -74,17 +74,17 @@ export default class Controller {
 		this.element.addEventListener('blur', this.handleBlur);
 		this.element.addEventListener('keydown', this.handleKeydown);
 
-		// this.element.style.cssText = `
-		//   outline: none;
-		//   border: 0;
-		//   clip: rect(0 0 0 0);
-		//   height: 1px;
-		//   width: 1px;
-		//   margin: -1px;
-		//   overflow: hidden;
-		//   padding: 0;
-		//   position: absolute;
-		// `;
+		this.element.style.cssText = `
+		  outline: none;
+		  border: 0;
+		  clip: rect(0 0 0 0);
+		  height: 1px;
+		  width: 1px;
+		  margin: -1px;
+		  overflow: hidden;
+		  padding: 0;
+		  position: absolute;
+		`;
 	}
 
 	#initFocusElement({ defaultStyle = true } = {}) {
