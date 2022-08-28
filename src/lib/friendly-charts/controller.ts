@@ -1,6 +1,15 @@
 import { insertAfter, handlebars, px, warn } from './utils';
 import FriendlyNode from './node';
 import { getChartFeatures } from './node';
+import type _locale from './locale/en-US.json';
+
+interface Options {
+	title: string;
+	subtitle: string;
+	anchor: HTMLElement;
+	focusElement?: HTMLElement;
+	locale: typeof _locale['controller'];
+}
 
 export default class Controller {
 	chartElement;
@@ -10,18 +19,15 @@ export default class Controller {
 	tree: FriendlyNode | null;
 	chartFeatures: ReturnType<typeof getChartFeatures> | null;
 	chartDescription;
+	locale;
 
 	constructor(
 		chartElement: HTMLElement,
-		{
-			title,
-			subtitle,
-			anchor,
-			focusElement
-		}: { title: string; subtitle: string; anchor: HTMLElement; focusElement?: HTMLElement }
+		{ title, subtitle, anchor, focusElement, locale }: Options
 	) {
 		this.chartElement = chartElement;
 		this.chartBoundingBox = this.chartElement.getBoundingClientRect();
+		this.locale = locale;
 
 		// necessary since the focus element is absolutely positioned
 		if (this.chartElement.style.position) {
@@ -67,17 +73,17 @@ export default class Controller {
 		this.element.addEventListener('blur', this.handleBlur);
 		this.element.addEventListener('keydown', this.handleKeydown);
 
-		this.element.style.cssText = `
-		  outline: none;
-		  border: 0;
-		  clip: rect(0 0 0 0);
-		  height: 1px;
-		  width: 1px;
-		  margin: -1px;
-		  overflow: hidden;
-		  padding: 0;
-		  position: absolute;
-		`;
+		// this.element.style.cssText = `
+		//   outline: none;
+		//   border: 0;
+		//   clip: rect(0 0 0 0);
+		//   height: 1px;
+		//   width: 1px;
+		//   margin: -1px;
+		//   overflow: hidden;
+		//   padding: 0;
+		//   position: absolute;
+		// `;
 	}
 
 	#initFocusElement({ defaultStyle = true } = {}) {
@@ -106,16 +112,19 @@ export default class Controller {
 	}
 
 	get #label() {
-		return handlebars(
-			'{{ TITLE }}. {{ SUBTITLE }}. Navigate into the chart area by pressing ENTER.',
-			{ TITLE: this.chartDescription.title, SUBTITLE: this.chartDescription.subtitle }
-		);
+		return handlebars(this.locale.label, {
+			CHART_TITLE: this.chartDescription.title,
+			CHART_SUBTITLE: this.chartDescription.subtitle
+		});
 	}
 
 	get #shortLabel() {
-		return handlebars('Interactive {{ TYPE }} chart.', {
-			TYPE: this.chartFeatures?.type
-		});
+		if (this.chartFeatures?.type) {
+			return handlebars(this.locale.shortLabel.withChartType, {
+				CHART_TYPE: this.chartFeatures?.type
+			});
+		}
+		return this.locale.shortLabel.default;
 	}
 
 	#focus(bbox: { width: number; height: number; top: number; left: number }) {

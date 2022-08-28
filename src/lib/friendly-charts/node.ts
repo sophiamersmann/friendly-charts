@@ -2,6 +2,7 @@ import * as utils from './utils';
 
 import type { FriendlySymbol } from './symbol';
 import type { FriendlyGroup } from './group';
+import type _locale from './locale/en-US.json';
 
 export default class FriendlyNode {
 	parent: FriendlyNode | null;
@@ -148,7 +149,10 @@ export function getChartFeatures(tree: FriendlyNode) {
 	return { nElements: topLevelSymbols.length, type: topLevelSymbols[0].data.type };
 }
 
-export function createTree(friendlyElements: (FriendlyGroup | FriendlySymbol)[]) {
+export function createTree(
+	friendlyElements: (FriendlyGroup | FriendlySymbol)[],
+	locale: typeof _locale['elements']
+) {
 	// create root element with a unique id
 	const rootId = ['root', utils.uniqueId()].join('-');
 	const root = new FriendlyNode({
@@ -200,46 +204,26 @@ export function createTree(friendlyElements: (FriendlyGroup | FriendlySymbol)[])
 		}
 	}
 
-	function constructSymbolLabel(node: FriendlyNode) {
-		const parent = node.parent as FriendlyNode;
-		return utils.handlebars('{{ LABEL }}. {{ TYPE }} {{ POS }} of {{ SIZE }}.', {
-			LABEL: node.data.label,
-			TYPE: node.data.type,
-			POS: parent.children.indexOf(node) + 1,
-			SIZE: parent.children.length
-		});
-	}
-
-	function constructGroupLabel(node: FriendlyNode) {
-		let label = '';
-		if (node.data.type) {
-			label += 'Group that';
-		} else {
-			utils.handlebars('Group {{ LABEL }}.', { LABEL: node.data.label });
-		}
-
+	function getGroupLabel(
+		node: FriendlyNode,
+		locale: typeof _locale['elements']['group']['default'],
+		data: Record<string, any>
+	) {
+		// empty group
 		if (node.children.length === 0) {
-			return label + ' Empty.';
+			return utils.handlebars(locale.empty, data);
 		}
 
 		const child = node.children[0];
-		if (child.data.element === 'group') {
-			return (
-				label +
-				utils.handlebars(' contains {{ N_ELEMENTS }} groups.', {
-					N_ELEMENTS: node.children.length
-				})
-			);
+
+		// group contains other groups
+		if (child.data.element === 'group' && !child.data.type) {
+			return utils.handlebars(locale.withMembers.containsGroups, data);
 		}
-		if (child.data.element === 'symbol') {
-			return (
-				label +
-				utils.handlebars(' contains {{ N_ELEMENTS }} interactive {{ TYPE }}s.', {
-					N_ELEMENTS: node.children.length,
-					TYPE: child.data.type
-				})
-			);
-		}
+
+		// group contains symbols
+		const symbolType = child.data.type as FriendlySymbol['type'];
+		return utils.handlebars(locale.withMembers.containsSymbols[symbolType], data);
 	}
 
 	map(root, (node) => {
@@ -254,16 +238,31 @@ export function createTree(friendlyElements: (FriendlyGroup | FriendlySymbol)[])
 			}
 		}
 
-		// assign labels
-		if (node.data.element === 'group') {
-			let label = '';
-			if (node.data.type) {
-				label = constructSymbolLabel(node) + ' ';
-			}
-			label += constructGroupLabel(node);
-			node.label = label;
+		const parent = node.parent as FriendlyNode;
+		if (node.data.element === 'root') {
+			const data = { N_MEMBERS: node.children.length };
+			node.label = getGroupLabel(node, locale.root, data);
+		}
+		if (node.data.element === 'group' && node.data.type) {
+			node.label = getGroupLabel(node, locale.group.withSymbolType, {
+				GROUP_LABEL: node.data.label,
+				SYMBOL_TYPE: node.data.type,
+				GROUP_POSITION: parent.children.indexOf(node) + 1,
+				N_SIBLINGS: parent.children.length,
+				N_MEMBERS: node.children.length
+			});
+		} else if (node.data.element === 'group') {
+			node.label = getGroupLabel(node, locale.group.default, {
+				GROUP_LABEL: node.data.label,
+				N_MEMBERS: node.children.length
+			});
 		} else if (node.data.element === 'symbol') {
-			node.label = constructSymbolLabel(node);
+			node.label = utils.handlebars(locale.symbol, {
+				SYMBOL_LABEL: node.data.label,
+				SYMBOL_TYPE: node.data.type,
+				SYMBOL_POSITION: parent.children.indexOf(node) + 1,
+				N_SIBLINGS: parent.children.length
+			});
 		}
 	});
 

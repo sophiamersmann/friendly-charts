@@ -7,6 +7,9 @@
 
 	import _alphabet from './alphabet.json';
 
+	// TODO: axes
+	// TODO: selector for symbol labels
+
 	let alphabet = _alphabet;
 	$: {
 		alphabet.sort((a, b) => descending(a.frequency, b.frequency));
