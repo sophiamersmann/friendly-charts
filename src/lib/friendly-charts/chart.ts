@@ -198,7 +198,7 @@ function initChartDescription(node: HTMLElement | SVGElement, options: Chart) {
 
 	const srInfoElem = document.createElement('p');
 	srInfoElem.classList.add(CLASSNAME.CHART_SR_INFORMATION);
-	srInfoElem.textContent = utils.handlebars(locale.screenReaderInformation.static.withTitle, {
+	srInfoElem.textContent = utils.handlebars(locale.screenReaderInformation.static, {
 		CHART_TITLE: title
 	});
 
@@ -319,8 +319,8 @@ function updateChartDescription({
 		const srInfoElem = document.querySelector('.' + CLASSNAME.CHART_SR_INFORMATION);
 		if (srInfoElem) {
 			srInfoElem.textContent = utils.handlebars(
-				locale.screenReaderInformation.interactive.withTitleAndType,
-				{ CHART_TITLE: title, CHART_TYPE: chartType }
+				locale.screenReaderInformation.interactive[chartType],
+				{ CHART_TITLE: title }
 			);
 		}
 

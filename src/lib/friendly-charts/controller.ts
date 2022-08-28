@@ -121,9 +121,7 @@ export default class Controller {
 
 	get #shortLabel() {
 		if (this.chartFeatures?.type) {
-			return handlebars(this.locale.shortLabel.withChartType, {
-				CHART_TYPE: this.chartFeatures?.type
-			});
+			return this.locale.shortLabel.withChartType[this.chartFeatures?.type];
 		}
 		return this.locale.shortLabel.default;
 	}

@@ -1,12 +1,10 @@
 {
 	"screenReaderInformation": {
-		"static": {
-			"withTitle": "Chart titled '{{ CHART_TITLE }}'. This section contains additional information about this chart.",
-			"withTitleAndType": "{{ CHART_TYPE }} chart titled '{{ CHART_TITLE }}'. This section contains additional information about this chart."
-		},
+		"static": "Chart titled '{{ CHART_TITLE }}'. This section contains additional information about this chart.",
 		"interactive": {
-			"withTitle": "Keyboard interactive chart, titled '{{ CHART_TITLE }}'. This section contains additional information about this chart. Pressing TAB takes you to the chart area.",
-			"withTitleAndType": "Keyboard interactive {{ CHART_TYPE }} chart, titled '{{ CHART_TITLE }}'. This section contains additional information about this chart. Pressing TAB takes you to the chart area."
+			"line": "Keyboard interactive line chart, titled '{{ CHART_TITLE }}'. This section contains additional information about this chart. Pressing TAB takes you to the chart area.",
+			"point": "Keyboard interactive scatter plot, titled '{{ CHART_TITLE }}'. This section contains additional information about this chart. Pressing TAB takes you to the chart area.",
+			"bar": "Keyboard interactive bar chart, titled '{{ CHART_TITLE }}'. This section contains additional information about this chart. Pressing TAB takes you to the chart area."
 		}
 	},
 
@@ -45,11 +43,20 @@
 		"label": "{{ CHART_TITLE }}. {{ CHART_SUBTITLE }}. Navigate into the chart area by pressing ENTER.",
 		"shortLabel": {
 			"default": "Interactive chart.",
-			"withChartType": "Interactive {{ CHART_TYPE }} chart."
+			"withChartType": {
+				"line": "Interactive line chart.",
+				"point": "Interactive scatter plot.",
+				"bar": "Interactive bar chart."
+			}
 		}
 	},
 
 	"elements": {
+		"symbolTypeMap": {
+			"line": "line",
+			"point": "point",
+			"bar": "bar"
+		},
 		"symbol": "{{ SYMBOL_LABEL }}. {{ SYMBOL_TYPE }} {{ SYMBOL_POSITION }} of {{ N_SIBLINGS }}.",
 		"group": {
 			"withSymbolType": {

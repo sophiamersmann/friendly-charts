@@ -136,10 +136,13 @@ export function findDepth(node: FriendlyNode, depth = 0): number {
 	return depth;
 }
 
-export function getChartFeatures(tree: FriendlyNode) {
+export function getChartFeatures(tree: FriendlyNode): {
+	nElements: number;
+	type?: FriendlySymbol['type'];
+} {
 	const symbols = findAll(tree, (node) => node.data.type !== undefined);
 
-	if (symbols.length === 0) return { nElements: 0, type: '' };
+	if (symbols.length === 0) return { nElements: 0 };
 
 	// find top level symbols
 	const depths = symbols.map((symbol) => findDepth(symbol));
@@ -246,7 +249,7 @@ export function createTree(
 		if (node.data.element === 'group' && node.data.type) {
 			node.label = getGroupLabel(node, locale.group.withSymbolType, {
 				GROUP_LABEL: node.data.label,
-				SYMBOL_TYPE: node.data.type,
+				SYMBOL_TYPE: locale.symbolTypeMap[node.data.type],
 				GROUP_POSITION: parent.children.indexOf(node) + 1,
 				N_SIBLINGS: parent.children.length,
 				N_MEMBERS: node.children.length
@@ -259,7 +262,7 @@ export function createTree(
 		} else if (node.data.element === 'symbol') {
 			node.label = utils.handlebars(locale.symbol, {
 				SYMBOL_LABEL: node.data.label,
-				SYMBOL_TYPE: node.data.type,
+				SYMBOL_TYPE: locale.symbolTypeMap[node.data.type as FriendlySymbol['type']],
 				SYMBOL_POSITION: parent.children.indexOf(node) + 1,
 				N_SIBLINGS: parent.children.length
 			});
