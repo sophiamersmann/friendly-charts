@@ -319,7 +319,7 @@ function updateChartDescription({
 		const srInfoElem = document.querySelector('.' + CLASSNAME.CHART_SR_INFORMATION);
 		if (srInfoElem) {
 			srInfoElem.textContent = utils.handlebars(
-				locale.screenReaderInformation.static.withTitleAndType,
+				locale.screenReaderInformation.interactive.withTitleAndType,
 				{ CHART_TITLE: title, CHART_TYPE: chartType }
 			);
 		}
