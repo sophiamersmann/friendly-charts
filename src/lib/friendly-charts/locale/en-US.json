@@ -9,7 +9,7 @@
 	},
 
 	"chartTitle": "Chart title: {{ CHART_TITLE }}",
-	"chartSubtitle": "Chart title: {{ CHART_SUBTITLE }}",
+	"chartSubtitle": "Chart subtitle: {{ CHART_SUBTITLE }}",
 
 	"headings": {
 		"purpose": "Purpose",

@@ -2,7 +2,7 @@ import { CLASSNAME } from './const';
 import * as utils from './utils';
 import FriendlyNode, { createTree, getChartFeatures } from './node';
 import Controller from './controller';
-import locale from './locale/en-US.json';
+import locale from './locale/de-DE.json';
 
 import type { FriendlyAxis } from './axis';
 import type { FriendlySymbol } from './symbol';

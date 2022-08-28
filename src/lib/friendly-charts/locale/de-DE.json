@@ -1,0 +1,97 @@
+{
+	"screenReaderInformation": {
+		"static": "Chart mit Titel '{{ CHART_TITLE }}'. Dieser Abschnitt enthält mehr Informationen über den Chart.",
+		"interactive": {
+			"line": "Tastatur-bedienbares Liniendiagramm mit Titel '{{ CHART_TITLE }}'. Dieser Abschnitt enthält mehr Informationen über den Chart. Die TAB-Taste führt in den Chart Bereich.",
+			"point": "Tastatur-bedienbarer Streudiagramm mit Titel '{{ CHART_TITLE }}'. Dieser Abschnitt enthält mehr Informationen über den Chart. Die TAB-Taste führt in den Chart Bereich.",
+			"bar": "Tastatur-bedienbares Balkendiagramm mit Titel '{{ CHART_TITLE }}'. Dieser Abschnitt enthält mehr Informationen über den Chart. Die TAB-Taste führt in den Chart Bereich."
+		}
+	},
+
+	"chartTitle": "Chart Titel: {{ CHART_TITLE }}",
+	"chartSubtitle": "Chart Untertitel: {{ CHART_SUBTITLE }}",
+
+	"headings": {
+		"purpose": "Zweck",
+		"description": "Beschreibung",
+		"chartLayoutDescription": "Beschreibung des Chart Layouts"
+	},
+
+	"chartLayout": {
+		"line": {
+			"withSingleSymbol": "Dies ist ein Liniendiagramm mit einer Linie.",
+			"withMultipleSymbols": "Dies ist ein Liniendiagramm mit {{ N_CHART_ELEMENTS }} Linien."
+		},
+		"point": {
+			"withSingleSymbol": "Dies ist ein Streudiagramm mit einem Punkt.",
+			"withMultipleSymbols": "Dies ist ein Streudiagramm mit {{ N_CHART_ELEMENTS }} Punkten."
+		},
+		"bar": {
+			"withSingleSymbol": "Dies ist ein Balkendiagramm mit einem Balken.",
+			"withMultipleSymbols": "Dies ist ein Balkendiagramm mit {{ N_CHART_ELEMENTS }} Balken."
+		}
+	},
+
+	"axis": {
+		"withLabelAndDirectionAndTicks": "Dieser Chart hat eine {{ AXIS_DIRECTION }} Achse mit Titel {{ AXIS_LABEL }}, die mit {{ START_TICK }} beginnt und mit {{ END_TICK }} endet.",
+		"withLabelAndDirection": "Dieser Chart hat eine {{ AXIS_DIRECTION }} Achse mit Titel {{ AXIS_LABEL }}.",
+		"withLabelAndTicks": "Dieser Chart hat eine Achse mit Titel {{ AXIS_LABEL }}, die mit {{ START_TICK }} beginnt und mit {{ END_TICK }} endet.",
+		"withLabel": "Dieser Chart hat eine Achse mit Titel {{ AXIS_LABEL }}."
+	},
+
+	"controller": {
+		"label": "{{ CHART_TITLE }}. {{ CHART_SUBTITLE }}. Die ENTER-Taste führt in den Chart Bereich.",
+		"shortLabel": {
+			"default": "Interaktiver Chart.",
+			"withChartType": {
+				"line": "Interaktives Liniendiagramm.",
+				"point": "Interaktives Streudiagramm.",
+				"bar": "Interaktives Balkendiagramm."
+			}
+		}
+	},
+
+	"elements": {
+		"symbolTypeMap": {
+			"line": "Linie",
+			"point": "Punkt",
+			"bar": "Balken"
+		},
+		"symbol": "{{ SYMBOL_LABEL }}. {{ SYMBOL_TYPE }} {{ SYMBOL_POSITION }} von {{ N_SIBLINGS }}.",
+		"group": {
+			"withSymbolType": {
+				"empty": "{{ GROUP_LABEL }}. {{ SYMBOL_TYPE }} {{ GROUP_POSITION }} von {{ N_SIBLINGS }}. Leere Gruppe.",
+				"withMembers": {
+					"containsGroups": "{{ GROUP_LABEL }}. {{ SYMBOL_TYPE }} {{ GROUP_POSITION }} von {{ N_SIBLINGS }}. Gruppe, die {{ N_MEMBERS }} Gruppen enthält.",
+					"containsSymbols": {
+						"line": "{{ GROUP_LABEL }}. {{ SYMBOL_TYPE }} {{ GROUP_POSITION }} von {{ N_SIBLINGS }}. Gruppe, die {{ N_MEMBERS }} interaktive Linien enthält.",
+						"point": "{{ GROUP_LABEL }}. {{ SYMBOL_TYPE }} {{ GROUP_POSITION }} von {{ N_SIBLINGS }}. Gruppe, die {{ N_MEMBERS }} interaktive Punkte enthält.",
+						"bar": "{{ GROUP_LABEL }}. {{ SYMBOL_TYPE }} {{ GROUP_POSITION }} von {{ N_SIBLINGS }}. Gruppe, die {{ N_MEMBERS }} interaktive Balken enthält."
+					}
+				}
+			},
+			"default": {
+				"empty": "Gruppe {{ GROUP_LABEL }}. Leer.",
+				"withMembers": {
+					"containsGroups": "Gruppe {{ GROUP_LABEL }}. Enthält {{ N_MEMBERS }} Gruppen.",
+					"containsSymbols": {
+						"line": "Gruppe {{ GROUP_LABEL }}. Enthält {{ N_MEMBERS }} interaktive Linien.",
+						"point": "Gruppe {{ GROUP_LABEL }}. Enthält {{ N_MEMBERS }} interaktive Punkte.",
+						"bar": "Gruppe {{ GROUP_LABEL }}. Enthält {{ N_MEMBERS }} interaktive Balken."
+					}
+				}
+			}
+		},
+		"root": {
+			"empty": "Leerer Chart.",
+			"withMembers": {
+				"containsGroups": "Dieser Chart enthält {{ N_MEMBERS }} Gruppen.",
+				"containsSymbols": {
+					"line": "Dieser Chart enthält {{ N_MEMBERS }} interaktive Linien.",
+					"point": "Dieser Chart enthält {{ N_MEMBERS }} interaktive Punkte.",
+					"bar": "Dieser Chart enthält {{ N_MEMBERS }} interaktive Balken."
+				}
+			}
+		}
+	}
+}
