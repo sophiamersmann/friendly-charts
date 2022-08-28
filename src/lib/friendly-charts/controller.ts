@@ -30,7 +30,7 @@ export default class Controller {
 		this.locale = locale;
 
 		// necessary since the focus element is absolutely positioned
-		if (this.chartElement.style.position) {
+		if (this.chartElement.style.position && this.chartElement.style.position !== 'relative') {
 			warn(
 				`The chart's position ("${this.chartElement.style.position}") ` +
 					'is overwritten with position: relative'
@@ -74,17 +74,17 @@ export default class Controller {
 		this.element.addEventListener('blur', this.handleBlur);
 		this.element.addEventListener('keydown', this.handleKeydown);
 
-		this.element.style.cssText = `
-		  outline: none;
-		  border: 0;
-		  clip: rect(0 0 0 0);
-		  height: 1px;
-		  width: 1px;
-		  margin: -1px;
-		  overflow: hidden;
-		  padding: 0;
-		  position: absolute;
-		`;
+		// this.element.style.cssText = `
+		//   outline: none;
+		//   border: 0;
+		//   clip: rect(0 0 0 0);
+		//   height: 1px;
+		//   width: 1px;
+		//   margin: -1px;
+		//   overflow: hidden;
+		//   padding: 0;
+		//   position: absolute;
+		// `;
 	}
 
 	#initFocusElement({ defaultStyle = true } = {}) {
