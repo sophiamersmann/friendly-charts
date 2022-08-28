@@ -17,6 +17,10 @@ interface Chart {
 	context?: string;
 }
 
+interface Options extends Chart {
+	axes?: (Omit<FriendlyAxis, 'element'> & { element?: 'axis' })[];
+}
+
 function checkIfParentExists(parentId: string) {
 	// check if an element with parent id exists
 	if (!document.getElementById(parentId)) {
@@ -29,7 +33,7 @@ function checkIfParentExists(parentId: string) {
 	return true;
 }
 
-export default function chart(node: HTMLElement | SVGElement, options: Chart) {
+export default function chart(node: HTMLElement | SVGElement, options: Options) {
 	if (node instanceof SVGElement) {
 		throw new Error(
 			'friendly.chart applied to an SVG element. ' +
@@ -64,6 +68,14 @@ export default function chart(node: HTMLElement | SVGElement, options: Chart) {
 	const groups = getDataFromDOM('group') as FriendlyGroup[];
 	const symbols = getDataFromDOM('symbol') as FriendlySymbol[];
 
+	if (options.axes) {
+		for (let i = 0; i < options.axes.length; i++) {
+			const axis = options.axes[i];
+			axis.element = 'axis';
+			axes.push(axis as FriendlyAxis);
+		}
+	}
+
 	const { element: instructionsElement, title, subtitle } = initChartDescription(node, options);
 
 	let controller: Controller | undefined;
@@ -79,6 +91,10 @@ export default function chart(node: HTMLElement | SVGElement, options: Chart) {
 		const root = createTree([...groups, ...symbols], locale.elements);
 		updateChartDescription({ axes, tree: root, title });
 		controller.update(root);
+	}
+
+	if (axes.length > 0) {
+		updateChartDescription({ axes, title });
 	}
 
 	const observer = new MutationObserver((mutationList) => {

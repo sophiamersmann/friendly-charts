@@ -7,8 +7,6 @@
 
 	import _alphabet from './alphabet.json';
 
-	// TODO: axes
-
 	let alphabet = _alphabet;
 	$: {
 		alphabet.sort((a, b) => descending(a.frequency, b.frequency));
@@ -30,11 +28,11 @@
 	bind:clientWidth={width}
 	use:friendly.chart={{
 		title: 'The letter E is used most frequently, followed by T and A',
-		subtitle: 'Relative frequency of letters in the English language'
-		// axes: [
-		// 	{ label: 'Letters', direction: 'y', ticks: alphabet.map((d) => d.letter) },
-		// 	{ label: 'Frequency', direction: 'x', ticks: alphabet.map((d) => d.frequency) }
-		// ]
+		subtitle: 'Relative frequency of letters in the English language',
+		axes: [
+			{ label: 'Letters', direction: 'y', ticks: alphabet.map((d) => d.letter) },
+			{ label: 'Frequency', direction: 'x', ticks: alphabet.map((d) => d.frequency) }
+		]
 	}}
 >
 	<div>
