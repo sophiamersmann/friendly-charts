@@ -65,17 +65,21 @@ export default function chart(node: HTMLElement | SVGElement, options: Chart) {
 	const symbols = getDataFromDOM('symbol') as FriendlySymbol[];
 
 	const { element: instructionsElement, title, subtitle } = initChartDescription(node, options);
-	const controller = new Controller(node, {
-		title,
-		subtitle,
-		anchor: instructionsElement,
-		focusElement: node.querySelector(`[friendly-element="focus"]`) as HTMLElement | undefined,
-		locale: locale.controller
-	});
 
-	let root = createTree([...groups, ...symbols], locale.elements);
-	updateChartDescription({ axes, tree: root, title });
-	controller.update(root);
+	let controller: Controller | undefined;
+	if (symbols.length > 0) {
+		controller = new Controller(node, {
+			title,
+			subtitle,
+			anchor: instructionsElement,
+			focusElement: node.querySelector(`[friendly-element="focus"]`) as HTMLElement | undefined,
+			locale: locale.controller
+		});
+
+		const root = createTree([...groups, ...symbols], locale.elements);
+		updateChartDescription({ axes, tree: root, title });
+		controller.update(root);
+	}
 
 	const observer = new MutationObserver((mutationList) => {
 		const dirty = { axis: false, tree: false };
@@ -116,8 +120,17 @@ export default function chart(node: HTMLElement | SVGElement, options: Chart) {
 		}
 
 		if (dirty.tree) {
-			root = createTree([...groups, ...symbols], locale.elements);
+			const root = createTree([...groups, ...symbols], locale.elements);
 			updateChartDescription({ tree: root, title });
+			if (!controller) {
+				controller = new Controller(node, {
+					title,
+					subtitle,
+					anchor: instructionsElement,
+					focusElement: node.querySelector(`[friendly-element="focus"]`) as HTMLElement | undefined,
+					locale: locale.controller
+				});
+			}
 			controller.update(root);
 		}
 	});
@@ -131,7 +144,7 @@ export default function chart(node: HTMLElement | SVGElement, options: Chart) {
 	return {
 		destroy: () => {
 			observer.disconnect();
-			controller.destroy();
+			if (controller) controller.destroy();
 		}
 	};
 }
@@ -185,7 +198,7 @@ function initChartDescription(node: HTMLElement | SVGElement, options: Chart) {
 
 	const srInfoElem = document.createElement('p');
 	srInfoElem.classList.add(CLASSNAME.CHART_SR_INFORMATION);
-	srInfoElem.textContent = utils.handlebars(locale.screenReaderInformation.withTitle, {
+	srInfoElem.textContent = utils.handlebars(locale.screenReaderInformation.static.withTitle, {
 		CHART_TITLE: title
 	});
 
@@ -305,10 +318,10 @@ function updateChartDescription({
 
 		const srInfoElem = document.querySelector('.' + CLASSNAME.CHART_SR_INFORMATION);
 		if (srInfoElem) {
-			srInfoElem.textContent = utils.handlebars(locale.screenReaderInformation.withTitleAndType, {
-				CHART_TITLE: title,
-				CHART_TYPE: chartType
-			});
+			srInfoElem.textContent = utils.handlebars(
+				locale.screenReaderInformation.static.withTitleAndType,
+				{ CHART_TITLE: title, CHART_TYPE: chartType }
+			);
 		}
 
 		//

@@ -1,4 +1,4 @@
-import { insertAfter, handlebars, px, warn } from './utils';
+import { insertAfter, handlebars, px, warn, uniqueId } from './utils';
 import FriendlyNode from './node';
 import { getChartFeatures } from './node';
 import type _locale from './locale/en-US.json';
@@ -64,6 +64,7 @@ export default class Controller {
 	}
 
 	#initElement() {
+		this.element.id = 'friendly-application-' + uniqueId();
 		this.element.setAttribute('role', 'application');
 		this.element.tabIndex = 0;
 		this.element.setAttribute('aria-label', this.#label);

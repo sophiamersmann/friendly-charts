@@ -1,7 +1,13 @@
 {
 	"screenReaderInformation": {
-		"withTitle": "Keyboard interactive chart, titled '{{ CHART_TITLE }}'. This section contains additional information about this chart. Pressing TAB takes you to the chart area.",
-		"withTitleAndType": "Keyboard interactive {{ CHART_TYPE }} chart, titled '{{ CHART_TITLE }}'. This section contains additional information about this chart. Pressing TAB takes you to the chart area."
+		"static": {
+			"withTitle": "Chart titled '{{ CHART_TITLE }}'. This section contains additional information about this chart.",
+			"withTitleAndType": "{{ CHART_TYPE }} chart titled '{{ CHART_TITLE }}'. This section contains additional information about this chart."
+		},
+		"interactive": {
+			"withTitle": "Keyboard interactive chart, titled '{{ CHART_TITLE }}'. This section contains additional information about this chart. Pressing TAB takes you to the chart area.",
+			"withTitleAndType": "Keyboard interactive {{ CHART_TYPE }} chart, titled '{{ CHART_TITLE }}'. This section contains additional information about this chart. Pressing TAB takes you to the chart area."
+		}
 	},
 
 	"chartTitle": "Chart title: {{ CHART_TITLE }}",
