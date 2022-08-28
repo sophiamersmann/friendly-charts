@@ -179,7 +179,7 @@ export default class Controller {
 			if (!nodeId) return null;
 			const node = tree.descendants.get(nodeId);
 			if (node && node[arrow]) return (node[arrow] as FriendlyNode).data.id;
-			return null;
+			return nodeId;
 		};
 
 		function activeOnKeyDown(nodeId: string | null, key: typeof VALID_KEYS[number]) {
