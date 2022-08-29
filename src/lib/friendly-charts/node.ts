@@ -230,6 +230,13 @@ export function createTree(
 	}
 
 	map(root, (node) => {
+		if (node.data.element === 'group' && node.children.length === 0) {
+			utils.warn(
+				`Group with label "${node.data.label}" is empty`,
+				'Either remove the group or add elements as children.'
+			);
+		}
+
 		// add related nodes
 		if (node.parent) {
 			const position = node.data.position;
