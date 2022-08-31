@@ -1,15 +1,26 @@
-// TODO: Documentation
+import type { SymbolType } from '../symbol';
+
+type DescriptionForEachSymbol = Record<SymbolType, string>;
+
+type DescriptionForSingleAndMultipleSymbols = {
+	withSingleSymbol: string;
+	// use: N_CHART_ELEMENTS
+	withMultipleSymbols: string;
+};
+
+type DescriptionForElement = {
+	empty: string;
+	withMembers: {
+		containsGroups: string;
+		containsSymbols: DescriptionForEachSymbol;
+	};
+};
 
 export interface FriendlyLocale {
+	// use: CHART_TITLE
 	screenReaderInformation: {
-		// use: CHART_TITLE
 		static: string;
-		// use: CHART_TITLE
-		interactive: {
-			line: string;
-			point: string;
-			bar: string;
-		};
+		interactive: DescriptionForEachSymbol;
 	};
 
 	// use: CHART_TITLE
@@ -24,21 +35,9 @@ export interface FriendlyLocale {
 	};
 
 	chartLayout: {
-		line: {
-			withSingleSymbol: string;
-			// use: N_CHART_ELEMENTS
-			withMultipleSymbols: string;
-		};
-		point: {
-			withSingleSymbol: string;
-			// use: N_CHART_ELEMENTS
-			withMultipleSymbols: string;
-		};
-		bar: {
-			withSingleSymbol: string;
-			// use: N_CHART_ELEMENTS
-			withMultipleSymbols: string;
-		};
+		line: DescriptionForSingleAndMultipleSymbols;
+		point: DescriptionForSingleAndMultipleSymbols;
+		bar: DescriptionForSingleAndMultipleSymbols;
 	};
 
 	axis: {
@@ -57,58 +56,21 @@ export interface FriendlyLocale {
 		label: string;
 		shortLabel: {
 			default: string;
-			withChartType: {
-				line: string;
-				point: string;
-				bar: string;
-			};
+			withChartType: DescriptionForEachSymbol;
 		};
 	};
 
 	elements: {
-		symbolTypeMap: {
-			line: string;
-			point: string;
-			bar: string;
-		};
+		symbolTypeMap: DescriptionForEachSymbol;
 		// use: SYMBOL_LABEL, SYMBOL_TYPE, SYMBOL_POSITION, N_SIBLINGS
 		symbol: string;
 		group: {
-			withSymbolType: {
-				// use: GROUP_LABEL, SYMBOL_TYPE, GROUP_POSITION, N_SIBLINGS
-				empty: string;
-				withMembers: {
-					// use: GROUP_LABEL, SYMBOL_TYPE, GROUP_POSITION, N_SIBLINGS, N_MEMBERS
-					containsGroups: string;
-					containsSymbols: {
-						line: string;
-						point: string;
-						bar: string;
-					};
-				};
-			};
-			default: {
-				empty: string;
-				withMembers: {
-					containsGroups: string;
-					containsSymbols: {
-						line: string;
-						point: string;
-						bar: string;
-					};
-				};
-			};
+			// use: GROUP_LABEL, SYMBOL_TYPE, GROUP_POSITION, N_SIBLINGS, [N_MEMBERS]
+			withSymbolType: DescriptionForElement;
+			// use: GROUP_LABEL, [N_MEMBERS]
+			default: DescriptionForElement;
 		};
-		root: {
-			empty: string;
-			withMembers: {
-				containsGroups: string;
-				containsSymbols: {
-					line: string;
-					point: string;
-					bar: string;
-				};
-			};
-		};
+		// use: [N_MEMBERS]
+		root: DescriptionForElement;
 	};
 }
