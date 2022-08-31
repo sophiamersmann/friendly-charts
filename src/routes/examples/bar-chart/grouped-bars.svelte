@@ -5,6 +5,7 @@
 	import { format } from 'd3-format';
 
 	import * as friendly from '$lib/friendly-charts';
+	import locale from '$lib/friendly-charts/locale/en-US.json';
 
 	import { px, translate } from '$lib/utils';
 	import stateAges from './state-ages.json';
@@ -48,7 +49,8 @@
 	class="chart"
 	use:friendly.chart={{
 		title: '.title',
-		subtitle: '.subtitle'
+		subtitle: '.subtitle',
+		locale
 	}}
 >
 	<hgroup>

@@ -1,0 +1,97 @@
+{
+	"screenReaderInformation": {
+		"static": "Chart titled '{{ CHART_TITLE }}'. This section contains additional information about this chart.",
+		"interactive": {
+			"line": "Keyboard interactive line chart, titled '{{ CHART_TITLE }}'. This section contains additional information about this chart. Pressing TAB takes you to the chart area.",
+			"point": "Keyboard interactive scatter plot, titled '{{ CHART_TITLE }}'. This section contains additional information about this chart. Pressing TAB takes you to the chart area.",
+			"bar": "Keyboard interactive bar chart, titled '{{ CHART_TITLE }}'. This section contains additional information about this chart. Pressing TAB takes you to the chart area."
+		}
+	},
+
+	"chartTitle": "Chart title: {{ CHART_TITLE }}",
+	"chartSubtitle": "Chart subtitle: {{ CHART_SUBTITLE }}",
+
+	"headings": {
+		"purpose": "Purpose",
+		"description": "Description",
+		"chartLayoutDescription": "Chart layout description"
+	},
+
+	"chartLayout": {
+		"line": {
+			"withSingleSymbol": "This is a line chart with a single line.",
+			"withMultipleSymbols": "This is a line chart with {{ N_CHART_ELEMENTS }} lines."
+		},
+		"point": {
+			"withSingleSymbol": "This is a point chart with a single point.",
+			"withMultipleSymbols": "This is a point chart with {{ N_CHART_ELEMENTS }} points."
+		},
+		"bar": {
+			"withSingleSymbol": "This is a bar chart with a single bar.",
+			"withMultipleSymbols": "This is a bar chart with {{ N_CHART_ELEMENTS }} bars."
+		}
+	},
+
+	"axis": {
+		"withLabelAndDirectionAndTicks": "This chart has a {{ AXIS_DIRECTION }} axis, titled {{ AXIS_LABEL }}, with a range that starts with {{ START_TICK }} and ends with {{ END_TICK }}.",
+		"withLabelAndDirection": "This chart has a {{ AXIS_DIRECTION }} axis, titled {{ AXIS_LABEL }}.",
+		"withLabelAndTicks": "This chart has an axis, titled {{ AXIS_LABEL }}, with a range that starts with {{ START_TICK }} and ends with {{ END_TICK }}.",
+		"withLabel": "This chart has an axis, titled {{ AXIS_LABEL }}."
+	},
+
+	"controller": {
+		"label": "{{ CHART_TITLE }}. {{ CHART_SUBTITLE }}. Navigate into the chart area by pressing ENTER.",
+		"shortLabel": {
+			"default": "Interactive chart.",
+			"withChartType": {
+				"line": "Interactive line chart.",
+				"point": "Interactive scatter plot.",
+				"bar": "Interactive bar chart."
+			}
+		}
+	},
+
+	"elements": {
+		"symbolTypeMap": {
+			"line": "line",
+			"point": "point",
+			"bar": "bar"
+		},
+		"symbol": "{{ SYMBOL_LABEL }}. {{ SYMBOL_TYPE }} {{ SYMBOL_POSITION }} of {{ N_SIBLINGS }}.",
+		"group": {
+			"withSymbolType": {
+				"empty": "{{ GROUP_LABEL }}. {{ SYMBOL_TYPE }} {{ GROUP_POSITION }} of {{ N_SIBLINGS }}. Empty group.",
+				"withMembers": {
+					"containsGroups": "{{ GROUP_LABEL }}. {{ SYMBOL_TYPE }} {{ GROUP_POSITION }} of {{ N_SIBLINGS }}. Group that contains {{ N_MEMBERS }} groups.",
+					"containsSymbols": {
+						"line": "{{ GROUP_LABEL }}. {{ SYMBOL_TYPE }} {{ GROUP_POSITION }} of {{ N_SIBLINGS }}. Group that contains {{ N_MEMBERS }} interactive lines.",
+						"point": "{{ GROUP_LABEL }}. {{ SYMBOL_TYPE }} {{ GROUP_POSITION }} of {{ N_SIBLINGS }}. Group that contains {{ N_MEMBERS }} interactive points.",
+						"bar": "{{ GROUP_LABEL }}. {{ SYMBOL_TYPE }} {{ GROUP_POSITION }} of {{ N_SIBLINGS }}. Group that contains {{ N_MEMBERS }} interactive bars."
+					}
+				}
+			},
+			"default": {
+				"empty": "Group {{ GROUP_LABEL }}. Empty.",
+				"withMembers": {
+					"containsGroups": "Group {{ GROUP_LABEL }}. Contains {{ N_MEMBERS }} groups.",
+					"containsSymbols": {
+						"line": "Group {{ GROUP_LABEL }}. Contains {{ N_MEMBERS }} interactive lines.",
+						"point": "Group {{ GROUP_LABEL }}. Contains {{ N_MEMBERS }} interactive points.",
+						"bar": "Group {{ GROUP_LABEL }}. Contains {{ N_MEMBERS }} interactive bars."
+					}
+				}
+			}
+		},
+		"root": {
+			"empty": "Empty chart.",
+			"withMembers": {
+				"containsGroups": "This chart contains {{ N_MEMBERS }} groups.",
+				"containsSymbols": {
+					"line": "This chart contains {{ N_MEMBERS }} interactive lines.",
+					"point": "This chart contains {{ N_MEMBERS }} interactive points.",
+					"bar": "This chart contains {{ N_MEMBERS }} interactive bars."
+				}
+			}
+		}
+	}
+}

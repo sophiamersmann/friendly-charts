@@ -1,7 +1,5 @@
 import * as utils from './utils';
 
-// TODO: position should be optional
-
 export type SymbolType = 'line' | 'point' | 'bar';
 
 export interface FriendlySymbol {
@@ -22,7 +20,7 @@ type Options = {
 };
 
 export default function symbol(node: HTMLElement | SVGElement, options: Options) {
-	let { id } = options;
+	let { id, label } = options;
 
 	// generate random id if not given
 	if (!id) {
@@ -38,10 +36,16 @@ export default function symbol(node: HTMLElement | SVGElement, options: Options)
 
 	node.id = id;
 
+	if (utils.isSelector(label)) {
+		const element = utils.querySelector(node, label);
+		label = element?.textContent || '';
+	}
+
 	const data = {
 		...options,
 		element: 'symbol',
-		id: id as string
+		id: id as string,
+		label
 	};
 
 	// set data on the dom element

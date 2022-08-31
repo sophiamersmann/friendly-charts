@@ -3,6 +3,7 @@
 	import { descending, max, range, ticks } from 'd3-array';
 
 	import * as friendly from '$lib/friendly-charts';
+	import locale from '$lib/friendly-charts/locale/en-US.json';
 
 	import { px, translate } from '$lib/utils';
 	import _alphabet from './alphabet.json';
@@ -37,7 +38,8 @@
 	class="chart"
 	use:friendly.chart={{
 		title: '.title',
-		subtitle: '.subtitle'
+		subtitle: '.subtitle',
+		locale
 	}}
 >
 	<hgroup>
@@ -81,7 +83,7 @@
 						<text class="label" x={-margin.left} dy={-margin.top}>Frequency</text>
 					</g>
 
-					<g class="bars" use:friendly.group={{ label: 'For testing', position: 0 }}>
+					<g class="bars">
 						{#each alphabet as { letter, frequency }, i (letter)}
 							<rect
 								width={x.bandwidth()}

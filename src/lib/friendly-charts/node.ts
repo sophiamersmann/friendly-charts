@@ -2,6 +2,7 @@ import * as utils from './utils';
 
 import type { FriendlySymbol } from './symbol';
 import type { FriendlyGroup } from './group';
+import type { FriendlyLocale } from './locale/types';
 
 export default class FriendlyNode {
 	parent: FriendlyNode | null;
@@ -135,10 +136,13 @@ export function findDepth(node: FriendlyNode, depth = 0): number {
 	return depth;
 }
 
-export function getChartFeatures(tree: FriendlyNode) {
+export function getChartFeatures(tree: FriendlyNode): {
+	nElements: number;
+	type?: FriendlySymbol['type'];
+} {
 	const symbols = findAll(tree, (node) => node.data.type !== undefined);
 
-	if (symbols.length === 0) return { nElements: 0, type: '' };
+	if (symbols.length === 0) return { nElements: 0 };
 
 	// find top level symbols
 	const depths = symbols.map((symbol) => findDepth(symbol));
@@ -148,7 +152,10 @@ export function getChartFeatures(tree: FriendlyNode) {
 	return { nElements: topLevelSymbols.length, type: topLevelSymbols[0].data.type };
 }
 
-export function createTree(friendlyElements: (FriendlyGroup | FriendlySymbol)[]) {
+export function createTree(
+	friendlyElements: (FriendlyGroup | FriendlySymbol)[],
+	locale: FriendlyLocale['elements']
+) {
 	// create root element with a unique id
 	const rootId = ['root', utils.uniqueId()].join('-');
 	const root = new FriendlyNode({
@@ -200,49 +207,36 @@ export function createTree(friendlyElements: (FriendlyGroup | FriendlySymbol)[])
 		}
 	}
 
-	function constructSymbolLabel(node: FriendlyNode) {
-		const parent = node.parent as FriendlyNode;
-		return utils.handlebars('{{ LABEL }}. {{ TYPE }} {{ POS }} of {{ SIZE }}.', {
-			LABEL: node.data.label,
-			TYPE: node.data.type,
-			POS: parent.children.indexOf(node) + 1,
-			SIZE: parent.children.length
-		});
-	}
-
-	function constructGroupLabel(node: FriendlyNode) {
-		let label = '';
-		if (node.data.type) {
-			label += 'Group that';
-		} else {
-			utils.handlebars('Group {{ LABEL }}.', { LABEL: node.data.label });
-		}
-
+	function getGroupLabel(
+		node: FriendlyNode,
+		locale: FriendlyLocale['elements']['group']['default'],
+		data: Record<string, any>
+	) {
+		// empty group
 		if (node.children.length === 0) {
-			return label + ' Empty.';
+			return utils.handlebars(locale.empty, data);
 		}
 
 		const child = node.children[0];
-		if (child.data.element === 'group') {
-			return (
-				label +
-				utils.handlebars(' contains {{ N_ELEMENTS }} groups.', {
-					N_ELEMENTS: node.children.length
-				})
-			);
+
+		// group contains other groups
+		if (child.data.element === 'group' && !child.data.type) {
+			return utils.handlebars(locale.withMembers.containsGroups, data);
 		}
-		if (child.data.element === 'symbol') {
-			return (
-				label +
-				utils.handlebars(' contains {{ N_ELEMENTS }} interactive {{ TYPE }}s.', {
-					N_ELEMENTS: node.children.length,
-					TYPE: child.data.type
-				})
-			);
-		}
+
+		// group contains symbols
+		const symbolType = child.data.type as FriendlySymbol['type'];
+		return utils.handlebars(locale.withMembers.containsSymbols[symbolType], data);
 	}
 
 	map(root, (node) => {
+		if (node.data.element === 'group' && node.children.length === 0) {
+			utils.warn(
+				`Group with label "${node.data.label}" is empty`,
+				'Either remove the group or add elements as children.'
+			);
+		}
+
 		// add related nodes
 		if (node.parent) {
 			const position = node.data.position;
@@ -254,16 +248,31 @@ export function createTree(friendlyElements: (FriendlyGroup | FriendlySymbol)[])
 			}
 		}
 
-		// assign labels
-		if (node.data.element === 'group') {
-			let label = '';
-			if (node.data.type) {
-				label = constructSymbolLabel(node) + ' ';
-			}
-			label += constructGroupLabel(node);
-			node.label = label;
+		const parent = node.parent as FriendlyNode;
+		if (node.data.element === 'root') {
+			const data = { N_MEMBERS: node.children.length };
+			node.label = getGroupLabel(node, locale.root, data);
+		}
+		if (node.data.element === 'group' && node.data.type) {
+			node.label = getGroupLabel(node, locale.group.withSymbolType, {
+				GROUP_LABEL: node.data.label,
+				SYMBOL_TYPE: locale.symbolTypeMap[node.data.type],
+				GROUP_POSITION: parent.children.indexOf(node) + 1,
+				N_SIBLINGS: parent.children.length,
+				N_MEMBERS: node.children.length
+			});
+		} else if (node.data.element === 'group') {
+			node.label = getGroupLabel(node, locale.group.default, {
+				GROUP_LABEL: node.data.label,
+				N_MEMBERS: node.children.length
+			});
 		} else if (node.data.element === 'symbol') {
-			node.label = constructSymbolLabel(node);
+			node.label = utils.handlebars(locale.symbol, {
+				SYMBOL_LABEL: node.data.label,
+				SYMBOL_TYPE: locale.symbolTypeMap[node.data.type as FriendlySymbol['type']],
+				SYMBOL_POSITION: parent.children.indexOf(node) + 1,
+				N_SIBLINGS: parent.children.length
+			});
 		}
 	});
 

@@ -6,6 +6,7 @@ import Controller from './controller';
 import type { FriendlyAxis } from './axis';
 import type { FriendlySymbol } from './symbol';
 import type { FriendlyGroup } from './group';
+import type { FriendlyLocale } from './locale/types';
 
 interface Chart {
 	title: string;
@@ -14,6 +15,11 @@ interface Chart {
 	purpose?: string;
 	description?: string;
 	context?: string;
+	locale: FriendlyLocale;
+}
+
+interface Options extends Chart {
+	axes?: (Omit<FriendlyAxis, 'element'> & { element?: 'axis' })[];
 }
 
 function checkIfParentExists(parentId: string) {
@@ -28,7 +34,9 @@ function checkIfParentExists(parentId: string) {
 	return true;
 }
 
-export default function chart(node: HTMLElement | SVGElement, options: Chart) {
+export default function chart(node: HTMLElement | SVGElement, options: Options) {
+	const { locale } = options;
+
 	if (node instanceof SVGElement) {
 		throw new Error(
 			'friendly.chart applied to an SVG element. ' +
@@ -63,17 +71,34 @@ export default function chart(node: HTMLElement | SVGElement, options: Chart) {
 	const groups = getDataFromDOM('group') as FriendlyGroup[];
 	const symbols = getDataFromDOM('symbol') as FriendlySymbol[];
 
-	const { element: instructionsElement, title, subtitle } = initChartDescription(node, options);
-	const controller = new Controller(node, {
-		title,
-		subtitle,
-		anchor: instructionsElement,
-		focusElement: node.querySelector(`[friendly-element="focus"]`) as HTMLElement | undefined
-	});
+	if (options.axes) {
+		for (let i = 0; i < options.axes.length; i++) {
+			const axis = options.axes[i];
+			axis.element = 'axis';
+			axes.push(axis as FriendlyAxis);
+		}
+	}
 
-	let root = createTree([...groups, ...symbols]);
-	updateChartDescription({ axes, tree: root, title });
-	controller.update(root);
+	const { element: instructionsElement, title, subtitle } = initChartDescription(node, options);
+
+	let controller: Controller | undefined;
+	if (symbols.length > 0) {
+		controller = new Controller(node, {
+			title,
+			subtitle,
+			anchor: instructionsElement,
+			focusElement: node.querySelector(`[friendly-element="focus"]`) as HTMLElement | undefined,
+			locale: locale.controller
+		});
+
+		const root = createTree([...groups, ...symbols], locale.elements);
+		updateChartDescription({ axes, tree: root, title, locale });
+		controller.update(root);
+	}
+
+	if (axes.length > 0) {
+		updateChartDescription({ axes, title, locale });
+	}
 
 	const observer = new MutationObserver((mutationList) => {
 		const dirty = { axis: false, tree: false };
@@ -110,12 +135,21 @@ export default function chart(node: HTMLElement | SVGElement, options: Chart) {
 		}
 
 		if (dirty.axis) {
-			updateChartDescription({ axes, title });
+			updateChartDescription({ axes, title, locale });
 		}
 
 		if (dirty.tree) {
-			root = createTree([...groups, ...symbols]);
-			updateChartDescription({ tree: root, title });
+			const root = createTree([...groups, ...symbols], locale.elements);
+			updateChartDescription({ tree: root, title, locale });
+			if (!controller) {
+				controller = new Controller(node, {
+					title,
+					subtitle,
+					anchor: instructionsElement,
+					focusElement: node.querySelector(`[friendly-element="focus"]`) as HTMLElement | undefined,
+					locale: locale.controller
+				});
+			}
 			controller.update(root);
 		}
 	});
@@ -129,32 +163,14 @@ export default function chart(node: HTMLElement | SVGElement, options: Chart) {
 	return {
 		destroy: () => {
 			observer.disconnect();
-			controller.destroy();
+			if (controller) controller.destroy();
 		}
 	};
 }
 
-function screenReaderInfoText({ title, chartType }: { title?: string; chartType?: string }) {
-	let srInfo = chartType
-		? utils.handlebars('Keyboard interactive {{ TYPE }} chart', { TYPE: chartType })
-		: 'Keyboard interactive chart';
+function initChartDescription(node: HTMLElement | SVGElement, options: Options) {
+	const { locale } = options;
 
-	// add title if given
-	if (title) {
-		srInfo += utils.handlebars(', titled {{ TITLE }}.', { TITLE: title });
-	} else {
-		srInfo += '.';
-	}
-
-	srInfo += [
-		' This section contains additional information about this chart.',
-		'Pressing TAB takes you to the chart area.'
-	].join(' ');
-
-	return srInfo;
-}
-
-function initChartDescription(node: HTMLElement | SVGElement, options: Chart) {
 	// create container
 	const a11yElem = document.createElement('div');
 	a11yElem.classList.add(CLASSNAME.CHART_INSTRUCTIONS);
@@ -167,17 +183,16 @@ function initChartDescription(node: HTMLElement | SVGElement, options: Chart) {
 	if (utils.isSelector(title)) {
 		const element = utils.querySelector(node, title);
 		title = element?.textContent || '';
-		if (title) element?.setAttribute('aria-hidden', 'true');
+		element?.setAttribute('aria-hidden', 'true');
 	}
 
-	let titleElem;
-	if (title) {
-		title = title.trim();
-		titleElem = utils.createElement('h2', 'Chart title: ' + title);
-		titleElem.classList.add(CLASSNAME.CHART_TITLE);
-	}
-
-	if (titleElem) a11yElem.appendChild(titleElem);
+	title = title.trim();
+	const titleElem = utils.createElement(
+		'h2',
+		utils.handlebars(locale.chartTitle, { CHART_TITLE: title })
+	);
+	titleElem.classList.add(CLASSNAME.CHART_TITLE);
+	a11yElem.appendChild(titleElem);
 
 	//
 	// subtitle
@@ -187,17 +202,16 @@ function initChartDescription(node: HTMLElement | SVGElement, options: Chart) {
 	if (utils.isSelector(subtitle)) {
 		const element = utils.querySelector(node, subtitle);
 		subtitle = element?.textContent || '';
-		if (subtitle) element?.setAttribute('aria-hidden', 'true');
+		element?.setAttribute('aria-hidden', 'true');
 	}
 
-	let subtitleElem;
-	if (subtitle) {
-		subtitle = subtitle.trim();
-		subtitleElem = utils.createElement('h3', 'Chart subtitle: ' + subtitle);
-		subtitleElem.classList.add(CLASSNAME.CHART_SUBTITLE);
-	}
-
-	if (subtitleElem) a11yElem.appendChild(subtitleElem);
+	subtitle = subtitle.trim();
+	const subtitleElem = utils.createElement(
+		'h3',
+		utils.handlebars(locale.chartSubtitle, { CHART_SUBTITLE: subtitle })
+	);
+	subtitleElem.classList.add(CLASSNAME.CHART_SUBTITLE);
+	a11yElem.appendChild(subtitleElem);
 
 	//
 	// general chart information
@@ -205,7 +219,9 @@ function initChartDescription(node: HTMLElement | SVGElement, options: Chart) {
 
 	const srInfoElem = document.createElement('p');
 	srInfoElem.classList.add(CLASSNAME.CHART_SR_INFORMATION);
-	srInfoElem.textContent = screenReaderInfoText({ title });
+	srInfoElem.textContent = utils.handlebars(locale.screenReaderInformation.static, {
+		CHART_TITLE: title
+	});
 
 	if (a11yElem.firstChild) {
 		utils.insertBefore(srInfoElem, a11yElem.firstChild);
@@ -240,7 +256,7 @@ function initChartDescription(node: HTMLElement | SVGElement, options: Chart) {
 	}
 
 	if (purpose) {
-		const element = utils.createElement('h3', 'Purpose');
+		const element = utils.createElement('h3', locale.headings.purpose);
 		element.classList.add(CLASSNAME.CHART_PURPOSE);
 		a11yElem.appendChild(element);
 		a11yElem.appendChild(utils.createElement('p', purpose));
@@ -257,7 +273,7 @@ function initChartDescription(node: HTMLElement | SVGElement, options: Chart) {
 	}
 
 	if (description) {
-		const element = utils.createElement('h3', 'Description');
+		const element = utils.createElement('h3', locale.headings.description);
 		element.classList.add(CLASSNAME.CHART_DESCRIPTION);
 		a11yElem.appendChild(element);
 		a11yElem.appendChild(utils.createElement('p', description));
@@ -304,17 +320,20 @@ function initChartDescription(node: HTMLElement | SVGElement, options: Chart) {
 function updateChartDescription({
 	tree,
 	axes,
-	title
+	title,
+	locale
 }: {
 	tree?: FriendlyNode;
 	axes?: FriendlyAxis[];
 	title?: string;
+	locale: FriendlyLocale;
 }) {
 	function handleTreeUpdate(tree: FriendlyNode) {
-		const { nElements, type: chartType } = getChartFeatures(tree);
+		const { nElements, type } = getChartFeatures(tree);
 
 		// a non-interactive chart does not need a layout description
 		if (nElements === 0) return;
+		const chartType = type as FriendlySymbol['type'];
 
 		//
 		// screen reader information
@@ -322,7 +341,10 @@ function updateChartDescription({
 
 		const srInfoElem = document.querySelector('.' + CLASSNAME.CHART_SR_INFORMATION);
 		if (srInfoElem) {
-			srInfoElem.textContent = screenReaderInfoText({ chartType, title });
+			srInfoElem.textContent = utils.handlebars(
+				locale.screenReaderInformation.interactive[chartType],
+				{ CHART_TITLE: title }
+			);
 		}
 
 		//
@@ -335,7 +357,7 @@ function updateChartDescription({
 		if (!layoutDescription) {
 			layoutDescription = document.createElement('h4');
 			layoutDescription.classList.add(CLASSNAME.CHART_LAYOUT_DESCRIPTION);
-			layoutDescription.textContent = 'Chart Layout Description';
+			layoutDescription.textContent = locale.headings.chartLayoutDescription;
 			a11yElem.appendChild(layoutDescription);
 		}
 
@@ -348,14 +370,14 @@ function updateChartDescription({
 		}
 
 		// general chart information
-		generalLayout.textContent = utils.handlebars(
-			'This is a {{ TYPE }} chart with {{ N_ELEMENTS }} {{ TYPE }}{{ TYPE_PLURAL }}.',
-			{
-				TYPE: chartType,
-				N_ELEMENTS: nElements,
-				TYPE_PLURAL: nElements > 1 ? 's' : ''
-			}
-		);
+		if (nElements === 1) {
+			locale.chartLayout[chartType].withSingleSymbol;
+		} else {
+			generalLayout.textContent = utils.handlebars(
+				locale.chartLayout[chartType].withMultipleSymbols,
+				{ N_CHART_ELEMENTS: nElements }
+			);
+		}
 	}
 
 	function handleAxesUpdate(axes: FriendlyAxis[]) {
@@ -377,7 +399,7 @@ function updateChartDescription({
 		if (!layoutDescription) {
 			layoutDescription = document.createElement('h4');
 			layoutDescription.classList.add(CLASSNAME.CHART_LAYOUT_DESCRIPTION);
-			layoutDescription.textContent = 'Chart Layout Description';
+			layoutDescription.textContent = locale.headings.chartLayoutDescription;
 			a11yElem.appendChild(layoutDescription);
 		}
 
@@ -394,25 +416,26 @@ function updateChartDescription({
 
 		let anchor = generalLayout;
 		for (let i = 0; i < axes.length; i++) {
-			const d = axes[i];
+			const { label, direction, ticks } = axes[i];
 
-			// information about an axis
-			let content = utils.handlebars(
-				d.direction
-					? 'This chart has a {{ DIRECTION }} axis, titled {{ LABEL }}'
-					: 'This chart has an axis, titled {{ LABEL }}',
-				{ DIRECTION: d.direction, LABEL: d.label }
-			);
-
-			// information about the axis range
-			if (d.ticks && d.ticks.length > 0) {
-				content += utils.handlebars(
-					' with a range that starts with {{ START_TICK }} and ends with {{ END_TICK }}.',
-					{ START_TICK: d.ticks[0], END_TICK: d.ticks[d.ticks.length - 1] }
-				);
+			let template;
+			if (direction && ticks && ticks.length > 0) {
+				template = locale.axis.withLabelAndDirectionAndTicks;
+			} else if (ticks && ticks.length > 0) {
+				template = locale.axis.withLabelAndTicks;
+			} else if (direction) {
+				template = locale.axis.withLabelAndDirection;
 			} else {
-				content += '.';
+				template = locale.axis.withLabel;
 			}
+
+			const hasTicks = ticks && ticks.length > 0;
+			const content = utils.handlebars(template, {
+				AXIS_LABEL: label,
+				AXIS_DIRECTION: direction,
+				START_TICK: hasTicks ? ticks[0] : '',
+				END_TICK: hasTicks ? ticks[ticks.length - 1] : ''
+			});
 
 			const element = utils.createElement('p', content);
 			element.classList.add(CLASSNAME.CHART_AXIS_DESCRIPTION);

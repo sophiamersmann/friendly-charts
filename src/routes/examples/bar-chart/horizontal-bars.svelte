@@ -4,6 +4,7 @@
 	import { format } from 'd3-format';
 
 	import * as friendly from '$lib/friendly-charts';
+	import locale from '$lib/friendly-charts/locale/en-US.json';
 
 	import _alphabet from './alphabet.json';
 
@@ -28,11 +29,12 @@
 	bind:clientWidth={width}
 	use:friendly.chart={{
 		title: 'The letter E is used most frequently, followed by T and A',
-		subtitle: 'Relative frequency of letters in the English language'
-		// axes: [
-		// 	{ label: 'Letters', direction: 'y', ticks: alphabet.map((d) => d.letter) },
-		// 	{ label: 'Frequency', direction: 'x', ticks: alphabet.map((d) => d.frequency) }
-		// ]
+		subtitle: 'Relative frequency of letters in the English language',
+		axes: [
+			{ label: 'Letters', direction: 'y', ticks: alphabet.map((d) => d.letter) },
+			{ label: 'Frequency', direction: 'x', ticks: alphabet.map((d) => d.frequency) }
+		],
+		locale
 	}}
 >
 	<div>
