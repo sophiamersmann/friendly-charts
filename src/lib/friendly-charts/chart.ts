@@ -2,11 +2,11 @@ import { CLASSNAME } from './const';
 import * as utils from './utils';
 import FriendlyNode, { createTree, getChartFeatures } from './node';
 import Controller from './controller';
-import locale from './locale/de-DE.json';
 
 import type { FriendlyAxis } from './axis';
 import type { FriendlySymbol } from './symbol';
 import type { FriendlyGroup } from './group';
+import type { FriendlyLocale } from './locale/types';
 
 interface Chart {
 	title: string;
@@ -15,6 +15,7 @@ interface Chart {
 	purpose?: string;
 	description?: string;
 	context?: string;
+	locale: FriendlyLocale;
 }
 
 interface Options extends Chart {
@@ -34,6 +35,8 @@ function checkIfParentExists(parentId: string) {
 }
 
 export default function chart(node: HTMLElement | SVGElement, options: Options) {
+	const { locale } = options;
+
 	if (node instanceof SVGElement) {
 		throw new Error(
 			'friendly.chart applied to an SVG element. ' +
@@ -89,12 +92,12 @@ export default function chart(node: HTMLElement | SVGElement, options: Options) 
 		});
 
 		const root = createTree([...groups, ...symbols], locale.elements);
-		updateChartDescription({ axes, tree: root, title });
+		updateChartDescription({ axes, tree: root, title, locale });
 		controller.update(root);
 	}
 
 	if (axes.length > 0) {
-		updateChartDescription({ axes, title });
+		updateChartDescription({ axes, title, locale });
 	}
 
 	const observer = new MutationObserver((mutationList) => {
@@ -132,12 +135,12 @@ export default function chart(node: HTMLElement | SVGElement, options: Options) 
 		}
 
 		if (dirty.axis) {
-			updateChartDescription({ axes, title });
+			updateChartDescription({ axes, title, locale });
 		}
 
 		if (dirty.tree) {
 			const root = createTree([...groups, ...symbols], locale.elements);
-			updateChartDescription({ tree: root, title });
+			updateChartDescription({ tree: root, title, locale });
 			if (!controller) {
 				controller = new Controller(node, {
 					title,
@@ -165,7 +168,9 @@ export default function chart(node: HTMLElement | SVGElement, options: Options) 
 	};
 }
 
-function initChartDescription(node: HTMLElement | SVGElement, options: Chart) {
+function initChartDescription(node: HTMLElement | SVGElement, options: Options) {
+	const { locale } = options;
+
 	// create container
 	const a11yElem = document.createElement('div');
 	a11yElem.classList.add(CLASSNAME.CHART_INSTRUCTIONS);
@@ -315,11 +320,13 @@ function initChartDescription(node: HTMLElement | SVGElement, options: Chart) {
 function updateChartDescription({
 	tree,
 	axes,
-	title
+	title,
+	locale
 }: {
 	tree?: FriendlyNode;
 	axes?: FriendlyAxis[];
 	title?: string;
+	locale: FriendlyLocale;
 }) {
 	function handleTreeUpdate(tree: FriendlyNode) {
 		const { nElements, type } = getChartFeatures(tree);

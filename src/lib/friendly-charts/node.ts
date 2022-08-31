@@ -2,7 +2,7 @@ import * as utils from './utils';
 
 import type { FriendlySymbol } from './symbol';
 import type { FriendlyGroup } from './group';
-import type _locale from './locale/en-US.json';
+import type { FriendlyLocale } from './locale/types';
 
 export default class FriendlyNode {
 	parent: FriendlyNode | null;
@@ -154,7 +154,7 @@ export function getChartFeatures(tree: FriendlyNode): {
 
 export function createTree(
 	friendlyElements: (FriendlyGroup | FriendlySymbol)[],
-	locale: typeof _locale['elements']
+	locale: FriendlyLocale['elements']
 ) {
 	// create root element with a unique id
 	const rootId = ['root', utils.uniqueId()].join('-');
@@ -209,7 +209,7 @@ export function createTree(
 
 	function getGroupLabel(
 		node: FriendlyNode,
-		locale: typeof _locale['elements']['group']['default'],
+		locale: FriendlyLocale['elements']['group']['default'],
 		data: Record<string, any>
 	) {
 		// empty group

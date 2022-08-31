@@ -8,6 +8,8 @@
 	import VisuallyHidden from '$lib/VisuallyHidden.svelte';
 
 	import * as friendly from '$lib/friendly-charts';
+	import locale from '$lib/friendly-charts/locale/de-DE.json';
+
 	import { px, translate } from '$lib/utils';
 	import * as tokens from '$lib/tokens';
 
@@ -116,7 +118,8 @@
 			'Quadratmeter im September. Das ist deutlich höher als die durchschnittliche Regenmenge in',
 			'den Sommermonaten der letzten zehn Jahre. In diesem Zeitraum has es auch in den',
 			'Sommermonaten durchschnittlich nie mehr als 25 Liter pro Quadratmeter geregnet.'
-		].join(' ')
+		].join(' '),
+		locale
 	}}
 >
 	<hgroup>

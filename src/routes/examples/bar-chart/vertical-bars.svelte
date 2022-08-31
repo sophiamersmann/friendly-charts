@@ -3,6 +3,7 @@
 	import { descending, max, range, ticks } from 'd3-array';
 
 	import * as friendly from '$lib/friendly-charts';
+	import locale from '$lib/friendly-charts/locale/en-US.json';
 
 	import { px, translate } from '$lib/utils';
 	import _alphabet from './alphabet.json';
@@ -37,7 +38,8 @@
 	class="chart"
 	use:friendly.chart={{
 		title: '.title',
-		subtitle: '.subtitle'
+		subtitle: '.subtitle',
+		locale
 	}}
 >
 	<hgroup>

@@ -1,14 +1,15 @@
 import { insertAfter, handlebars, px, warn, uniqueId } from './utils';
 import FriendlyNode from './node';
 import { getChartFeatures } from './node';
-import type _locale from './locale/en-US.json';
+
+import type { FriendlyLocale } from './locale/types';
 
 interface Options {
 	title: string;
 	subtitle: string;
 	anchor: HTMLElement;
 	focusElement?: HTMLElement;
-	locale: typeof _locale['controller'];
+	locale: FriendlyLocale['controller'];
 }
 
 export default class Controller {

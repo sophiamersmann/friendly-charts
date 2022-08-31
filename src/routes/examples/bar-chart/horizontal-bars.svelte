@@ -4,6 +4,7 @@
 	import { format } from 'd3-format';
 
 	import * as friendly from '$lib/friendly-charts';
+	import locale from '$lib/friendly-charts/locale/en-US.json';
 
 	import _alphabet from './alphabet.json';
 
@@ -32,7 +33,8 @@
 		axes: [
 			{ label: 'Letters', direction: 'y', ticks: alphabet.map((d) => d.letter) },
 			{ label: 'Frequency', direction: 'x', ticks: alphabet.map((d) => d.frequency) }
-		]
+		],
+		locale
 	}}
 >
 	<div>
