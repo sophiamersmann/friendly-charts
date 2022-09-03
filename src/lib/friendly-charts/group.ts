@@ -22,7 +22,7 @@ export default function group(node: HTMLElement | SVGElement, options: Options) 
 	let { id } = options;
 
 	if (!id) {
-		id = ['friendly-group', utils.uniqueId()].join('-');
+		id = utils.concat('friendly-group', utils.uniqueId());
 	}
 
 	if (node.id && node.id !== id) {

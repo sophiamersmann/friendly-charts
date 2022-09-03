@@ -1,7 +1,7 @@
 import * as utils from './utils';
 import FriendlyNode from './node';
 import { getChartFeatures } from './node';
-import { KEYBOARD_INSTRUCTIONS_PARAGRAPH } from './const';
+import * as CONST from './const';
 
 import type { FriendlyLocale } from './locale/types';
 
@@ -69,13 +69,14 @@ export default class Controller {
 	}
 
 	#initElement() {
-		this.element.id = 'friendly-application-' + utils.uniqueId();
+		this.element.classList.add(CONST.APPLICATION);
+		this.element.id = utils.concat(CONST.APPLICATION, this.chartId);
 		this.element.setAttribute('role', 'application');
 		this.element.tabIndex = 0;
 		this.element.setAttribute('aria-label', this.#label);
 		this.element.setAttribute(
 			'aria-describedby',
-			utils.concat(KEYBOARD_INSTRUCTIONS_PARAGRAPH, this.chartId)
+			utils.concat(CONST.KEYBOARD_INSTRUCTIONS_PARAGRAPH, this.chartId)
 		);
 		this.element.style.outline = 'none';
 

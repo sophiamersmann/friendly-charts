@@ -24,7 +24,7 @@ export default function symbol(node: HTMLElement | SVGElement, options: Options)
 
 	// generate random id if not given
 	if (!id) {
-		id = ['friendly-symbol', utils.uniqueId()].join('-');
+		id = utils.concat('friendly-symbol', utils.uniqueId());
 	}
 
 	if (node.id && node.id !== id) {

@@ -11,3 +11,4 @@ export const KEYBOARD_INSTRUCTIONS_PARAGRAPH = 'friendly-keyboard-instructions-p
 export const LAYOUT_DESCRIPTION = 'friendly-layout-description';
 export const LAYOUT_DESCRIPTION_GENERAL = 'friendly-general-layout-description';
 export const LAYOUT_DESCRIPTION_AXIS = 'friendly-axis-description';
+export const APPLICATION = 'friendly-application';
