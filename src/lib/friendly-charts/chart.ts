@@ -26,8 +26,8 @@ function checkIfParentExists(parentId: string) {
 	// check if an element with parent id exists
 	if (!document.getElementById(parentId)) {
 		utils.warn(
-			`No element with the given parent id ("${parentId}") exists.`,
-			`Please make sure that a group or symbol with id ${parentId} exists.`
+			`No element with id #${parentId} exists.`,
+			`Make sure to pass "${parentId}" as \`id\` to a group or symbol.`
 		);
 		return false;
 	}
@@ -135,8 +135,6 @@ export default function chart(node: HTMLElement | SVGElement, options: Options) 
 				} else if (friendly === 'symbol') {
 					symbols.push(data as FriendlySymbol);
 					dirty.tree = true;
-				} else {
-					console.warn('Unknown friendly-element value: ' + friendly);
 				}
 			}
 		}

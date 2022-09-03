@@ -27,8 +27,8 @@ export default function group(node: HTMLElement | SVGElement, options: Options) 
 
 	if (node.id && node.id !== id) {
 		utils.warn(
-			`The id of a group ("${node.id}") is overwritten with a generated id ("${id}").`,
-			`If you want to keep "${node.id}", pass it to the use directive as use:friendly.group={{ id: '${node.id}', ... }}.`
+			`The group's id \`${node.id}\` is overwritten with \`${id}\`.`,
+			`If you want to keep \`${node.id}\`, pass it to the group as \`id\`.`
 		);
 	}
 

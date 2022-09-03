@@ -27,13 +27,13 @@ export function querySelector(node: Element, selector: string) {
 
 		if (!result) {
 			warn(
-				`Element specified by "${selector}" not found.`,
-				`Check if an element with "${selector}" exists.`
+				`No element found by selecting \`${selector}\`.`,
+				`Check if an element with \`${selector}\` exists.`
 			);
 			return;
 		}
 	} catch (error) {
-		warn(`"${selector}" is not a valid selector.`);
+		warn(`The selector \`${selector}\` is not valid.`);
 	}
 
 	return result;
@@ -43,7 +43,10 @@ export function querySelectorAll(node: Element, selector: string) {
 	const elements = node.querySelectorAll(selector);
 
 	if (!elements) {
-		warn(`No element with "${selector}" found.`, `Check if an element with "${selector}" exists.`);
+		warn(
+			`No elements found by selecting \`${selector}\`.`,
+			`Check if an element with \`${selector}\` exists.`
+		);
 		return;
 	}
 
@@ -56,7 +59,6 @@ export function friendlyData(element: Element) {
 	for (let i = 0; i < attrs.length; i++) {
 		const attrName = attrs[i].nodeName;
 		if (attrName.startsWith('friendly') && attrs[i].nodeValue) {
-			// data[attrName.replace('friendly-', '')] = JSON.parse(attrs[i].nodeValue as string);
 			try {
 				data[attrName.replace('friendly-', '')] = JSON.parse(attrs[i].nodeValue as string);
 			} catch {

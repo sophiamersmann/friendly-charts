@@ -37,8 +37,8 @@ export default class Controller {
 		// necessary since the focus element is absolutely positioned
 		if (this.chartElement.style.position && this.chartElement.style.position !== 'relative') {
 			utils.warn(
-				`The chart's position ("${this.chartElement.style.position}") ` +
-					'is overwritten with position: relative'
+				`The chart's position (\`${this.chartElement.style.position}\`) is overwritten with \`relative\`.`,
+				'Try to position a wrapper element instead.'
 			);
 		}
 		this.chartElement.style.position = 'relative';

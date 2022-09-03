@@ -232,8 +232,8 @@ export function createTree(
 	map(root, (node) => {
 		if (node.data.element === 'group' && node.children.length === 0) {
 			utils.warn(
-				`Group with label "${node.data.label}" is empty`,
-				'Either remove the group or add elements as children.'
+				`The group labelled "${node.data.label}" is empty.`,
+				'Either remove the group or add at least one symbol or group as child.'
 			);
 		}
 
