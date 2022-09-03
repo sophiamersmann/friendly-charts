@@ -1,4 +1,4 @@
-import { CLASSNAME } from './const';
+import * as CONST from './const';
 import * as utils from './utils';
 import FriendlyNode, { createTree, getChartFeatures } from './node';
 import Controller from './controller';
@@ -36,6 +36,8 @@ function checkIfParentExists(parentId: string) {
 
 export default function chart(node: HTMLElement | SVGElement, options: Options) {
 	const { locale } = options;
+
+	const chartId = utils.uniqueId();
 
 	if (node instanceof SVGElement) {
 		throw new Error(
@@ -79,7 +81,11 @@ export default function chart(node: HTMLElement | SVGElement, options: Options) 
 		}
 	}
 
-	const { element: instructionsElement, title, subtitle } = initChartDescription(node, options);
+	const {
+		element: instructionsElement,
+		title,
+		subtitle
+	} = initChartDescription(node, options, chartId);
 
 	let controller: Controller | undefined;
 	if (symbols.length > 0) {
@@ -88,16 +94,17 @@ export default function chart(node: HTMLElement | SVGElement, options: Options) 
 			subtitle,
 			anchor: instructionsElement,
 			focusElement: node.querySelector(`[friendly-element="focus"]`) as HTMLElement | undefined,
+			chartId,
 			locale: locale.controller
 		});
 
 		const root = createTree([...groups, ...symbols], locale.elements);
-		updateChartDescription({ axes, tree: root, title, locale });
+		updateChartDescription({ axes, tree: root, title, locale, chartId });
 		controller.update(root);
 	}
 
 	if (axes.length > 0) {
-		updateChartDescription({ axes, title, locale });
+		updateChartDescription({ axes, title, locale, chartId });
 	}
 
 	const observer = new MutationObserver((mutationList) => {
@@ -135,18 +142,19 @@ export default function chart(node: HTMLElement | SVGElement, options: Options) 
 		}
 
 		if (dirty.axis) {
-			updateChartDescription({ axes, title, locale });
+			updateChartDescription({ axes, title, locale, chartId });
 		}
 
 		if (dirty.tree) {
 			const root = createTree([...groups, ...symbols], locale.elements);
-			updateChartDescription({ tree: root, title, locale });
+			updateChartDescription({ tree: root, title, locale, chartId });
 			if (!controller) {
 				controller = new Controller(node, {
 					title,
 					subtitle,
 					anchor: instructionsElement,
 					focusElement: node.querySelector(`[friendly-element="focus"]`) as HTMLElement | undefined,
+					chartId,
 					locale: locale.controller
 				});
 			}
@@ -168,12 +176,13 @@ export default function chart(node: HTMLElement | SVGElement, options: Options) 
 	};
 }
 
-function initChartDescription(node: HTMLElement | SVGElement, options: Options) {
+function initChartDescription(node: HTMLElement | SVGElement, options: Options, chartId: string) {
 	const { locale } = options;
 
 	// create container
 	const a11yElem = document.createElement('div');
-	a11yElem.classList.add(CLASSNAME.CHART_INSTRUCTIONS);
+	a11yElem.classList.add(CONST.INSTRUCTIONS);
+	a11yElem.id = utils.concat(CONST.INSTRUCTIONS, chartId);
 
 	//
 	// title
@@ -191,7 +200,7 @@ function initChartDescription(node: HTMLElement | SVGElement, options: Options) 
 		'h2',
 		utils.handlebars(locale.chartTitle, { CHART_TITLE: title })
 	);
-	titleElem.classList.add(CLASSNAME.CHART_TITLE);
+	titleElem.classList.add(CONST.TITLE);
 	a11yElem.appendChild(titleElem);
 
 	//
@@ -210,15 +219,16 @@ function initChartDescription(node: HTMLElement | SVGElement, options: Options) 
 		'h3',
 		utils.handlebars(locale.chartSubtitle, { CHART_SUBTITLE: subtitle })
 	);
-	subtitleElem.classList.add(CLASSNAME.CHART_SUBTITLE);
+	subtitleElem.classList.add(CONST.SUBTITLE);
 	a11yElem.appendChild(subtitleElem);
 
 	//
-	// general chart information
+	// screen reader information
 	//
 
 	const srInfoElem = document.createElement('p');
-	srInfoElem.classList.add(CLASSNAME.CHART_SR_INFORMATION);
+	srInfoElem.classList.add(CONST.SCREEN_READER_INFO);
+	srInfoElem.id = utils.concat(CONST.SCREEN_READER_INFO, chartId);
 	srInfoElem.textContent = utils.handlebars(locale.screenReaderInformation.static, {
 		CHART_TITLE: title
 	});
@@ -241,7 +251,7 @@ function initChartDescription(node: HTMLElement | SVGElement, options: Options) 
 
 	if (summary) {
 		const element = utils.createElement('p', summary);
-		element.classList.add(CLASSNAME.CHART_SUMMARY);
+		element.classList.add(CONST.SUMMARY);
 		a11yElem.appendChild(element);
 	}
 
@@ -257,7 +267,7 @@ function initChartDescription(node: HTMLElement | SVGElement, options: Options) 
 
 	if (purpose) {
 		const element = utils.createElement('h3', locale.headings.purpose);
-		element.classList.add(CLASSNAME.CHART_PURPOSE);
+		element.classList.add(CONST.PURPOSE);
 		a11yElem.appendChild(element);
 		a11yElem.appendChild(utils.createElement('p', purpose));
 	}
@@ -274,7 +284,7 @@ function initChartDescription(node: HTMLElement | SVGElement, options: Options) 
 
 	if (description) {
 		const element = utils.createElement('h3', locale.headings.description);
-		element.classList.add(CLASSNAME.CHART_DESCRIPTION);
+		element.classList.add(CONST.DESCRIPTION);
 		a11yElem.appendChild(element);
 		a11yElem.appendChild(utils.createElement('p', description));
 	}
@@ -291,7 +301,7 @@ function initChartDescription(node: HTMLElement | SVGElement, options: Options) 
 
 	if (context) {
 		const element = utils.createElement('p', context);
-		element.classList.add(CLASSNAME.CHART_CONTEXT);
+		element.classList.add(CONST.CONTEXT);
 		a11yElem.appendChild(element);
 	}
 
@@ -321,13 +331,30 @@ function updateChartDescription({
 	tree,
 	axes,
 	title,
-	locale
+	locale,
+	chartId
 }: {
 	tree?: FriendlyNode;
 	axes?: FriendlyAxis[];
 	title?: string;
 	locale: FriendlyLocale;
+	chartId: string;
 }) {
+	function createLayoutDescription(id: string) {
+		const elem = document.createElement('h4');
+		elem.classList.add(CONST.LAYOUT_DESCRIPTION);
+		elem.id = id;
+		elem.textContent = locale.headings.chartLayoutDescription;
+		return elem;
+	}
+
+	function createGeneralLayoutDescription(id: string) {
+		const elem = document.createElement('p');
+		elem.classList.add(CONST.LAYOUT_DESCRIPTION_GENERAL);
+		elem.id = id;
+		return elem;
+	}
+
 	function handleTreeUpdate(tree: FriendlyNode) {
 		const { nElements, type } = getChartFeatures(tree);
 
@@ -339,7 +366,7 @@ function updateChartDescription({
 		// screen reader information
 		//
 
-		const srInfoElem = document.querySelector('.' + CLASSNAME.CHART_SR_INFORMATION);
+		const srInfoElem = document.getElementById(utils.concat(CONST.SCREEN_READER_INFO, chartId));
 		if (srInfoElem) {
 			srInfoElem.textContent = utils.handlebars(
 				locale.screenReaderInformation.interactive[chartType],
@@ -348,32 +375,51 @@ function updateChartDescription({
 		}
 
 		//
+		// keyboard instructions
+		//
+
+		const a11yElem = document.getElementById(utils.concat(CONST.INSTRUCTIONS, chartId)) as Element;
+
+		const keyboardInstructionsElem = document.getElementById(
+			utils.concat(CONST.KEYBOARD_INSTRUCTIONS, chartId)
+		);
+		if (!keyboardInstructionsElem) {
+			const heading = utils.createElement('h4', locale.headings.keyboardInstructions);
+			heading.classList.add(CONST.KEYBOARD_INSTRUCTIONS);
+			heading.id = utils.concat(CONST.KEYBOARD_INSTRUCTIONS, chartId);
+			a11yElem.appendChild(heading);
+
+			const p = utils.createElement('p', locale.keyboardInstructions);
+			p.classList.add(CONST.KEYBOARD_INSTRUCTIONS_PARAGRAPH);
+			p.id = utils.concat(CONST.KEYBOARD_INSTRUCTIONS_PARAGRAPH, chartId);
+			a11yElem.appendChild(p);
+		}
+
+		//
 		// layout description
 		//
 
-		const a11yElem = document.querySelector('.' + CLASSNAME.CHART_INSTRUCTIONS) as Element;
-		let layoutDescription = document.querySelector('.' + CLASSNAME.CHART_LAYOUT_DESCRIPTION);
+		const layoutDescriptionId = utils.concat(CONST.LAYOUT_DESCRIPTION, chartId);
+		let layoutDescriptionElem = document.getElementById(layoutDescriptionId);
 
-		if (!layoutDescription) {
-			layoutDescription = document.createElement('h4');
-			layoutDescription.classList.add(CLASSNAME.CHART_LAYOUT_DESCRIPTION);
-			layoutDescription.textContent = locale.headings.chartLayoutDescription;
-			a11yElem.appendChild(layoutDescription);
+		if (!layoutDescriptionElem) {
+			layoutDescriptionElem = createLayoutDescription(layoutDescriptionId);
+			a11yElem.appendChild(layoutDescriptionElem);
 		}
 
-		let generalLayout = document.querySelector('.' + CLASSNAME.CHART_GENERAL_LAYOUT_DESCRIPTION);
+		const generalLayoutDescriptionId = utils.concat(CONST.LAYOUT_DESCRIPTION_GENERAL, chartId);
+		let generalLayoutDescriptionElem = document.getElementById(generalLayoutDescriptionId);
 
-		if (!generalLayout) {
-			generalLayout = document.createElement('p');
-			generalLayout.classList.add(CLASSNAME.CHART_GENERAL_LAYOUT_DESCRIPTION);
-			utils.insertAfter(generalLayout, layoutDescription);
+		if (!generalLayoutDescriptionElem) {
+			generalLayoutDescriptionElem = createGeneralLayoutDescription(generalLayoutDescriptionId);
+			utils.insertAfter(generalLayoutDescriptionElem, layoutDescriptionElem);
 		}
 
 		// general chart information
 		if (nElements === 1) {
 			locale.chartLayout[chartType].withSingleSymbol;
 		} else {
-			generalLayout.textContent = utils.handlebars(
+			generalLayoutDescriptionElem.textContent = utils.handlebars(
 				locale.chartLayout[chartType].withMultipleSymbols,
 				{ N_CHART_ELEMENTS: nElements }
 			);
@@ -392,29 +438,29 @@ function updateChartDescription({
 		// layout description
 		//
 
-		const a11yElem = document.querySelector('.' + CLASSNAME.CHART_INSTRUCTIONS) as Element;
-		let layoutDescription = document.querySelector('.' + CLASSNAME.CHART_LAYOUT_DESCRIPTION);
-		let generalLayout = document.querySelector('.' + CLASSNAME.CHART_GENERAL_LAYOUT_DESCRIPTION);
+		const a11yElem = document.getElementById(utils.concat(CONST.INSTRUCTIONS, chartId)) as Element;
 
-		if (!layoutDescription) {
-			layoutDescription = document.createElement('h4');
-			layoutDescription.classList.add(CLASSNAME.CHART_LAYOUT_DESCRIPTION);
-			layoutDescription.textContent = locale.headings.chartLayoutDescription;
-			a11yElem.appendChild(layoutDescription);
+		const layoutDescriptionId = utils.concat(CONST.LAYOUT_DESCRIPTION, chartId);
+		let layoutDescriptionElem = document.getElementById(layoutDescriptionId);
+		if (!layoutDescriptionElem) {
+			layoutDescriptionElem = createLayoutDescription(layoutDescriptionId);
+			a11yElem.appendChild(layoutDescriptionElem);
 		}
 
-		if (!generalLayout) {
-			generalLayout = document.createElement('p');
-			utils.insertAfter(generalLayout, layoutDescription);
+		const generalLayoutId = utils.concat(CONST.LAYOUT_DESCRIPTION_GENERAL, chartId);
+		let generalLayoutDescriptionElem = document.getElementById(generalLayoutId);
+		if (!generalLayoutDescriptionElem) {
+			generalLayoutDescriptionElem = createGeneralLayoutDescription(generalLayoutId);
+			utils.insertAfter(generalLayoutDescriptionElem, layoutDescriptionElem);
 		}
 
 		// remove all axis related information
-		const axisElements = document.getElementsByClassName(CLASSNAME.CHART_AXIS_DESCRIPTION);
+		const axisElements = document.getElementsByClassName(CONST.LAYOUT_DESCRIPTION_AXIS);
 		while (axisElements[0]) {
 			axisElements[0].parentNode?.removeChild(axisElements[0]);
 		}
 
-		let anchor = generalLayout;
+		let anchor = generalLayoutDescriptionElem;
 		for (let i = 0; i < axes.length; i++) {
 			const { label, direction, ticks } = axes[i];
 
@@ -438,7 +484,7 @@ function updateChartDescription({
 			});
 
 			const element = utils.createElement('p', content);
-			element.classList.add(CLASSNAME.CHART_AXIS_DESCRIPTION);
+			element.classList.add(CONST.LAYOUT_DESCRIPTION_AXIS);
 			utils.insertAfter(element, anchor);
 			anchor = element;
 		}

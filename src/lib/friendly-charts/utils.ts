@@ -99,6 +99,10 @@ export function handlebars(templateString: string, values: Record<string, any>) 
 	);
 }
 
+export function concat(...s: string[]) {
+	return s.join('-');
+}
+
 export function uniqueId() {
 	return nanoid();
 }

@@ -1,6 +1,7 @@
-import { insertAfter, handlebars, px, warn, uniqueId } from './utils';
+import * as utils from './utils';
 import FriendlyNode from './node';
 import { getChartFeatures } from './node';
+import { KEYBOARD_INSTRUCTIONS_PARAGRAPH } from './const';
 
 import type { FriendlyLocale } from './locale/types';
 
@@ -9,6 +10,7 @@ interface Options {
 	subtitle: string;
 	anchor: HTMLElement;
 	focusElement?: HTMLElement;
+	chartId: string;
 	locale: FriendlyLocale['controller'];
 }
 
@@ -20,19 +22,21 @@ export default class Controller {
 	tree: FriendlyNode | null;
 	chartFeatures: ReturnType<typeof getChartFeatures> | null;
 	chartDescription;
+	chartId;
 	locale;
 
 	constructor(
 		chartElement: HTMLElement,
-		{ title, subtitle, anchor, focusElement, locale }: Options
+		{ title, subtitle, anchor, focusElement, chartId, locale }: Options
 	) {
 		this.chartElement = chartElement;
 		this.chartBoundingBox = this.chartElement.getBoundingClientRect();
+		this.chartId = chartId;
 		this.locale = locale;
 
 		// necessary since the focus element is absolutely positioned
 		if (this.chartElement.style.position && this.chartElement.style.position !== 'relative') {
-			warn(
+			utils.warn(
 				`The chart's position ("${this.chartElement.style.position}") ` +
 					'is overwritten with position: relative'
 			);
@@ -54,21 +58,25 @@ export default class Controller {
 			this.#initFocusElement();
 
 			if (this.chartElement.lastChild) {
-				insertAfter(this.focusElement, this.chartElement.lastChild);
+				utils.insertAfter(this.focusElement, this.chartElement.lastChild);
 			} else {
 				this.chartElement.appendChild(this.focusElement);
 			}
 		}
 
 		// add elements to dom
-		insertAfter(this.element, anchor);
+		utils.insertAfter(this.element, anchor);
 	}
 
 	#initElement() {
-		this.element.id = 'friendly-application-' + uniqueId();
+		this.element.id = 'friendly-application-' + utils.uniqueId();
 		this.element.setAttribute('role', 'application');
 		this.element.tabIndex = 0;
 		this.element.setAttribute('aria-label', this.#label);
+		this.element.setAttribute(
+			'aria-describedby',
+			utils.concat(KEYBOARD_INSTRUCTIONS_PARAGRAPH, this.chartId)
+		);
 		this.element.style.outline = 'none';
 
 		this.element.addEventListener('focus', this.handleFocus);
@@ -114,7 +122,7 @@ export default class Controller {
 	}
 
 	get #label() {
-		return handlebars(this.locale.label, {
+		return utils.handlebars(this.locale.label, {
 			CHART_TITLE: this.chartDescription.title,
 			CHART_SUBTITLE: this.chartDescription.subtitle
 		});
@@ -128,10 +136,10 @@ export default class Controller {
 	}
 
 	#focus(bbox: { width: number; height: number; top: number; left: number }) {
-		this.focusElement.style.width = px(bbox.width);
-		this.focusElement.style.height = px(bbox.height);
-		this.focusElement.style.top = px(bbox.top - this.chartBoundingBox.top);
-		this.focusElement.style.left = px(bbox.left - this.chartBoundingBox.left);
+		this.focusElement.style.width = utils.px(bbox.width);
+		this.focusElement.style.height = utils.px(bbox.height);
+		this.focusElement.style.top = utils.px(bbox.top - this.chartBoundingBox.top);
+		this.focusElement.style.left = utils.px(bbox.left - this.chartBoundingBox.left);
 		this.focusElement.style.display = 'block';
 	}
 

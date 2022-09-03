@@ -23,6 +23,8 @@ export interface FriendlyLocale {
 		interactive: DescriptionForEachSymbol;
 	};
 
+	keyboardInstructions: string;
+
 	// use: CHART_TITLE
 	chartTitle: string;
 	// use: CHART_SUBTITLE
@@ -32,6 +34,7 @@ export interface FriendlyLocale {
 		purpose: string;
 		description: string;
 		chartLayoutDescription: string;
+		keyboardInstructions: string;
 	};
 
 	chartLayout: {
