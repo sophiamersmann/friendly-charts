@@ -8,13 +8,16 @@
 		}
 	},
 
+	"keyboardInstructions": "Drücke ENTER auf dem Chart oder einer Gruppe, um ein Level nach unten zu steigen. Drücke ESCAPE, um ein Level nach oben zu steigen. Drücke TAB, um den Chart zu verlassen. Nutze LINKS und RECHTS Pfeile, um benachbarten Elemente zu besuchen. Nutze OBEN und UNTEN Pfeile, um zwischen Gruppen zu wechseln.",
+
 	"chartTitle": "Chart Titel: {{ CHART_TITLE }}",
 	"chartSubtitle": "Chart Untertitel: {{ CHART_SUBTITLE }}",
 
 	"headings": {
 		"purpose": "Zweck",
 		"description": "Beschreibung",
-		"chartLayoutDescription": "Beschreibung des Chart Layouts"
+		"chartLayoutDescription": "Beschreibung des Chart Layouts",
+		"keyboardInstructions": "Erläuterungen zur Tastaturbedienung"
 	},
 
 	"chartLayout": {

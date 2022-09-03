@@ -8,13 +8,16 @@
 		}
 	},
 
+	"keyboardInstructions": "Press ENTER on the chart area or a group to drill down a level. Press ESCAPE to drill up a level. Press TAB to exit the chart. Use LEFT and RIGHT arrows to move between sibling elements. Use UP and DOWN arrows to move across groups.",
+
 	"chartTitle": "Chart title: {{ CHART_TITLE }}",
 	"chartSubtitle": "Chart subtitle: {{ CHART_SUBTITLE }}",
 
 	"headings": {
 		"purpose": "Purpose",
 		"description": "Description",
-		"chartLayoutDescription": "Chart layout description"
+		"chartLayoutDescription": "Chart layout description",
+		"keyboardInstructions": "Keyboard instructions"
 	},
 
 	"chartLayout": {
