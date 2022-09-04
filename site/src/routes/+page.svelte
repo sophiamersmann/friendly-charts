@@ -1,5 +1,6 @@
 <script>
 	import Counter from '$lib/Counter.svelte';
+	import * as friendly from 'friendly-charts';
 </script>
 
 <svelte:head>
