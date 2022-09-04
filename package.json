@@ -1,0 +1,43 @@
+{
+	"name": "friendly-charts",
+	"version": "0.0.1",
+	"description": "Screen reader friendly charts with minimal effort",
+	"main": "dist/index.js",
+	"module": "dist/index.mjs",
+	"types": "dist/index.d.ts",
+	"files": [
+		"dist"
+	],
+	"scripts": {
+		"prepare": "npm run build",
+		"build": "tsup src/index.ts --format esm,cjs,iife --sourcemap --dts",
+		"check": "tsc --noEmit",
+		"check:watch": "npm run check -- --watch",
+		"format": "prettier --ignore-path .gitignore --write src"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/sophiamersmann/friendly-charts.git"
+	},
+	"keywords": [
+		"charts",
+		"keyboard accessible",
+		"screen reader"
+	],
+	"author": "Sophia Mersmann",
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/sophiamersmann/friendly-charts/issues"
+	},
+	"homepage": "https://github.com/sophiamersmann/friendly-charts#readme",
+	"devDependencies": {
+		"@types/nanoid-dictionary": "^4.2.0",
+		"prettier": "^2.7.1",
+		"tsup": "^6.2.3",
+		"typescript": "^4.8.2"
+	},
+	"dependencies": {
+		"nanoid": "^4.0.0",
+		"nanoid-dictionary": "^4.3.0"
+	}
+}
