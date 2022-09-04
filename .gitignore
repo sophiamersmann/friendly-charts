@@ -1,11 +1,7 @@
 .DS_Store
 node_modules
 *.local*
-/dist
 
-/site/build
-/site/.svelte-kit
-/site/package
-/site/.env
-/site/.env.*
-/site/!.env.example
+# build
+/dist
+/locale

@@ -20,6 +20,9 @@
 		"strict": true,
 
 		/* Completeness */
-		"skipLibCheck": true
+		"skipLibCheck": true,
+
+		/* Import JSON */
+		"resolveJsonModule": true
 	}
 }
