@@ -17,7 +17,6 @@
 	"type": "module",
 	"dependencies": {
 		"@fontsource/fira-mono": "^4.5.9",
-		"cookie": "^0.4.2",
 		"friendly-charts": "workspace:*"
 	}
 }
