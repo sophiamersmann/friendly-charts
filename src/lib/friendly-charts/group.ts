@@ -7,6 +7,7 @@ export interface FriendlyGroup {
 	id: string;
 	type?: SymbolType;
 	label: string;
+	highlight?: string;
 	parentId: string;
 	position: number;
 }
@@ -14,6 +15,7 @@ export interface FriendlyGroup {
 interface Options {
 	id?: FriendlyGroup['id'];
 	type?: FriendlyGroup['type'];
+	highlight?: FriendlyGroup['highlight'];
 	label: FriendlyGroup['label'];
 	position: FriendlyGroup['position'];
 }
@@ -37,7 +39,8 @@ export default function group(node: HTMLElement | SVGElement, options: Options) 
 	const data = {
 		...options,
 		element: 'group',
-		id: id as string
+		id: id as string,
+		highlight: options.highlight || ''
 	};
 
 	// set data on the dom element

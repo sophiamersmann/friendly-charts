@@ -60,27 +60,56 @@
 			"point": "Punkt",
 			"bar": "Balken"
 		},
-		"symbol": "{{ SYMBOL_LABEL }}. {{ SYMBOL_TYPE }} {{ SYMBOL_POSITION }} von {{ N_SIBLINGS }}.",
+		"symbol": {
+			"withHighlight": "{{ SYMBOL_LABEL }}. {{ SYMBOL_HIGHLIGHT }}. {{ SYMBOL_TYPE }} {{ SYMBOL_POSITION }} von {{ N_SIBLINGS }}.",
+			"withoutHighlight": "{{ SYMBOL_LABEL }}. {{ SYMBOL_TYPE }} {{ SYMBOL_POSITION }} von {{ N_SIBLINGS }}."
+		},
 		"group": {
-			"withSymbolType": {
-				"empty": "{{ GROUP_LABEL }}. {{ SYMBOL_TYPE }} {{ GROUP_POSITION }} von {{ N_SIBLINGS }}. Leere Gruppe.",
-				"withMembers": {
-					"containsGroups": "{{ GROUP_LABEL }}. {{ SYMBOL_TYPE }} {{ GROUP_POSITION }} von {{ N_SIBLINGS }}. Gruppe, die {{ N_MEMBERS }} Gruppen enthält.",
-					"containsSymbols": {
-						"line": "{{ GROUP_LABEL }}. {{ SYMBOL_TYPE }} {{ GROUP_POSITION }} von {{ N_SIBLINGS }}. Gruppe, die {{ N_MEMBERS }} interaktive Linien enthält.",
-						"point": "{{ GROUP_LABEL }}. {{ SYMBOL_TYPE }} {{ GROUP_POSITION }} von {{ N_SIBLINGS }}. Gruppe, die {{ N_MEMBERS }} interaktive Punkte enthält.",
-						"bar": "{{ GROUP_LABEL }}. {{ SYMBOL_TYPE }} {{ GROUP_POSITION }} von {{ N_SIBLINGS }}. Gruppe, die {{ N_MEMBERS }} interaktive Balken enthält."
+			"withHighlight": {
+				"withSymbolType": {
+					"empty": "{{ GROUP_LABEL }}. {{ GROUP_HIGHLIGHT }}. {{ SYMBOL_TYPE }} {{ GROUP_POSITION }} von {{ N_SIBLINGS }}. Leere Gruppe.",
+					"withMembers": {
+						"containsGroups": "{{ GROUP_LABEL }}. {{ GROUP_HIGHLIGHT }}. {{ SYMBOL_TYPE }} {{ GROUP_POSITION }} von {{ N_SIBLINGS }}. Gruppe, die {{ N_MEMBERS }} Gruppen enthält.",
+						"containsSymbols": {
+							"line": "{{ GROUP_LABEL }}. {{ GROUP_HIGHLIGHT }}. {{ SYMBOL_TYPE }} {{ GROUP_POSITION }} von {{ N_SIBLINGS }}. Gruppe, die {{ N_MEMBERS }} interaktive Linien enthält.",
+							"point": "{{ GROUP_LABEL }}. {{ GROUP_HIGHLIGHT }}. {{ SYMBOL_TYPE }} {{ GROUP_POSITION }} von {{ N_SIBLINGS }}. Gruppe, die {{ N_MEMBERS }} interaktive Punkte enthält.",
+							"bar": "{{ GROUP_LABEL }}. {{ GROUP_HIGHLIGHT }}. {{ SYMBOL_TYPE }} {{ GROUP_POSITION }} von {{ N_SIBLINGS }}. Gruppe, die {{ N_MEMBERS }} interaktive Balken enthält."
+						}
+					}
+				},
+				"default": {
+					"empty": "Gruppe {{ GROUP_LABEL }}. {{ GROUP_HIGHLIGHT }}. Leer.",
+					"withMembers": {
+						"containsGroups": "Gruppe {{ GROUP_LABEL }}. {{ GROUP_HIGHLIGHT }}. Enthält {{ N_MEMBERS }} Gruppen.",
+						"containsSymbols": {
+							"line": "Gruppe {{ GROUP_LABEL }}. {{ GROUP_HIGHLIGHT }}. Enthält {{ N_MEMBERS }} interaktive Linien.",
+							"point": "Gruppe {{ GROUP_LABEL }}. {{ GROUP_HIGHLIGHT }}. Enthält {{ N_MEMBERS }} interaktive Punkte.",
+							"bar": "Gruppe {{ GROUP_LABEL }}. {{ GROUP_HIGHLIGHT }}. Enthält {{ N_MEMBERS }} interaktive Balken."
+						}
 					}
 				}
 			},
-			"default": {
-				"empty": "Gruppe {{ GROUP_LABEL }}. Leer.",
-				"withMembers": {
-					"containsGroups": "Gruppe {{ GROUP_LABEL }}. Enthält {{ N_MEMBERS }} Gruppen.",
-					"containsSymbols": {
-						"line": "Gruppe {{ GROUP_LABEL }}. Enthält {{ N_MEMBERS }} interaktive Linien.",
-						"point": "Gruppe {{ GROUP_LABEL }}. Enthält {{ N_MEMBERS }} interaktive Punkte.",
-						"bar": "Gruppe {{ GROUP_LABEL }}. Enthält {{ N_MEMBERS }} interaktive Balken."
+			"withoutHighlight": {
+				"withSymbolType": {
+					"empty": "{{ GROUP_LABEL }}. {{ SYMBOL_TYPE }} {{ GROUP_POSITION }} von {{ N_SIBLINGS }}. Leere Gruppe.",
+					"withMembers": {
+						"containsGroups": "{{ GROUP_LABEL }}. {{ SYMBOL_TYPE }} {{ GROUP_POSITION }} von {{ N_SIBLINGS }}. Gruppe, die {{ N_MEMBERS }} Gruppen enthält.",
+						"containsSymbols": {
+							"line": "{{ GROUP_LABEL }}. {{ SYMBOL_TYPE }} {{ GROUP_POSITION }} von {{ N_SIBLINGS }}. Gruppe, die {{ N_MEMBERS }} interaktive Linien enthält.",
+							"point": "{{ GROUP_LABEL }}. {{ SYMBOL_TYPE }} {{ GROUP_POSITION }} von {{ N_SIBLINGS }}. Gruppe, die {{ N_MEMBERS }} interaktive Punkte enthält.",
+							"bar": "{{ GROUP_LABEL }}. {{ SYMBOL_TYPE }} {{ GROUP_POSITION }} von {{ N_SIBLINGS }}. Gruppe, die {{ N_MEMBERS }} interaktive Balken enthält."
+						}
+					}
+				},
+				"default": {
+					"empty": "Gruppe {{ GROUP_LABEL }}. Leer.",
+					"withMembers": {
+						"containsGroups": "Gruppe {{ GROUP_LABEL }}. Enthält {{ N_MEMBERS }} Gruppen.",
+						"containsSymbols": {
+							"line": "Gruppe {{ GROUP_LABEL }}. Enthält {{ N_MEMBERS }} interaktive Linien.",
+							"point": "Gruppe {{ GROUP_LABEL }}. Enthält {{ N_MEMBERS }} interaktive Punkte.",
+							"bar": "Gruppe {{ GROUP_LABEL }}. Enthält {{ N_MEMBERS }} interaktive Balken."
+						}
 					}
 				}
 			}

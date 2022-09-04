@@ -246,6 +246,7 @@
 									id: 'line-1',
 									type: 'line',
 									label: '2021',
+									highlight: 'Linie deutlich höher als die Vergleichslinie',
 									position: 1
 								}}
 							/>
@@ -257,6 +258,7 @@
 									use:friendly.symbol={{
 										type: 'point',
 										label: `${MONTHS[d.month - 1]}. ${d.rain} Liter pro Quadratmeter`,
+										highlight: d.month === 9 ? 'Regenreichster Monat' : undefined,
 										parentId: 'line-1',
 										position: i
 									}}
