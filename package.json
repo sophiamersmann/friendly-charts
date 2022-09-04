@@ -1,50 +1,43 @@
 {
 	"name": "friendly-charts",
 	"version": "0.0.1",
+	"description": "Screen reader friendly charts with minimal effort",
+	"main": "dist/index.js",
+	"module": "dist/index.mjs",
+	"types": "dist/index.d.ts",
+	"files": [
+		"dist",
+		"locale"
+	],
 	"scripts": {
-		"dev": "vite dev",
-		"build": "vite build",
-		"package": "svelte-kit package",
-		"preview": "vite preview",
-		"prepare": "svelte-kit sync",
-		"test": "playwright test",
-		"check": "svelte-check --tsconfig ./tsconfig.json",
-		"check:watch": "svelte-check --tsconfig ./tsconfig.json --watch",
-		"lint": "prettier --check --plugin-search-dir=. . && eslint .",
-		"format": "prettier --write --plugin-search-dir=. ."
+		"prepare": "npm run build",
+		"build": "tsup src/index.ts --format esm,cjs,iife --sourcemap --dts && mkdir -p locale && cp src/locale/*.json locale",
+		"check": "tsc --noEmit",
+		"check:watch": "npm run check -- --watch",
+		"format": "prettier --ignore-path .gitignore --write src"
 	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/sophiamersmann/friendly-charts.git"
+	},
+	"keywords": [
+		"charts",
+		"keyboard accessible",
+		"screen reader"
+	],
+	"author": "Sophia Mersmann",
+	"license": "MIT",
+	"bugs": {
+		"url": "https://github.com/sophiamersmann/friendly-charts/issues"
+	},
+	"homepage": "https://github.com/sophiamersmann/friendly-charts#readme",
 	"devDependencies": {
-		"@playwright/test": "^1.22.2",
-		"@sveltejs/adapter-auto": "next",
-		"@sveltejs/kit": "next",
-		"@types/d3-array": "^3.0.3",
-		"@types/d3-format": "^3.0.1",
-		"@types/d3-scale": "^4.0.2",
-		"@types/d3-scale-chromatic": "^3.0.0",
-		"@types/d3-shape": "^3.1.0",
 		"@types/nanoid-dictionary": "^4.2.0",
-		"@typescript-eslint/eslint-plugin": "^5.27.0",
-		"@typescript-eslint/parser": "^5.27.0",
-		"eslint": "^8.16.0",
-		"eslint-config-prettier": "^8.3.0",
-		"eslint-plugin-svelte3": "^4.0.0",
-		"prettier": "^2.6.2",
-		"prettier-plugin-jsdoc": "^0.3.38",
-		"prettier-plugin-svelte": "^2.7.0",
-		"svelte": "^3.44.0",
-		"svelte-check": "^2.7.1",
-		"svelte-preprocess": "^4.10.6",
-		"tslib": "^2.3.1",
-		"typescript": "^4.7.4",
-		"vite": "^2.9.13"
+		"prettier": "^2.7.1",
+		"tsup": "^6.2.3",
+		"typescript": "^4.8.2"
 	},
-	"type": "module",
 	"dependencies": {
-		"d3-array": "^3.2.0",
-		"d3-format": "^3.1.0",
-		"d3-scale": "^4.0.2",
-		"d3-scale-chromatic": "^3.0.0",
-		"d3-shape": "^3.1.0",
 		"nanoid": "^4.0.0",
 		"nanoid-dictionary": "^4.3.0"
 	}

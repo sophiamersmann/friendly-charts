@@ -1,3 +1,7 @@
 # Friendly charts
 
-Exploration of screen reader friendly charts with minimal effort
+Screen reader friendly charts with minimal effort
+
+> **Warning**
+>
+> Under construction
