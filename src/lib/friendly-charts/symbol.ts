@@ -7,6 +7,7 @@ export interface FriendlySymbol {
 	id: string;
 	type: SymbolType;
 	label: string;
+	highlight?: string;
 	parentId: string;
 	position: number;
 }
@@ -15,6 +16,7 @@ type Options = {
 	id?: string;
 	type: FriendlySymbol['type'];
 	label: FriendlySymbol['label'];
+	highlight?: FriendlySymbol['highlight'];
 	parentId?: FriendlySymbol['parentId'];
 	position: FriendlySymbol['position'];
 };
@@ -45,7 +47,8 @@ export default function symbol(node: HTMLElement | SVGElement, options: Options)
 		...options,
 		element: 'symbol',
 		id: id as string,
-		label
+		label,
+		highlight: options.highlight || ''
 	};
 
 	// set data on the dom element

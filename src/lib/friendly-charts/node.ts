@@ -209,7 +209,7 @@ export function createTree(
 
 	function getGroupLabel(
 		node: FriendlyNode,
-		locale: FriendlyLocale['elements']['group']['default'],
+		locale: FriendlyLocale['elements']['group']['withHighlight']['default'],
 		data: Record<string, any>
 	) {
 		// empty group
@@ -252,27 +252,46 @@ export function createTree(
 		if (node.data.element === 'root') {
 			const data = { N_MEMBERS: node.children.length };
 			node.label = getGroupLabel(node, locale.root, data);
-		}
-		if (node.data.element === 'group' && node.data.type) {
-			node.label = getGroupLabel(node, locale.group.withSymbolType, {
-				GROUP_LABEL: node.data.label,
-				SYMBOL_TYPE: locale.symbolTypeMap[node.data.type],
-				GROUP_POSITION: parent.children.indexOf(node) + 1,
-				N_SIBLINGS: parent.children.length,
-				N_MEMBERS: node.children.length
-			});
+		} else if (node.data.element === 'group' && node.data.type) {
+			node.label = getGroupLabel(
+				node,
+				node.data.highlight
+					? locale.group.withHighlight.withSymbolType
+					: locale.group.withoutHighlight.withSymbolType,
+				{
+					GROUP_LABEL: node.data.label,
+					GROUP_HIGHLIGHT: node.data.highlight,
+					SYMBOL_TYPE: locale.symbolTypeMap[node.data.type],
+					GROUP_POSITION: parent.children.indexOf(node) + 1,
+					N_SIBLINGS: parent.children.length,
+					N_MEMBERS: node.children.length
+				}
+			);
 		} else if (node.data.element === 'group') {
-			node.label = getGroupLabel(node, locale.group.default, {
-				GROUP_LABEL: node.data.label,
-				N_MEMBERS: node.children.length
-			});
+			node.label = getGroupLabel(
+				node,
+				node.data.highlight
+					? locale.group.withHighlight.default
+					: locale.group.withoutHighlight.default,
+				{
+					GROUP_LABEL: node.data.label,
+					GROUP_HIGHLIGHT: node.data.highlight,
+					N_MEMBERS: node.children.length
+				}
+			);
 		} else if (node.data.element === 'symbol') {
-			node.label = utils.handlebars(locale.symbol, {
+			const data: Record<string, any> = {
 				SYMBOL_LABEL: node.data.label,
 				SYMBOL_TYPE: locale.symbolTypeMap[node.data.type as FriendlySymbol['type']],
 				SYMBOL_POSITION: parent.children.indexOf(node) + 1,
 				N_SIBLINGS: parent.children.length
-			});
+			};
+			if (!node.data.highlight) {
+				node.label = utils.handlebars(locale.symbol.withoutHighlight, data);
+			} else {
+				data['SYMBOL_HIGHLIGHT'] = node.data.highlight;
+				node.label = utils.handlebars(locale.symbol.withHighlight, data);
+			}
 		}
 	});
 

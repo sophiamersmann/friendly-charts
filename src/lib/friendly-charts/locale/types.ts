@@ -65,13 +65,25 @@ export interface FriendlyLocale {
 
 	elements: {
 		symbolTypeMap: DescriptionForEachSymbol;
-		// use: SYMBOL_LABEL, SYMBOL_TYPE, SYMBOL_POSITION, N_SIBLINGS
-		symbol: string;
+		symbol: {
+			// use: SYMBOL_LABEL, SYMBOL_TYPE, SYMBOL_POSITION, N_SIBLINGS, SYMBOL_HIGHLIGHT
+			withHighlight: string;
+			// use: SYMBOL_LABEL, SYMBOL_TYPE, SYMBOL_POSITION, N_SIBLINGS
+			withoutHighlight: string;
+		};
 		group: {
-			// use: GROUP_LABEL, SYMBOL_TYPE, GROUP_POSITION, N_SIBLINGS, [N_MEMBERS]
-			withSymbolType: DescriptionForElement;
-			// use: GROUP_LABEL, [N_MEMBERS]
-			default: DescriptionForElement;
+			withHighlight: {
+				// use: GROUP_LABEL, GROUP_HIGHLIGHT, SYMBOL_TYPE, GROUP_POSITION, N_SIBLINGS, [N_MEMBERS]
+				withSymbolType: DescriptionForElement;
+				// use: GROUP_LABEL, GROUP_HIGHLIGHT, [N_MEMBERS]
+				default: DescriptionForElement;
+			};
+			withoutHighlight: {
+				// use: GROUP_LABEL, SYMBOL_TYPE, GROUP_POSITION, N_SIBLINGS, [N_MEMBERS]
+				withSymbolType: DescriptionForElement;
+				// use: GROUP_LABEL, [N_MEMBERS]
+				default: DescriptionForElement;
+			};
 		};
 		// use: [N_MEMBERS]
 		root: DescriptionForElement;
