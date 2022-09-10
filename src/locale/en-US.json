@@ -62,7 +62,7 @@
 		},
 		"symbol": {
 			"withHighlight": "{{ SYMBOL_LABEL }}. {{ SYMBOL_HIGHLIGHT }}. {{ SYMBOL_TYPE }} {{ SYMBOL_POSITION }} of {{ N_SIBLINGS }}.",
-			"withoutHighlight": "{{ SYMBOL_LABEL }} {{ SYMBOL_TYPE }} {{ SYMBOL_POSITION }} of {{ N_SIBLINGS }}."
+			"withoutHighlight": "{{ SYMBOL_LABEL }}. {{ SYMBOL_TYPE }} {{ SYMBOL_POSITION }} of {{ N_SIBLINGS }}."
 		},
 		"group": {
 			"withHighlight": {
