@@ -107,7 +107,7 @@ export default function chart(
 				| undefined,
 			chartId,
 			locale: locale.controller,
-			debug,
+			debug: debug || false,
 		});
 
 		const root = createTree([...groups, ...symbols], locale.elements);
@@ -174,7 +174,7 @@ export default function chart(
 						| undefined,
 					chartId,
 					locale: locale.controller,
-					debug,
+					debug: debug || false,
 				});
 			}
 			controller.update(root);
