@@ -18,6 +18,9 @@
 	"type": "module",
 	"dependencies": {
 		"@fontsource/fira-mono": "^4.5.9",
-		"friendly-charts": "workspace:*"
+		"d3-array": "^3.2.0",
+		"d3-scale": "^4.0.2",
+		"friendly-charts": "workspace:*",
+		"layercake": "^7.0.0"
 	}
 }
