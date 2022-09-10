@@ -49,7 +49,7 @@
 		data={sortedAlphabet}
 	>
 		<Svg>
-			<AxisX label="Letter" showLa bel={false} let:tick let:index>
+			<AxisX label="Letter" showLabel={false} let:tick let:index>
 				<tspan style:font-weight={index < 3 ? 'bold' : 'normal'}>{tick}</tspan>
 			</AxisX>
 			<AxisY label="Frequency" gridlines let:tick>
