@@ -18,7 +18,7 @@
 </script>
 
 <div
-	class="chart-container"
+	class="figure"
 	use:friendly.chart={{
 		title: '.title',
 		subtitle: '.subtitle',
@@ -35,37 +35,41 @@
 		</p>
 	</hgroup>
 
-	<LayerCake
-		padding={{
-			top: 10,
-			right: 0,
-			bottom: 30,
-			left: 30,
-		}}
-		x="letter"
-		y="frequency"
-		xScale={scaleBand().paddingInner(0.1)}
-		yDomain={[0, null]}
-		data={sortedAlphabet}
-	>
-		<Svg>
-			<AxisX label="Letter" showLabel={false} let:tick let:index>
-				<tspan style:font-weight={index < 3 ? 'bold' : 'normal'}>{tick}</tspan>
-			</AxisX>
-			<AxisY label="Frequency" gridlines let:tick>
-				{tick}
-			</AxisY>
+	<div class="chart-container">
+		<LayerCake
+			padding={{
+				top: 10,
+				right: 0,
+				bottom: 30,
+				left: 30,
+			}}
+			x="letter"
+			y="frequency"
+			xScale={scaleBand().paddingInner(0.1)}
+			yDomain={[0, null]}
+			data={sortedAlphabet}
+		>
+			<Svg>
+				<AxisX label="Letter" showLabel={false} let:tick let:index>
+					<tspan style:font-weight={index < 3 ? 'bold' : 'normal'}>{tick}</tspan
+					>
+				</AxisX>
+				<AxisY label="Frequency" gridlines let:tick>
+					{tick}
+				</AxisY>
 
-			{#each sortedAlphabet as d, i}
-				<Column
-					index={i}
-					label="Letter {d.letter}. {Math.round(d.frequency * 100 * 10) / 10}%"
-					fill="#0284c7"
-					opacity={0.8}
-				/>
-			{/each}
-		</Svg>
-	</LayerCake>
+				{#each sortedAlphabet as d, i}
+					<Column
+						index={i}
+						label="Letter {d.letter}. {Math.round(d.frequency * 100 * 10) /
+							10}%"
+						fill="#0284c7"
+						opacity={0.8}
+					/>
+				{/each}
+			</Svg>
+		</LayerCake>
+	</div>
 
 	<div class="source">
 		Data from
@@ -76,11 +80,19 @@
 </div>
 
 <style>
-	.chart-container {
+	.figure {
 		width: 100%;
 		max-width: 600px;
-		height: 400px;
+		height: 450px;
 		margin: 0 auto;
+
+		display: flex;
+		flex-direction: column;
+	}
+
+	.chart-container {
+		width: 100%;
+		height: 100%;
 	}
 
 	.source {
