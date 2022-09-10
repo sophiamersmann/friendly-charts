@@ -20,6 +20,7 @@ interface Chart {
 
 interface Options extends Chart {
 	axes?: (Omit<FriendlyAxis, 'element'> & { element?: 'axis' })[];
+	debug: boolean;
 }
 
 function checkIfParentExists(parentId: string) {
@@ -38,7 +39,7 @@ export default function chart(
 	node: HTMLElement | SVGElement,
 	options: Options
 ) {
-	const { locale } = options;
+	const { locale, debug } = options;
 
 	const chartId = utils.uniqueId();
 
@@ -106,6 +107,7 @@ export default function chart(
 				| undefined,
 			chartId,
 			locale: locale.controller,
+			debug,
 		});
 
 		const root = createTree([...groups, ...symbols], locale.elements);
@@ -172,6 +174,7 @@ export default function chart(
 						| undefined,
 					chartId,
 					locale: locale.controller,
+					debug,
 				});
 			}
 			controller.update(root);

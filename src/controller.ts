@@ -12,6 +12,7 @@ interface Options {
 	focusElement?: HTMLElement;
 	chartId: string;
 	locale: FriendlyLocale['controller'];
+	debug: boolean;
 }
 
 export default class Controller {
@@ -24,15 +25,18 @@ export default class Controller {
 	chartDescription;
 	chartId;
 	locale;
+	debug;
+	debugElement;
 
 	constructor(
 		chartElement: HTMLElement,
-		{ title, subtitle, anchor, focusElement, chartId, locale }: Options
+		{ title, subtitle, anchor, focusElement, chartId, locale, debug }: Options
 	) {
 		this.chartElement = chartElement;
 		this.chartBoundingBox = this.chartElement.getBoundingClientRect();
 		this.chartId = chartId;
 		this.locale = locale;
+		this.debug = debug;
 
 		// necessary since the focus element is absolutely positioned
 		if (
@@ -52,6 +56,7 @@ export default class Controller {
 
 		this.element = document.createElement('div');
 		this.#initElement();
+		utils.insertAfter(this.element, anchor);
 
 		if (focusElement) {
 			this.focusElement = focusElement;
@@ -67,8 +72,16 @@ export default class Controller {
 			}
 		}
 
-		// add elements to dom
-		utils.insertAfter(this.element, anchor);
+		if (debug) {
+			this.debugElement = document.createElement('div');
+			this.#initDebugElement();
+
+			if (this.chartElement.lastChild) {
+				utils.insertAfter(this.debugElement, this.chartElement.lastChild);
+			} else {
+				this.chartElement.appendChild(this.debugElement);
+			}
+		}
 	}
 
 	#initElement() {
@@ -112,11 +125,29 @@ export default class Controller {
 		}
 	}
 
+	#initDebugElement() {
+		const element = this.debugElement as HTMLDivElement;
+
+		element.style.cssText = `
+			position: absolute;
+			left: 0;
+			bottom: 0;
+			background-color: white;
+			width: 100%;
+			padding: 4px 8px;
+			border: 2px solid black;
+			transform: translateY(calc(100% + 4px));
+		`;
+
+		this.#debug();
+	}
+
 	#reset() {
 		this.#clearChildren();
 		this.element.removeAttribute('aria-activedescendant');
-		this.focusElement.style.display = 'none';
 		this.element.setAttribute('aria-label', this.#label);
+		this.focusElement.style.display = 'none';
+		if (this.debug) this.#debug();
 	}
 
 	#clearChildren() {
@@ -149,6 +180,17 @@ export default class Controller {
 			bbox.left - this.chartBoundingBox.left
 		);
 		this.focusElement.style.display = 'block';
+	}
+
+	#debug(label?: string) {
+		if (!this.debugElement) return;
+		if (label) {
+			this.debugElement.textContent = 'Announced by screen readers: ' + label;
+			this.debugElement.style.fontStyle = 'normal';
+		} else {
+			this.debugElement.textContent = 'No element selected';
+			this.debugElement.style.fontStyle = 'italic';
+		}
 	}
 
 	handleFocus = () => {
@@ -245,6 +287,7 @@ export default class Controller {
 			this.element.removeAttribute('aria-activedescendant');
 			this.#clearChildren();
 			this.#focus(this.chartElement.getBoundingClientRect());
+			if (this.debug) this.#debug();
 			return;
 		}
 
@@ -275,6 +318,9 @@ export default class Controller {
 		// update focus
 		const bbox = nextActiveNode.boundingBox;
 		if (bbox) this.#focus(bbox);
+
+		// update debug element
+		if (this.debug) this.#debug(nextActiveNode.label);
 	};
 
 	update(tree: FriendlyNode) {
