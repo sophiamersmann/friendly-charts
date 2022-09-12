@@ -4,7 +4,7 @@ export interface FriendlyFocus {
 	element: 'focus';
 }
 
-export default function symbol(node: HTMLElement | SVGElement) {
+export default function focus(node: HTMLElement | SVGElement) {
 	node.style.display = 'none';
 
 	const data = {
