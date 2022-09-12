@@ -4,7 +4,7 @@ export interface FriendlyAxis {
 	element: 'axis';
 	label: string;
 	direction?: 'x' | 'y';
-	ticks?: any[];
+	ticks?: (string | number)[];
 }
 
 interface Options {
@@ -26,7 +26,9 @@ export default function axis(node: HTMLElement | SVGElement, options: Options) {
 	if (typeof ticks === 'string') {
 		const elements = utils.querySelectorAll(node, ticks);
 		if (elements) {
-			ticks = Array.from(elements).map((element) => element.textContent);
+			ticks = Array.from(elements)
+				.map((element) => element.textContent)
+				.filter((s) => s) as string[];
 		}
 	}
 
