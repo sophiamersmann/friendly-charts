@@ -25,7 +25,7 @@ export default function symbol(
 	node: HTMLElement | SVGElement,
 	options: Options
 ) {
-	let { id, label } = options;
+	let { id } = options;
 
 	// generate random id if not given
 	if (!id) {
@@ -41,6 +41,8 @@ export default function symbol(
 
 	node.id = id;
 
+	// get label
+	let { label } = options;
 	if (utils.isSelector(label)) {
 		const element = utils.querySelector(node, label);
 		label = element?.textContent || '';

@@ -39,10 +39,18 @@ export default function group(
 
 	node.id = id;
 
+	// get label
+	let { label } = options;
+	if (utils.isSelector(label)) {
+		const element = utils.querySelector(node, label);
+		label = element?.textContent || '';
+	}
+
 	const data = {
 		...options,
 		element: 'group',
 		id: id as string,
+		label,
 		highlight: options.highlight || '',
 	};
 
