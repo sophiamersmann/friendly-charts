@@ -139,7 +139,6 @@ export default function chart(node: HTMLElement, options: Options) {
 					data.parentId = parent?.id || '';
 				}
 
-				// TODO: type safety
 				if (friendly === 'axis') {
 					axes.push(data as FriendlyAxis);
 					dirty.axis = true;
@@ -160,14 +159,17 @@ export default function chart(node: HTMLElement, options: Options) {
 		if (dirty.tree) {
 			const root = createTree([...groups, ...symbols], locale.elements);
 			updateChartDescription({ tree: root, title, locale, chartId });
+
 			if (!controller) {
+				const focusElement =
+					(node.querySelector(
+						`[friendly-element="focus"]`
+					) as HTMLElement | null) || undefined;
 				controller = new Controller(node, {
 					title,
 					subtitle,
 					anchor: instructionsElement,
-					focusElement: node.querySelector(`[friendly-element="focus"]`) as
-						| HTMLElement
-						| undefined,
+					focusElement,
 					chartId,
 					locale: locale.controller,
 					debug,
