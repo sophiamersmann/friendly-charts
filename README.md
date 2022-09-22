@@ -14,12 +14,12 @@ npm install friendly-charts
 
 ## Features
 
-You ✨ **bring your own chart** ✨ and Friendly Charts will:
+You ✨ bring your own chart ✨ and Friendly Charts will:
 
-- **expose a chart description** to screen readers
-- **make your chart keyboard accessible**, allowing screen reader users to explore charts via keyboard interactions
+- expose a chart description to screen readers
+- make your chart keyboard accessible, allowing screen reader users to explore charts via keyboard interactions
 
-Friendly Charts exports a number of functions that expect a DOM element as input. Friendly Charts is **framework agnostic** but in Svelte and Solid, for example, the exported functions can be applied as **use directives/actions**.
+Friendly Charts exports a number of functions that expect a DOM element as input. Friendly Charts is framework agnostic but in Svelte and Solid, for example, the exported functions can be applied as use directives/actions.
 
 The interaction design for keyboard accessible charts is borrowed from [Visa Chart Components](https://developer.visa.com/pages/chart-components):
 
@@ -29,7 +29,7 @@ The interaction design for keyboard accessible charts is borrowed from [Visa Cha
 - _LEFT_ and _RIGHT_ arrows to move between sibling elements
 - _UP_ and _DOWN_ arrows to move across groups
 
-README_demo.mov
+https://user-images.githubusercontent.com/12461810/191855514-5c5db343-8b8c-48e2-8829-bf7314938def.mov
 
 ## Example
 
