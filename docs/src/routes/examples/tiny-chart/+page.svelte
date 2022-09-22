@@ -10,7 +10,7 @@
 	];
 
 	// dimensions
-	const width = 480;
+	const width = 300;
 	const height = 100;
 	const padding = { top: 0, right: 0, bottom: 20, left: 20 };
 	const boundedWidth = width - padding.left - padding.right;
@@ -18,38 +18,24 @@
 	const barHeight = 14;
 
 	// x and y coordinates
-	const maxValue = 82;
+	const maxValue = Math.max(...data.map((d) => d.value));
 	const spacing = (boundedHeight - data.length * barHeight) / (data.length + 1);
 	const getX = (value) => value * (boundedWidth / maxValue);
 	const getY = (index) => index * barHeight + (index + 1) * spacing;
 </script>
 
 <!-- FRIENDLY ACTION: declare a chart and link to its title and subtitle -->
-<div
-	use:friendly.chart={{
-		title: '.title',
-		subtitle: '.subtitle',
-		locale,
-	}}
-	style:background-color="white"
-	style:padding="14px"
-	style:width="max-content"
-	style:margin="0 auto"
-	style:box-shadow="0 0 6px 0px rgb(0 0 0 / 10%)"
->
+<div use:friendly.chart={{ title: '.title', subtitle: '.subtitle', locale }}>
 	<!-- title and subtitle -->
-	<hgroup style:margin-bottom="8px">
-		<h2 class="title" style:margin="0" style:font-size="1.15rem">
-			Chart title
-		</h2>
-		<p class="subtitle" style:margin="0">Chart subtitle</p>
+	<hgroup>
+		<h2 class="title">Chart title</h2>
+		<p class="subtitle">Chart subtitle</p>
 	</hgroup>
 
 	<svg {width} {height}>
 		<g style:transform="translate({padding.left}px, {padding.top}px)">
 			<!-- FRIENDLY ACTION: declare the x-axis, give it a label and link to its ticks -->
 			<g
-				class="axis-x"
 				use:friendly.axis={{
 					label: 'Axis label',
 					direction: 'x',
@@ -61,12 +47,7 @@
 						<!-- grid line -->
 						<line y1={-boundedHeight} stroke="lightgray" />
 						<!-- tick label -->
-						<text
-							style:font-size="0.8rem"
-							style:transform="translateY(1em)"
-							style:text-anchor="middle"
-							fill="gray"
-						>
+						<text fill="gray">
 							{tick}
 						</text>
 					</g>
@@ -76,7 +57,7 @@
 			<!-- bars -->
 			<g>
 				{#each data as d, i (d.category)}
-					<g transform="translate(0,{getY(i)})">
+					<g class="bar" transform="translate(0,{getY(i)})">
 						<!-- FRIENDLY ACTION: declare a bar and give it an accessible label -->
 						<rect
 							use:friendly.symbol={{
@@ -90,12 +71,7 @@
 						/>
 
 						<!-- label -->
-						<text
-							y="0.75em"
-							style:transform="translateX(-5px)"
-							style:text-anchor="end"
-							style:font-weight="bold"
-						>
+						<text y="0.75em">
 							{d.category}
 						</text>
 					</g>
@@ -106,3 +82,29 @@
 		></svg
 	>
 </div>
+
+<style>
+	* {
+		margin: 0;
+	}
+
+	hgroup {
+		margin-bottom: 8px;
+	}
+
+	hgroup h2 {
+		font-size: 1.25rem;
+	}
+
+	.tick text {
+		font-size: 0.8rem;
+		transform: translateY(1em);
+		text-anchor: middle;
+	}
+
+	.bar text {
+		transform: translateX(-5px);
+		text-anchor: end;
+		font-weight: bold;
+	}
+</style>
