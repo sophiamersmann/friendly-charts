@@ -14,13 +14,12 @@ interface Chart {
 	summary?: string;
 	purpose?: string;
 	description?: string;
-	context?: string;
 	locale: FriendlyLocale;
 }
 
 interface Options extends Chart {
 	axes?: (Omit<FriendlyAxis, 'element'> & { element?: 'axis' })[];
-	debug: boolean;
+	debug?: boolean;
 }
 
 function checkIfParentExists(parentId: string) {
@@ -35,11 +34,8 @@ function checkIfParentExists(parentId: string) {
 	return true;
 }
 
-export default function chart(
-	node: HTMLElement | SVGElement,
-	options: Options
-) {
-	const { locale, debug } = options;
+export default function chart(node: HTMLElement, options: Options) {
+	const { locale, debug = false } = options;
 
 	const chartId = utils.uniqueId();
 
@@ -107,7 +103,7 @@ export default function chart(
 				| undefined,
 			chartId,
 			locale: locale.controller,
-			debug: debug || false,
+			debug,
 		});
 
 		const root = createTree([...groups, ...symbols], locale.elements);
@@ -143,7 +139,6 @@ export default function chart(
 					data.parentId = parent?.id || '';
 				}
 
-				// TODO: type safety
 				if (friendly === 'axis') {
 					axes.push(data as FriendlyAxis);
 					dirty.axis = true;
@@ -164,17 +159,20 @@ export default function chart(
 		if (dirty.tree) {
 			const root = createTree([...groups, ...symbols], locale.elements);
 			updateChartDescription({ tree: root, title, locale, chartId });
+
 			if (!controller) {
+				const focusElement =
+					(node.querySelector(
+						`[friendly-element="focus"]`
+					) as HTMLElement | null) || undefined;
 				controller = new Controller(node, {
 					title,
 					subtitle,
 					anchor: instructionsElement,
-					focusElement: node.querySelector(`[friendly-element="focus"]`) as
-						| HTMLElement
-						| undefined,
+					focusElement,
 					chartId,
 					locale: locale.controller,
-					debug: debug || false,
+					debug,
 				});
 			}
 			controller.update(root);
@@ -313,22 +311,6 @@ function initChartDescription(
 		element.classList.add(CONST.DESCRIPTION);
 		a11yElem.appendChild(element);
 		a11yElem.appendChild(utils.createElement('p', description));
-	}
-
-	//
-	// context
-	//
-
-	let { context } = options;
-	if (context && utils.isSelector(context)) {
-		const element = utils.querySelector(node, context);
-		context = element?.textContent || '';
-	}
-
-	if (context) {
-		const element = utils.createElement('p', context);
-		element.classList.add(CONST.CONTEXT);
-		a11yElem.appendChild(element);
 	}
 
 	// hide the a11y instructions visually

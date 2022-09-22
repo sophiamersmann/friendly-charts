@@ -19,8 +19,9 @@ export function createElement(tagName: string, content: string) {
 	return e;
 }
 
+/** A string is interpreted as selector if it starts with one of: # . [ : */
 export function isSelector(s: string) {
-	return /^[#.].+$/.test(s);
+	return /^[#.\[:].+$/.test(s.trim());
 }
 
 export function querySelector(node: Element, selector: string) {
