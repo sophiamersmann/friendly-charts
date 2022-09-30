@@ -132,6 +132,8 @@ Bar chart (Svelte):
 </style>
 ```
 
+CodeSandbox: https://codesandbox.io/s/friendly-tiny-bar-chart-10weeu?file=/App.svelte
+
 ## Documentation
 
 Exported are:
@@ -169,13 +171,13 @@ chart(node, {
 
 **Options:**
 
-- `title` **(required)**: chart title, either the title itself or a selector that points to an element within tha chart container
-- `subtitle` **(required)**: chart subtitle, either the subtitle itself or a selector that points to an element within tha chart container
+- `title` **(required)**: chart title, either the title itself or a selector that points to an element within the chart container
+- `subtitle` **(required)**: chart subtitle, either the subtitle itself or a selector that points to an element within the chart container
 - `locale` **(required)**: locale, usually imported from Friendly Charts, but you can bring your own
-- `summary`: brief summary of the chart, either the summary itself or a selector that points to an element within tha chart container
-- `purpose`: an explanation of the chart's purpose, either the explanation itself or a selector that points to an element within tha chart container
-- `description`: long description of the chart, either the description itself or a selector that points to an element within tha chart container
-- `axes`: list of axis descriptions (see Section [axis(node, options)](#axisnode-options)), only needed if an axis is not visually present in the chart
+- `summary`: brief summary of the chart, either the summary itself or a selector that points to an element within the chart container
+- `purpose`: an explanation of the chart's purpose, either the explanation itself or a selector that points to an element within the chart container
+- `description`: long description of the chart, either the description itself or a selector that points to an element within the chart container
+- `axes`: list of axis descriptions (see Section [axis](#axisnode-options)), only needed if an axis is not visually present in the chart
 - `debug` (default: `false`): display an overlay that shows what a screen reader would announce on interaction with the chart
 
 ### `axis(node, options)`
