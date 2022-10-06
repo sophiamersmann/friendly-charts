@@ -65,7 +65,7 @@ Bar chart (Svelte):
 </script>
 
 <!-- FRIENDLY ACTION: declare a chart and link to its title and subtitle -->
-<div use:friendly.chart={{ title: '.title', subtitle: '.subtitle', locale }} >
+<div use:friendly.chart={{ title: '.title', subtitle: '.subtitle', type: 'bar', locale }} >
   <!-- title and subtitle -->
   <hgroup>
     <h2 class="title"> Chart title </h2>
@@ -155,15 +155,21 @@ import { chart } from 'friendly-charts';
 import locale from 'friendly-charts/locale/en-US.json';
 
 // minimal configuration
-chart(node, { title: 'Chart title', subtitle: 'Chart subtitle', locale });
+chart(node, {
+	title: 'Chart title',
+	subtitle: 'Chart subtitle',
+	type: 'bar',
+	locale,
+});
 
 // .title and .subtitle are selectors that point to elements within the chart container
-chart(node, { title: '.title', subtitle: '.subtitle', locale });
+chart(node, { title: '.title', subtitle: '.subtitle', type: 'bar', locale });
 
 // debug mode
 chart(node, {
 	title: 'Chart title',
 	subtitle: 'Chart subtitle',
+	type: 'bar',
 	locale,
 	debug: true,
 });
@@ -173,6 +179,7 @@ chart(node, {
 
 - `title` **(required)**: chart title, either the title itself or a selector that points to an element within the chart container
 - `subtitle` **(required)**: chart subtitle, either the subtitle itself or a selector that points to an element within the chart container
+- `type` (**required**; `'line'`, `'bar'` or `'scatter'`): chart type
 - `locale` **(required)**: locale, usually imported from Friendly Charts, but you can bring your own
 - `summary`: brief summary of the chart, either the summary itself or a selector that points to an element within the chart container
 - `purpose`: an explanation of the chart's purpose, either the explanation itself or a selector that points to an element within the chart container
