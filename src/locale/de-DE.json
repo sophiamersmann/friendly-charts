@@ -3,7 +3,7 @@
 		"static": "Chart mit Titel '{{ CHART_TITLE }}'. Dieser Abschnitt enthält mehr Informationen über den Chart.",
 		"interactive": {
 			"line": "Tastatur-bedienbares Liniendiagramm mit Titel '{{ CHART_TITLE }}'. Dieser Abschnitt enthält mehr Informationen über den Chart. Die TAB-Taste führt in den Chart Bereich.",
-			"point": "Tastatur-bedienbarer Streudiagramm mit Titel '{{ CHART_TITLE }}'. Dieser Abschnitt enthält mehr Informationen über den Chart. Die TAB-Taste führt in den Chart Bereich.",
+			"scatter": "Tastatur-bedienbares Streudiagramm mit Titel '{{ CHART_TITLE }}'. Dieser Abschnitt enthält mehr Informationen über den Chart. Die TAB-Taste führt in den Chart Bereich.",
 			"bar": "Tastatur-bedienbares Balkendiagramm mit Titel '{{ CHART_TITLE }}'. Dieser Abschnitt enthält mehr Informationen über den Chart. Die TAB-Taste führt in den Chart Bereich."
 		}
 	},
@@ -25,9 +25,9 @@
 			"withSingleSymbol": "Dies ist ein Liniendiagramm mit einer Linie.",
 			"withMultipleSymbols": "Dies ist ein Liniendiagramm mit {{ N_CHART_ELEMENTS }} Linien."
 		},
-		"point": {
-			"withSingleSymbol": "Dies ist ein Streudiagramm mit einem Punkt.",
-			"withMultipleSymbols": "Dies ist ein Streudiagramm mit {{ N_CHART_ELEMENTS }} Punkten."
+		"scatter": {
+			"withSingleSymbol": "Dies ist ein Streudiagramm mit einem Datenpunk.",
+			"withMultipleSymbols": "Dies ist ein Streudiagramm mit {{ N_CHART_ELEMENTS }} Datenpunkten."
 		},
 		"bar": {
 			"withSingleSymbol": "Dies ist ein Balkendiagramm mit einem Balken.",
@@ -48,7 +48,7 @@
 			"default": "Interaktiver Chart.",
 			"withChartType": {
 				"line": "Interaktives Liniendiagramm.",
-				"point": "Interaktives Streudiagramm.",
+				"scatter": "Interaktives Streudiagramm.",
 				"bar": "Interaktives Balkendiagramm."
 			}
 		}

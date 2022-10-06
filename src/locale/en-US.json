@@ -3,7 +3,7 @@
 		"static": "Chart titled '{{ CHART_TITLE }}'. This section contains additional information about this chart.",
 		"interactive": {
 			"line": "Keyboard interactive line chart, titled '{{ CHART_TITLE }}'. This section contains additional information about this chart. Pressing TAB takes you to the chart area.",
-			"point": "Keyboard interactive scatter plot, titled '{{ CHART_TITLE }}'. This section contains additional information about this chart. Pressing TAB takes you to the chart area.",
+			"scatter": "Keyboard interactive scatter plot, titled '{{ CHART_TITLE }}'. This section contains additional information about this chart. Pressing TAB takes you to the chart area.",
 			"bar": "Keyboard interactive bar chart, titled '{{ CHART_TITLE }}'. This section contains additional information about this chart. Pressing TAB takes you to the chart area."
 		}
 	},
@@ -25,9 +25,9 @@
 			"withSingleSymbol": "This is a line chart with a single line.",
 			"withMultipleSymbols": "This is a line chart with {{ N_CHART_ELEMENTS }} lines."
 		},
-		"point": {
-			"withSingleSymbol": "This is a point chart with a single point.",
-			"withMultipleSymbols": "This is a point chart with {{ N_CHART_ELEMENTS }} points."
+		"scatter": {
+			"withSingleSymbol": "This is a scatter plot with a single data point.",
+			"withMultipleSymbols": "This is a scatter plot with {{ N_CHART_ELEMENTS }} data points."
 		},
 		"bar": {
 			"withSingleSymbol": "This is a bar chart with a single bar.",
@@ -48,7 +48,7 @@
 			"default": "Interactive chart.",
 			"withChartType": {
 				"line": "Interactive line chart.",
-				"point": "Interactive scatter plot.",
+				"scatter": "Interactive scatter plot.",
 				"bar": "Interactive bar chart."
 			}
 		}

@@ -156,10 +156,7 @@ export function getChartFeatures(tree: FriendlyNode): {
 	const minDepth = Math.min(...depths);
 	const topLevelSymbols = symbols.filter((_, i) => depths[i] === minDepth);
 
-	return {
-		nElements: topLevelSymbols.length,
-		type: topLevelSymbols[0].data.type,
-	};
+	return { nElements: topLevelSymbols.length };
 }
 
 export function createTree(

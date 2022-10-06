@@ -8,9 +8,12 @@ import type { FriendlySymbol } from './symbol';
 import type { FriendlyGroup } from './group';
 import type { FriendlyLocale } from './locale/types';
 
+export type ChartType = 'line' | 'scatter' | 'bar';
+
 interface Chart {
 	title: string;
 	subtitle: string;
+	type: ChartType;
 	summary?: string;
 	purpose?: string;
 	description?: string;
@@ -35,7 +38,7 @@ function checkIfParentExists(parentId: string) {
 }
 
 export default function chart(node: HTMLElement, options: Options) {
-	const { locale, debug = false } = options;
+	const { locale, type: chartType, debug = false } = options;
 
 	const chartId = utils.uniqueId();
 
@@ -102,17 +105,31 @@ export default function chart(node: HTMLElement, options: Options) {
 				| HTMLElement
 				| undefined,
 			chartId,
+			chartType,
 			locale: locale.controller,
 			debug,
 		});
 
 		const root = createTree([...groups, ...symbols], locale.elements);
-		updateChartDescription({ axes, tree: root, title, locale, chartId });
+		updateChartDescription({
+			axes,
+			tree: root,
+			title,
+			chartType,
+			locale,
+			chartId,
+		});
 		controller.update(root);
 	}
 
 	if (axes.length > 0) {
-		updateChartDescription({ axes, title, locale, chartId });
+		updateChartDescription({
+			axes,
+			title,
+			chartType,
+			locale,
+			chartId,
+		});
 	}
 
 	const observer = new MutationObserver((mutationList) => {
@@ -153,12 +170,24 @@ export default function chart(node: HTMLElement, options: Options) {
 		}
 
 		if (dirty.axis) {
-			updateChartDescription({ axes, title, locale, chartId });
+			updateChartDescription({
+				axes,
+				title,
+				chartType,
+				locale,
+				chartId,
+			});
 		}
 
 		if (dirty.tree) {
 			const root = createTree([...groups, ...symbols], locale.elements);
-			updateChartDescription({ tree: root, title, locale, chartId });
+			updateChartDescription({
+				tree: root,
+				title,
+				chartType,
+				locale,
+				chartId,
+			});
 
 			if (!controller) {
 				const focusElement =
@@ -171,6 +200,7 @@ export default function chart(node: HTMLElement, options: Options) {
 					anchor: instructionsElement,
 					focusElement,
 					chartId,
+					chartType,
 					locale: locale.controller,
 					debug,
 				});
@@ -339,12 +369,14 @@ function updateChartDescription({
 	tree,
 	axes,
 	title,
+	chartType,
 	locale,
 	chartId,
 }: {
 	tree?: FriendlyNode;
 	axes?: FriendlyAxis[];
 	title?: string;
+	chartType: ChartType;
 	locale: FriendlyLocale;
 	chartId: string;
 }) {
@@ -364,11 +396,10 @@ function updateChartDescription({
 	}
 
 	function handleTreeUpdate(tree: FriendlyNode) {
-		const { nElements, type } = getChartFeatures(tree);
+		const { nElements } = getChartFeatures(tree);
 
 		// a non-interactive chart does not need a layout description
 		if (nElements === 0) return;
-		const chartType = type as FriendlySymbol['type'];
 
 		//
 		// screen reader information

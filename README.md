@@ -65,7 +65,7 @@ Bar chart (Svelte):
 </script>
 
 <!-- FRIENDLY ACTION: declare a chart and link to its title and subtitle -->
-<div use:friendly.chart={{ title: '.title', subtitle: '.subtitle', locale }} >
+<div use:friendly.chart={{ title: '.title', subtitle: '.subtitle', type: 'bar', locale }} >
   <!-- title and subtitle -->
   <hgroup>
     <h2 class="title"> Chart title </h2>
@@ -155,15 +155,21 @@ import { chart } from 'friendly-charts';
 import locale from 'friendly-charts/locale/en-US.json';
 
 // minimal configuration
-chart(node, { title: 'Chart title', subtitle: 'Chart subtitle', locale });
+chart(node, {
+	title: 'Chart title',
+	subtitle: 'Chart subtitle',
+	type: 'bar',
+	locale,
+});
 
 // .title and .subtitle are selectors that point to elements within the chart container
-chart(node, { title: '.title', subtitle: '.subtitle', locale });
+chart(node, { title: '.title', subtitle: '.subtitle', type: 'bar', locale });
 
 // debug mode
 chart(node, {
 	title: 'Chart title',
 	subtitle: 'Chart subtitle',
+	type: 'bar',
 	locale,
 	debug: true,
 });
@@ -173,6 +179,7 @@ chart(node, {
 
 - `title` **(required)**: chart title, either the title itself or a selector that points to an element within the chart container
 - `subtitle` **(required)**: chart subtitle, either the subtitle itself or a selector that points to an element within the chart container
+- `type` (**required**; `'line'`, `'bar'` or `'scatter'`): chart type
 - `locale` **(required)**: locale, usually imported from Friendly Charts, but you can bring your own
 - `summary`: brief summary of the chart, either the summary itself or a selector that points to an element within the chart container
 - `purpose`: an explanation of the chart's purpose, either the explanation itself or a selector that points to an element within the chart container
@@ -249,9 +256,9 @@ symbol(node, {
 - `label` **(required)**: symbol label, either the label itself or a selector that points to the label element
 - `type` (**required**; `'line'`, `'bar'` or `'point'`): symbol type
 - `position` **(required)**: position of the symbol among sibling symbols, determines the order on LEFT/RIGHT navigation
-- `id`: `string`: symbol id (automatically generated if not given)
-- `parentId`: `string`: id of the group that contains the symbol, only needed if the symbol is not a descendant of the group element
-- `highlight`: `string`: additional description to highlight the symbol (e.g. could be used to describe its significance within the chart)
+- `id`: symbol id (automatically generated if not given)
+- `parentId`: id of the group that contains the symbol, only needed if the symbol is not a descendant of the group element
+- `highlight`: additional description to highlight the symbol (e.g. could be used to describe its significance within the chart)
 
 ### `group(node, options)`
 
@@ -276,11 +283,11 @@ group(node, {
 
 **Options:**
 
-- `label`: `string` **(required)** - group label, either the label itself or a selector that points to a descendant of `node`
-- `position`: `number` **(required)** - position of the group among sibling groups, determines the order on LEFT/RIGHT navigation
-- `id`: `string` - group id (automatically generated if not given)
-- `type`: `'line' | 'point' | 'bar'` - some groups also represent a symbol of some type (e.g. a line that contains the points it is made of)
-- `highlight`: `string` - additional group description, could be used to describe a trend or the importance of the group within the chart
+- `label` **(required)**: group label, either the label itself or a selector that points to a descendant of `node`
+- `position` **(required)**: position of the group among sibling groups, determines the order on LEFT/RIGHT navigation
+- `id`: group id (automatically generated if not given)
+- `type` (`'line'`, `'bar'` or `'point'`): some groups also represent a symbol of some type (e.g. a line that contains the points it is made of)
+- `highlight`: additional group description, could be used to describe a trend or the importance of the group within the chart
 
 ### `focus(node)`
 

@@ -25,7 +25,14 @@
 </script>
 
 <!-- FRIENDLY ACTION: declare a chart and link to its title and subtitle -->
-<div use:friendly.chart={{ title: '.title', subtitle: '.subtitle', locale }}>
+<div
+	use:friendly.chart={{
+		title: '.title',
+		subtitle: '.subtitle',
+		type: 'bar',
+		locale,
+	}}
+>
 	<!-- title and subtitle -->
 	<hgroup>
 		<h2 class="title">Chart title</h2>
