@@ -22,6 +22,7 @@
 	use:friendly.chart={{
 		title: '.title',
 		subtitle: '.subtitle',
+		type: 'bar',
 		locale,
 	}}
 >
