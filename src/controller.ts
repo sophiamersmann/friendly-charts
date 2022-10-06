@@ -2,6 +2,7 @@ import * as utils from './utils';
 import FriendlyNode from './node';
 import { getChartFeatures } from './node';
 import * as CONST from './const';
+import { ChartType } from './chart';
 
 import type { FriendlyLocale } from './locale/types';
 
@@ -11,6 +12,7 @@ interface Options {
 	anchor: HTMLElement;
 	focusElement?: HTMLElement;
 	chartId: string;
+	chartType: ChartType;
 	locale: FriendlyLocale['controller'];
 	debug: boolean;
 }
@@ -24,17 +26,28 @@ export default class Controller {
 	chartFeatures: ReturnType<typeof getChartFeatures> | null;
 	chartDescription;
 	chartId;
+	chartType;
 	locale;
 	debug;
 	debugElement;
 
 	constructor(
 		chartElement: HTMLElement,
-		{ title, subtitle, anchor, focusElement, chartId, locale, debug }: Options
+		{
+			title,
+			subtitle,
+			anchor,
+			focusElement,
+			chartId,
+			chartType,
+			locale,
+			debug,
+		}: Options
 	) {
 		this.chartElement = chartElement;
 		this.chartBoundingBox = this.chartElement.getBoundingClientRect();
 		this.chartId = chartId;
+		this.chartType = chartType;
 		this.locale = locale;
 		this.debug = debug;
 
@@ -164,8 +177,8 @@ export default class Controller {
 	}
 
 	get #shortLabel() {
-		if (this.chartFeatures?.type) {
-			return this.locale.shortLabel.withChartType[this.chartFeatures?.type];
+		if (this.chartFeatures && this.chartFeatures.nElements > 0) {
+			return this.locale.shortLabel.withChartType[this.chartType];
 		}
 		return this.locale.shortLabel.default;
 	}

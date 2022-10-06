@@ -1,6 +1,8 @@
+import type { ChartType } from '../chart';
 import type { SymbolType } from '../symbol';
 
 type DescriptionForEachSymbol = Record<SymbolType, string>;
+type DescriptionForEachChartType = Record<ChartType, string>;
 
 type DescriptionForSingleAndMultipleSymbols = {
 	withSingleSymbol: string;
@@ -20,7 +22,7 @@ export interface FriendlyLocale {
 	// use: CHART_TITLE
 	screenReaderInformation: {
 		static: string;
-		interactive: DescriptionForEachSymbol;
+		interactive: DescriptionForEachChartType;
 	};
 
 	keyboardInstructions: string;
@@ -37,11 +39,7 @@ export interface FriendlyLocale {
 		keyboardInstructions: string;
 	};
 
-	chartLayout: {
-		line: DescriptionForSingleAndMultipleSymbols;
-		point: DescriptionForSingleAndMultipleSymbols;
-		bar: DescriptionForSingleAndMultipleSymbols;
-	};
+	chartLayout: Record<ChartType, DescriptionForSingleAndMultipleSymbols>;
 
 	axis: {
 		// use: AXIS_LABEL, AXIS_DIRECTION, START_TICK, END_TICK
@@ -59,7 +57,7 @@ export interface FriendlyLocale {
 		label: string;
 		shortLabel: {
 			default: string;
-			withChartType: DescriptionForEachSymbol;
+			withChartType: DescriptionForEachChartType;
 		};
 	};
 
