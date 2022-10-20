@@ -4,7 +4,8 @@
 		"interactive": {
 			"line": "Keyboard interactive line chart, titled '{{ CHART_TITLE }}'. This section contains additional information about this chart. Pressing TAB takes you to the chart area.",
 			"scatter": "Keyboard interactive scatter plot, titled '{{ CHART_TITLE }}'. This section contains additional information about this chart. Pressing TAB takes you to the chart area.",
-			"bar": "Keyboard interactive bar chart, titled '{{ CHART_TITLE }}'. This section contains additional information about this chart. Pressing TAB takes you to the chart area."
+			"bar": "Keyboard interactive bar chart, titled '{{ CHART_TITLE }}'. This section contains additional information about this chart. Pressing TAB takes you to the chart area.",
+			"slope": "Keyboard interactive slope chart, titled '{{ CHART_TITLE }}'. This section contains additional information about this chart. Pressing TAB takes you to the chart area."
 		}
 	},
 
@@ -32,6 +33,10 @@
 		"bar": {
 			"withSingleSymbol": "This is a bar chart with a single bar.",
 			"withMultipleSymbols": "This is a bar chart with {{ N_CHART_ELEMENTS }} bars."
+		},
+		"slope": {
+			"withSingleSymbol": "This is a slope chart with a single line.",
+			"withMultipleSymbols": "This is a slope chart with {{ N_CHART_ELEMENTS }} lines."
 		}
 	},
 
@@ -49,7 +54,8 @@
 			"withChartType": {
 				"line": "Interactive line chart.",
 				"scatter": "Interactive scatter plot.",
-				"bar": "Interactive bar chart."
+				"bar": "Interactive bar chart.",
+				"slope": "Interactive slope chart."
 			}
 		}
 	},

@@ -4,7 +4,8 @@
 		"interactive": {
 			"line": "Tastatur-bedienbares Liniendiagramm mit Titel '{{ CHART_TITLE }}'. Dieser Abschnitt enthält mehr Informationen über den Chart. Die TAB-Taste führt in den Chart Bereich.",
 			"scatter": "Tastatur-bedienbares Streudiagramm mit Titel '{{ CHART_TITLE }}'. Dieser Abschnitt enthält mehr Informationen über den Chart. Die TAB-Taste führt in den Chart Bereich.",
-			"bar": "Tastatur-bedienbares Balkendiagramm mit Titel '{{ CHART_TITLE }}'. Dieser Abschnitt enthält mehr Informationen über den Chart. Die TAB-Taste führt in den Chart Bereich."
+			"bar": "Tastatur-bedienbares Balkendiagramm mit Titel '{{ CHART_TITLE }}'. Dieser Abschnitt enthält mehr Informationen über den Chart. Die TAB-Taste führt in den Chart Bereich.",
+			"slope": "Tastatur-bedienbares Steigungsdiagramm mit Titel '{{ CHART_TITLE }}'. Dieser Abschnitt enthält mehr Informationen über den Chart. Die TAB-Taste führt in den Chart Bereich."
 		}
 	},
 
@@ -32,6 +33,10 @@
 		"bar": {
 			"withSingleSymbol": "Dies ist ein Balkendiagramm mit einem Balken.",
 			"withMultipleSymbols": "Dies ist ein Balkendiagramm mit {{ N_CHART_ELEMENTS }} Balken."
+		},
+		"slope": {
+			"withSingleSymbol": "Dies ist ein Steigungsdiagramm mit einer Linie.",
+			"withMultipleSymbols": "Dies ist ein Steigungsdiagramm mit {{ N_CHART_ELEMENTS }} Linien."
 		}
 	},
 
@@ -49,7 +54,8 @@
 			"withChartType": {
 				"line": "Interaktives Liniendiagramm.",
 				"scatter": "Interaktives Streudiagramm.",
-				"bar": "Interaktives Balkendiagramm."
+				"bar": "Interaktives Balkendiagramm.",
+				"slope": "Interaktives Steigungsdiagramm."
 			}
 		}
 	},
