@@ -1,6 +1,7 @@
 import { customAlphabet } from 'nanoid/non-secure';
-import { alphanumeric } from 'nanoid-dictionary';
 
+const alphanumeric =
+	'0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 const nanoid = customAlphabet(alphanumeric, 6);
 
 export function warn(message: string, advice?: string) {

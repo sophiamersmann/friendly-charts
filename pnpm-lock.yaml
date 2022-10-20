@@ -4,17 +4,13 @@ importers:
 
   .:
     specifiers:
-      '@types/nanoid-dictionary': ^4.2.0
       nanoid: ^4.0.0
-      nanoid-dictionary: ^4.3.0
       prettier: ^2.7.1
       tsup: ^6.2.3
       typescript: ^4.8.2
     dependencies:
       nanoid: 4.0.0
-      nanoid-dictionary: 4.3.0
     devDependencies:
-      '@types/nanoid-dictionary': 4.2.0
       prettier: 2.7.1
       tsup: 6.2.3_typescript@4.8.2
       typescript: 4.8.2
@@ -223,10 +219,6 @@ packages:
       vite: 3.1.0-beta.2
     transitivePeerDependencies:
       - supports-color
-    dev: true
-
-  /@types/nanoid-dictionary/4.2.0:
-    resolution: {integrity: sha512-DyQddKC2AYsInXBMqKSwhom4gpouV8SF1smsCPSzR8hp20vZJ5o5Yxg7qXThCHwr/H6VMq01UArEGbF0q2FXig==}
     dev: true
 
   /@types/node/18.7.14:
@@ -1303,10 +1295,6 @@ packages:
       object-assign: 4.1.1
       thenify-all: 1.6.0
     dev: true
-
-  /nanoid-dictionary/4.3.0:
-    resolution: {integrity: sha512-Xw1+/QnRGWO1KJ0rLfU1xR85qXmAHyLbE3TUkklu9gOIDburP6CsUnLmTaNECGpBh5SHb2uPFmx0VT8UPyoeyw==}
-    dev: false
 
   /nanoid/3.3.4:
     resolution: {integrity: sha512-MqBkQh/OHTS2egovRtLk45wEyNXwF+cokD+1YPf9u5VfJiRdAiRwB2froX5Co9Rh20xs4siNPm8naNotSD6RBw==}
