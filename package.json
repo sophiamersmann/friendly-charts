@@ -1,6 +1,6 @@
 {
 	"name": "friendly-charts",
-	"version": "0.0.6",
+	"version": "0.0.7",
 	"description": "Screen reader friendly charts with minimal effort",
 	"type": "module",
 	"browser": "dist/index.js",
