@@ -3,6 +3,7 @@
 	"version": "0.0.7",
 	"description": "Screen reader friendly charts with minimal effort",
 	"type": "module",
+	"main": "dist/index.js",
 	"browser": "dist/index.js",
 	"module": "dist/index.js",
 	"types": "dist/index.d.ts",
