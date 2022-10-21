@@ -7,7 +7,7 @@ export interface FriendlyAxis {
 	ticks?: (string | number)[];
 }
 
-interface Options {
+export interface Options {
 	label: FriendlyAxis['label'];
 	direction?: FriendlyAxis['direction'];
 	ticks?: FriendlyAxis['ticks'] | string;

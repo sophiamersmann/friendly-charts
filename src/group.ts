@@ -12,7 +12,7 @@ export interface FriendlyGroup {
 	position: number;
 }
 
-interface Options {
+export interface Options {
 	id?: FriendlyGroup['id'];
 	type?: FriendlyGroup['type'];
 	highlight?: FriendlyGroup['highlight'];

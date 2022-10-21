@@ -12,7 +12,7 @@ export interface FriendlySymbol {
 	position: number;
 }
 
-type Options = {
+export type Options = {
 	id?: string;
 	type: FriendlySymbol['type'];
 	label: FriendlySymbol['label'];

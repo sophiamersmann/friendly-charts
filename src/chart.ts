@@ -20,7 +20,7 @@ interface Chart {
 	locale: FriendlyLocale;
 }
 
-interface Options extends Chart {
+export interface Options extends Chart {
 	axes?: (Omit<FriendlyAxis, 'element'> & { element?: 'axis' })[];
 	debug?: boolean;
 }
