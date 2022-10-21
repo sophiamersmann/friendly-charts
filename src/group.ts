@@ -22,8 +22,10 @@ interface Options {
 
 export default function group(
 	node: HTMLElement | SVGElement,
-	options: Options
+	options: Options | undefined
 ) {
+	if (options === undefined) return;
+
 	let { id } = options;
 
 	if (!id) {

@@ -13,7 +13,12 @@ interface Options {
 	ticks?: FriendlyAxis['ticks'] | string;
 }
 
-export default function axis(node: HTMLElement | SVGElement, options: Options) {
+export default function axis(
+	node: HTMLElement | SVGElement,
+	options: Options | undefined
+) {
+	if (options === undefined) return;
+
 	// get label
 	let { label } = options;
 	if (label && utils.isSelector(label)) {

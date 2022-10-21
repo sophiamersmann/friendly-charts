@@ -37,7 +37,9 @@ function checkIfParentExists(parentId: string) {
 	return true;
 }
 
-export default function chart(node: HTMLElement, options: Options) {
+export default function chart(node: HTMLElement, options: Options | undefined) {
+	if (options === undefined) return;
+
 	const { locale, type: chartType, debug = false } = options;
 
 	const chartId = utils.uniqueId();

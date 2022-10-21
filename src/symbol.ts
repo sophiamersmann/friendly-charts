@@ -23,8 +23,10 @@ type Options = {
 
 export default function symbol(
 	node: HTMLElement | SVGElement,
-	options: Options
+	options: Options | undefined
 ) {
+	if (options === undefined) return;
+
 	let { id } = options;
 
 	// generate random id if not given
