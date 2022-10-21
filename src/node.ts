@@ -247,6 +247,13 @@ export function createTree(
 			);
 		}
 
+		if (node.data.element === 'symbol' && node.children.length > 0) {
+			utils.warn(
+				`The symbol labelled "${node.data.label}" has children.`,
+				'Use a group with a symbol type instead.'
+			);
+		}
+
 		// add related nodes
 		if (node.parent) {
 			const position = node.data.position;

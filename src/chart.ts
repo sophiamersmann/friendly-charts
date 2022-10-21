@@ -92,6 +92,10 @@ export default function chart(node: HTMLElement, options: Options | undefined) {
 		}
 	}
 
+	if (axes.length === 0) {
+		utils.warn('No axis is specified.');
+	}
+
 	const {
 		element: instructionsElement,
 		title,
