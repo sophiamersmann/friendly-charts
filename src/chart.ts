@@ -2,6 +2,7 @@ import * as CONST from './const';
 import * as utils from './utils';
 import FriendlyNode, { createTree, getChartFeatures } from './node';
 import Controller from './controller';
+import { isAxisWithTicks } from './axis';
 
 import type { FriendlyAxis } from './axis';
 import type { FriendlySymbol } from './symbol';
@@ -525,25 +526,26 @@ function updateChartDescription({
 
 		let anchor = generalLayoutDescriptionElem;
 		for (let i = 0; i < axes.length; i++) {
-			const { label, direction, ticks } = axes[i];
+			const axis = axes[i];
+			const hasTicks = isAxisWithTicks(axis) && axis.ticks.length > 0;
 
 			let template;
-			if (direction && ticks && ticks.length > 0) {
-				template = locale.axis.withLabelAndDirectionAndTicks;
-			} else if (ticks && ticks.length > 0) {
-				template = locale.axis.withLabelAndTicks;
-			} else if (direction) {
+			if (axis.direction && hasTicks) {
+				template = locale.axis.withLabelAndDirectionAndTicks[axis.type];
+			} else if (hasTicks) {
+				template = locale.axis.withLabelAndTicks[axis.type];
+			} else if (axis.direction) {
 				template = locale.axis.withLabelAndDirection;
 			} else {
 				template = locale.axis.withLabel;
 			}
 
-			const hasTicks = ticks && ticks.length > 0;
 			const content = utils.handlebars(template, {
-				AXIS_LABEL: label,
-				AXIS_DIRECTION: direction,
-				START_TICK: hasTicks ? ticks[0] : '',
-				END_TICK: hasTicks ? ticks[ticks.length - 1] : '',
+				AXIS_LABEL: axis.label,
+				AXIS_DIRECTION: axis.direction,
+				TICKS: hasTicks ? axis.ticks.join(', ') : '',
+				START_TICK: hasTicks ? axis.ticks[0] : '',
+				END_TICK: hasTicks ? axis.ticks[axis.ticks.length - 1] : '',
 			});
 
 			const element = utils.createElement('p', content);

@@ -67,6 +67,7 @@
 	use:friendly.axis={{
 		label,
 		direction: 'x',
+		type: 'categorical',
 		ticks: '.tick text',
 	}}
 >

@@ -41,9 +41,15 @@
 	},
 
 	"axis": {
-		"withLabelAndDirectionAndTicks": "Dieser Chart hat eine {{ AXIS_DIRECTION }} Achse mit Titel {{ AXIS_LABEL }}, die mit {{ START_TICK }} beginnt und mit {{ END_TICK }} endet.",
+		"withLabelAndDirectionAndTicks": {
+			"continuous": "Dieser Chart hat eine kontinuierliche {{ AXIS_DIRECTION }} Achse mit Titel {{ AXIS_LABEL }}, die mit {{ START_TICK }} beginnt und mit {{ END_TICK }} endet.",
+			"categorical": "Dieser Chart hat eine kategorische {{ AXIS_DIRECTION }} Achse mit Titel {{ AXIS_LABEL }} und Werten {{ TICKS }}."
+		},
+		"withLabelAndTicks": {
+			"continuous": "Dieser Chart hat eine kontinuierliche Achse mit Titel {{ AXIS_LABEL }}, die mit {{ START_TICK }} beginnt und mit {{ END_TICK }} endet.",
+			"categorical": "Dieser Chart hat eine kategorische Achse mit Titel {{ AXIS_LABEL }} und Werten {{ TICKS }}."
+		},
 		"withLabelAndDirection": "Dieser Chart hat eine {{ AXIS_DIRECTION }} Achse mit Titel {{ AXIS_LABEL }}.",
-		"withLabelAndTicks": "Dieser Chart hat eine Achse mit Titel {{ AXIS_LABEL }}, die mit {{ START_TICK }} beginnt und mit {{ END_TICK }} endet.",
 		"withLabel": "Dieser Chart hat eine Achse mit Titel {{ AXIS_LABEL }}."
 	},
 

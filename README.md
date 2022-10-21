@@ -205,11 +205,25 @@ axis(node, { label: '.label' });
 // specify a direction
 axis(node, { label: 'Axis label', direction: 'x' });
 
-// infer ticks from the DOM by specifying a selector
+// infer ticks from the DOM by specifying a selector (by default, this is a continuous axis)
 axis(node, { label: 'Axis label', direction: 'y', ticks: '.tick text' });
+
+// set the axis to be categorical
+axis(node, {
+	label: 'Axis label',
+	direction: 'x',
+	type: 'categorical',
+	ticks: '.tick text',
+});
 
 // specify ticks manually
 axis(node, { label: 'Axis label', direction: 'y', ticks: [0, 2, 4, 6] });
+axis(node, {
+	label: 'Axis label',
+	direction: 'x',
+	type: 'categorical',
+	ticks: ['Spain', 'Italy', 'France'],
+});
 ```
 
 **Options:**

@@ -1,8 +1,10 @@
 import type { ChartType } from '../chart';
 import type { SymbolType } from '../symbol';
+import type { AxisType } from '../axis';
 
 type DescriptionForEachSymbol = Record<SymbolType, string>;
 type DescriptionForEachChartType = Record<ChartType, string>;
+type DescriptionForEachAxisType = Record<AxisType, string>;
 
 type DescriptionForSingleAndMultipleSymbols = {
 	withSingleSymbol: string;
@@ -42,12 +44,12 @@ export interface FriendlyLocale {
 	chartLayout: Record<ChartType, DescriptionForSingleAndMultipleSymbols>;
 
 	axis: {
-		// use: AXIS_LABEL, AXIS_DIRECTION, START_TICK, END_TICK
-		withLabelAndDirectionAndTicks: string;
+		// use: AXIS_LABEL, AXIS_DIRECTION, TICKS, START_TICK, END_TICK
+		withLabelAndDirectionAndTicks: DescriptionForEachAxisType;
+		// use: AXIS_LABEL, TICKS, START_TICK, END_TICK
+		withLabelAndTicks: DescriptionForEachAxisType;
 		// use: AXIS_LABEL, AXIS_DIRECTION
 		withLabelAndDirection: string;
-		// use: AXIS_LABEL, START_TICK, END_TICK
-		withLabelAndTicks: string;
 		// use: AXIS_LABEL
 		withLabel: string;
 	};

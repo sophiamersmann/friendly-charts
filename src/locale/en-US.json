@@ -41,9 +41,15 @@
 	},
 
 	"axis": {
-		"withLabelAndDirectionAndTicks": "This chart has a {{ AXIS_DIRECTION }} axis, titled {{ AXIS_LABEL }}, with a range that starts with {{ START_TICK }} and ends with {{ END_TICK }}.",
+		"withLabelAndDirectionAndTicks": {
+			"continuous": "This chart has a continuous {{ AXIS_DIRECTION }} axis, titled {{ AXIS_LABEL }}, with a range that starts with {{ START_TICK }} and ends with {{ END_TICK }}.",
+			"categorical": "This chart has a categorical {{ AXIS_DIRECTION }} axis, titled {{ AXIS_LABEL }}, with ticks {{ TICKS }}."
+		},
+		"withLabelAndTicks": {
+			"continuous": "This chart has a continuous axis, titled {{ AXIS_LABEL }}, with a range that starts with {{ START_TICK }} and ends with {{ END_TICK }}.",
+			"categorical": "This chart has a categorical axis, titled {{ AXIS_LABEL }}, with ticks {{ TICKS }}."
+		},
 		"withLabelAndDirection": "This chart has a {{ AXIS_DIRECTION }} axis, titled {{ AXIS_LABEL }}.",
-		"withLabelAndTicks": "This chart has an axis, titled {{ AXIS_LABEL }}, with a range that starts with {{ START_TICK }} and ends with {{ END_TICK }}.",
 		"withLabel": "This chart has an axis, titled {{ AXIS_LABEL }}."
 	},
 
