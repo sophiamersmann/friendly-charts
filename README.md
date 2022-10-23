@@ -95,7 +95,7 @@ To make a chart friendly, apply the `chart` function to a container element, pro
     <g class="bar" transform="translate(0,{getY(i)})">
 
       <!-- FRIENDLY ACTION: declare a bar and give it an accessible label -->
-      <rect use:friendly.symbol={{ label: `${d.category}. ${d.value}`, type: 'bar', position: i }} width={getX(d.value)} height={barHeight} fill="#0284c7" />
+      <rect use:symbol={{ label: `${d.category}. ${d.value}`, type: 'bar', position: i }} width={getX(d.value)} height={barHeight} fill="#0284c7" />
 
       <text y="0.75em"> {d.category} </text>
     </g>
