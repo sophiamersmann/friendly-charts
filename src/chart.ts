@@ -521,7 +521,7 @@ function updateChartDescription({
 		}
 
 		// remove all axis related information
-		const axisElements = document.getElementsByClassName(
+		const axisElements = a11yElem.getElementsByClassName(
 			CONST.LAYOUT_DESCRIPTION_AXIS
 		);
 		while (axisElements[0]) {
