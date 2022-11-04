@@ -260,12 +260,14 @@ function initChartDescription(
 	}
 
 	title = title.trim();
+	const hgroupElem = document.createElement('hgroup');
 	const titleElem = utils.createElement(
 		'h2',
 		utils.handlebars(locale.chartTitle, { CHART_TITLE: title })
 	);
 	titleElem.classList.add(CONST.TITLE);
-	a11yElem.appendChild(titleElem);
+	hgroupElem.appendChild(titleElem);
+	a11yElem.appendChild(hgroupElem);
 
 	//
 	// subtitle
@@ -281,11 +283,11 @@ function initChartDescription(
 
 		subtitle = subtitle.trim();
 		const subtitleElem = utils.createElement(
-			'h3',
+			'p',
 			utils.handlebars(locale.chartSubtitle, { CHART_SUBTITLE: subtitle })
 		);
 		subtitleElem.classList.add(CONST.SUBTITLE);
-		a11yElem.appendChild(subtitleElem);
+		hgroupElem.appendChild(subtitleElem);
 	}
 
 	//
