@@ -128,7 +128,6 @@ import locale from 'friendly-charts/locale/en-US.json';
 // minimal configuration
 chart(node, {
 	title: 'Chart title',
-	subtitle: 'Chart subtitle',
 	type: 'bar',
 	locale,
 });
@@ -149,9 +148,9 @@ chart(node, {
 **Options:**
 
 - `title` **(required)**: chart title, either the title itself or a selector that points to an element within the chart container
-- `subtitle` **(required)**: chart subtitle, either the subtitle itself or a selector that points to an element within the chart container
 - `type` (**required**; `'line'`, `'bar'`, `'scatter'` or `'slope'`): chart type
 - `locale` **(required)**: locale, usually imported from Friendly Charts, but you can bring your own
+- `subtitle`: chart subtitle, either the subtitle itself or a selector that points to an element within the chart container
 - `summary`: brief summary of the chart, either the summary itself or a selector that points to an element within the chart container
 - `purpose`: an explanation of the chart's purpose, either the explanation itself or a selector that points to an element within the chart container
 - `description`: long description of the chart, either the description itself or a selector that points to an element within the chart container
@@ -201,6 +200,7 @@ axis(node, {
 
 - `label` **(required)**: axis label, either the label itself or a selector that points to a descendant of `node`
 - `direction` (`'x'` or `'y'`): axis direction
+- `type` (`'continuous'` or `'categorical'`; default: `'continuous'`): axis type
 - `ticks`: either a list of ticks or a selector that points to the tick labels (must be descendants of `node`)
 
 ### `symbol(node, options)`
