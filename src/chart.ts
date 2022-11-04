@@ -13,7 +13,7 @@ export type ChartType = 'line' | 'scatter' | 'bar' | 'slope';
 
 interface Chart {
 	title: string;
-	subtitle: string;
+	subtitle?: string;
 	type: ChartType;
 	summary?: string;
 	purpose?: string;
@@ -80,21 +80,27 @@ export default function chart(node: HTMLElement, options: Options | undefined) {
 		return Array.from(nodes).map(toFriendlyData);
 	};
 
-	const axes = getDataFromDOM('axis') as FriendlyAxis[];
+	const getAxesFromDOM = () => {
+		const axes = getDataFromDOM('axis') as FriendlyAxis[];
+
+		if (options.axes) {
+			for (let i = 0; i < options.axes.length; i++) {
+				const axis = options.axes[i];
+				axis.element = 'axis';
+				axes.push(axis as FriendlyAxis);
+			}
+		}
+
+		if (axes.length === 0) {
+			utils.warn('No axis is specified.');
+		}
+
+		return axes;
+	};
+
+	let axes = getAxesFromDOM();
 	const groups = getDataFromDOM('group') as FriendlyGroup[];
 	const symbols = getDataFromDOM('symbol') as FriendlySymbol[];
-
-	if (options.axes) {
-		for (let i = 0; i < options.axes.length; i++) {
-			const axis = options.axes[i];
-			axis.element = 'axis';
-			axes.push(axis as FriendlyAxis);
-		}
-	}
-
-	if (axes.length === 0) {
-		utils.warn('No axis is specified.');
-	}
 
 	const {
 		element: instructionsElement,
@@ -164,7 +170,7 @@ export default function chart(node: HTMLElement, options: Options | undefined) {
 				}
 
 				if (friendly === 'axis') {
-					axes.push(data as FriendlyAxis);
+					axes = getAxesFromDOM(); // necessary to make sure axes are not duplicated
 					dirty.axis = true;
 				} else if (friendly === 'group') {
 					groups.push(data as FriendlyGroup);
@@ -254,31 +260,35 @@ function initChartDescription(
 	}
 
 	title = title.trim();
+	const hgroupElem = document.createElement('hgroup');
 	const titleElem = utils.createElement(
 		'h2',
 		utils.handlebars(locale.chartTitle, { CHART_TITLE: title })
 	);
 	titleElem.classList.add(CONST.TITLE);
-	a11yElem.appendChild(titleElem);
+	hgroupElem.appendChild(titleElem);
+	a11yElem.appendChild(hgroupElem);
 
 	//
 	// subtitle
 	//
 
 	let { subtitle } = options;
-	if (utils.isSelector(subtitle)) {
-		const element = utils.querySelector(node, subtitle);
-		subtitle = element?.textContent || '';
-		element?.setAttribute('aria-hidden', 'true');
-	}
+	if (subtitle) {
+		if (utils.isSelector(subtitle)) {
+			const element = utils.querySelector(node, subtitle);
+			subtitle = element?.textContent || '';
+			element?.setAttribute('aria-hidden', 'true');
+		}
 
-	subtitle = subtitle.trim();
-	const subtitleElem = utils.createElement(
-		'h3',
-		utils.handlebars(locale.chartSubtitle, { CHART_SUBTITLE: subtitle })
-	);
-	subtitleElem.classList.add(CONST.SUBTITLE);
-	a11yElem.appendChild(subtitleElem);
+		subtitle = subtitle.trim();
+		const subtitleElem = utils.createElement(
+			'p',
+			utils.handlebars(locale.chartSubtitle, { CHART_SUBTITLE: subtitle })
+		);
+		subtitleElem.classList.add(CONST.SUBTITLE);
+		hgroupElem.appendChild(subtitleElem);
+	}
 
 	//
 	// screen reader information

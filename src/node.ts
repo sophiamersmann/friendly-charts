@@ -63,7 +63,7 @@ export default class FriendlyNode {
 			};
 			this.children.forEach((child) => {
 				const element = document.getElementById(child.data.id);
-				const childBox = element?.getBoundingClientRect();
+				const childBox = element && utils.getBoundingClientRect(element);
 				if (childBox) {
 					if (childBox.top < bbox.top) bbox.top = childBox.top;
 					if (childBox.left < bbox.left) bbox.left = childBox.left;
@@ -81,7 +81,7 @@ export default class FriendlyNode {
 		}
 
 		const element = document.getElementById(this.data.id);
-		const bbox = element?.getBoundingClientRect();
+		const bbox = element && utils.getBoundingClientRect(element);
 		if (!bbox) return null;
 		return {
 			top: bbox.top,

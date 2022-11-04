@@ -55,8 +55,12 @@ export interface FriendlyLocale {
 	};
 
 	controller: {
-		// use: CHART_TITLE, CHART_SUBTITLE
-		label: string;
+		label: {
+			// use: CHART_TITLE
+			withTitle: string;
+			// use: CHART_TITLE, CHART_SUBTITLE
+			withTitleAndSubtitle: string;
+		};
 		shortLabel: {
 			default: string;
 			withChartType: DescriptionForEachChartType;

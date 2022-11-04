@@ -13,7 +13,7 @@ export interface FriendlySymbol {
 }
 
 export type Options = {
-	id?: string;
+	id?: FriendlySymbol['id'];
 	type: FriendlySymbol['type'];
 	label: FriendlySymbol['label'];
 	highlight?: FriendlySymbol['highlight'];
@@ -50,13 +50,21 @@ export default function symbol(
 		label = element?.textContent || '';
 	}
 
-	const data = {
-		...options,
+	let data: Record<string, any> = {
 		element: 'symbol',
-		id: id as string,
+		id,
+		type: options.type,
 		label,
-		highlight: options.highlight || '',
+		position: options.position,
 	};
+
+	if (options.highlight) {
+		data.highlight = options.highlight;
+	}
+
+	if (options.parentId) {
+		data.parentId = options.parentId;
+	}
 
 	// set data on the dom element
 	utils.setFriendlyData(node, data);

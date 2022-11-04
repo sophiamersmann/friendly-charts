@@ -48,13 +48,20 @@ export default function group(
 		label = element?.textContent || '';
 	}
 
-	const data = {
-		...options,
+	let data: Record<string, any> = {
 		element: 'group',
-		id: id as string,
+		id,
 		label,
-		highlight: options.highlight || '',
+		position: options.position,
 	};
+
+	if (options.type) {
+		data.type = options.type;
+	}
+
+	if (options.highlight) {
+		data.highlight = options.highlight;
+	}
 
 	// set data on the dom element
 	utils.setFriendlyData(node, data);

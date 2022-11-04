@@ -8,7 +8,7 @@ import type { FriendlyLocale } from './locale/types';
 
 interface Options {
 	title: string;
-	subtitle: string;
+	subtitle?: string;
 	anchor: HTMLElement;
 	focusElement?: HTMLElement;
 	chartId: string;
@@ -45,7 +45,7 @@ export default class Controller {
 		}: Options
 	) {
 		this.chartElement = chartElement;
-		this.chartBoundingBox = this.chartElement.getBoundingClientRect();
+		this.chartBoundingBox = utils.getBoundingClientRect(this.chartElement);
 		this.chartId = chartId;
 		this.chartType = chartType;
 		this.locale = locale;
@@ -170,10 +170,16 @@ export default class Controller {
 	}
 
 	get #label() {
-		return utils.handlebars(this.locale.label, {
-			CHART_TITLE: this.chartDescription.title,
-			CHART_SUBTITLE: this.chartDescription.subtitle,
-		});
+		if (this.chartDescription.subtitle) {
+			return utils.handlebars(this.locale.label.withTitleAndSubtitle, {
+				CHART_TITLE: this.chartDescription.title,
+				CHART_SUBTITLE: this.chartDescription.subtitle,
+			});
+		} else {
+			return utils.handlebars(this.locale.label.withTitle, {
+				CHART_TITLE: this.chartDescription.title,
+			});
+		}
 	}
 
 	get #shortLabel() {
@@ -207,7 +213,7 @@ export default class Controller {
 	}
 
 	handleFocus = () => {
-		this.#focus(this.chartElement.getBoundingClientRect());
+		this.#focus(utils.getBoundingClientRect(this.chartElement));
 	};
 
 	handleBlur = () => {
@@ -299,7 +305,7 @@ export default class Controller {
 		if (!nextActiveId) {
 			this.element.removeAttribute('aria-activedescendant');
 			this.#clearChildren();
-			this.#focus(this.chartElement.getBoundingClientRect());
+			this.#focus(utils.getBoundingClientRect(this.chartElement));
 			if (this.debug) this.#debug();
 			return;
 		}

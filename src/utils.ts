@@ -122,3 +122,17 @@ export function uniqueId() {
 export function px(n: number) {
 	return `${n}px`;
 }
+
+export function getBoundingClientRect(element: HTMLElement) {
+	let bbox = element.getBoundingClientRect();
+	return {
+		top: bbox.top + window.scrollY,
+		right: bbox.right,
+		bottom: bbox.bottom,
+		left: bbox.left + window.scrollX,
+		width: bbox.width,
+		height: bbox.height,
+		x: bbox.x,
+		y: bbox.y,
+	};
+}

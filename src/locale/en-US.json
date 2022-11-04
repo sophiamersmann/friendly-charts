@@ -54,7 +54,10 @@
 	},
 
 	"controller": {
-		"label": "{{ CHART_TITLE }}. {{ CHART_SUBTITLE }}. Navigate into the chart area by pressing ENTER.",
+		"label": {
+			"withTitle": "{{ CHART_TITLE }}. Navigate into the chart area by pressing ENTER.",
+			"withTitleAndSubtitle": "{{ CHART_TITLE }}. {{ CHART_SUBTITLE }}. Navigate into the chart area by pressing ENTER."
+		},
 		"shortLabel": {
 			"default": "Interactive chart.",
 			"withChartType": {
