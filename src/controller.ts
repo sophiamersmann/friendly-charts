@@ -45,7 +45,7 @@ export default class Controller {
 		}: Options
 	) {
 		this.chartElement = chartElement;
-		this.chartBoundingBox = this.chartElement.getBoundingClientRect();
+		this.chartBoundingBox = utils.getBoundingClientRect(this.chartElement);
 		this.chartId = chartId;
 		this.chartType = chartType;
 		this.locale = locale;
@@ -213,7 +213,7 @@ export default class Controller {
 	}
 
 	handleFocus = () => {
-		this.#focus(this.chartElement.getBoundingClientRect());
+		this.#focus(utils.getBoundingClientRect(this.chartElement));
 	};
 
 	handleBlur = () => {
@@ -305,7 +305,7 @@ export default class Controller {
 		if (!nextActiveId) {
 			this.element.removeAttribute('aria-activedescendant');
 			this.#clearChildren();
-			this.#focus(this.chartElement.getBoundingClientRect());
+			this.#focus(utils.getBoundingClientRect(this.chartElement));
 			if (this.debug) this.#debug();
 			return;
 		}
