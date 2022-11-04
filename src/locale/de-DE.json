@@ -54,7 +54,10 @@
 	},
 
 	"controller": {
-		"label": "{{ CHART_TITLE }}. {{ CHART_SUBTITLE }}. Die ENTER-Taste führt in den Chart Bereich.",
+		"label": {
+			"withTitle": "{{ CHART_TITLE }}. Die ENTER-Taste führt in den Chart Bereich.",
+			"withTitleAndSubtitle": "{{ CHART_TITLE }}. {{ CHART_SUBTITLE }}. Die ENTER-Taste führt in den Chart Bereich."
+		},
 		"shortLabel": {
 			"default": "Interaktiver Chart.",
 			"withChartType": {

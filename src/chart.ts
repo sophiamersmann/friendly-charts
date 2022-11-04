@@ -13,7 +13,7 @@ export type ChartType = 'line' | 'scatter' | 'bar' | 'slope';
 
 interface Chart {
 	title: string;
-	subtitle: string;
+	subtitle?: string;
 	type: ChartType;
 	summary?: string;
 	purpose?: string;
@@ -272,19 +272,21 @@ function initChartDescription(
 	//
 
 	let { subtitle } = options;
-	if (utils.isSelector(subtitle)) {
-		const element = utils.querySelector(node, subtitle);
-		subtitle = element?.textContent || '';
-		element?.setAttribute('aria-hidden', 'true');
-	}
+	if (subtitle) {
+		if (utils.isSelector(subtitle)) {
+			const element = utils.querySelector(node, subtitle);
+			subtitle = element?.textContent || '';
+			element?.setAttribute('aria-hidden', 'true');
+		}
 
-	subtitle = subtitle.trim();
-	const subtitleElem = utils.createElement(
-		'h3',
-		utils.handlebars(locale.chartSubtitle, { CHART_SUBTITLE: subtitle })
-	);
-	subtitleElem.classList.add(CONST.SUBTITLE);
-	a11yElem.appendChild(subtitleElem);
+		subtitle = subtitle.trim();
+		const subtitleElem = utils.createElement(
+			'h3',
+			utils.handlebars(locale.chartSubtitle, { CHART_SUBTITLE: subtitle })
+		);
+		subtitleElem.classList.add(CONST.SUBTITLE);
+		a11yElem.appendChild(subtitleElem);
+	}
 
 	//
 	// screen reader information

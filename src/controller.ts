@@ -8,7 +8,7 @@ import type { FriendlyLocale } from './locale/types';
 
 interface Options {
 	title: string;
-	subtitle: string;
+	subtitle?: string;
 	anchor: HTMLElement;
 	focusElement?: HTMLElement;
 	chartId: string;
@@ -170,10 +170,16 @@ export default class Controller {
 	}
 
 	get #label() {
-		return utils.handlebars(this.locale.label, {
-			CHART_TITLE: this.chartDescription.title,
-			CHART_SUBTITLE: this.chartDescription.subtitle,
-		});
+		if (this.chartDescription.subtitle) {
+			return utils.handlebars(this.locale.label.withTitleAndSubtitle, {
+				CHART_TITLE: this.chartDescription.title,
+				CHART_SUBTITLE: this.chartDescription.subtitle,
+			});
+		} else {
+			return utils.handlebars(this.locale.label.withTitle, {
+				CHART_TITLE: this.chartDescription.title,
+			});
+		}
 	}
 
 	get #shortLabel() {
