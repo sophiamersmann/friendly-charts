@@ -13,7 +13,7 @@ export interface FriendlySymbol {
 }
 
 export type Options = {
-	id?: string;
+	id?: FriendlySymbol['id'];
 	type: FriendlySymbol['type'];
 	label: FriendlySymbol['label'];
 	highlight?: FriendlySymbol['highlight'];
@@ -52,9 +52,9 @@ export default function symbol(
 
 	let data: Record<string, any> = {
 		element: 'symbol',
-		id: id as string,
+		id,
 		type: options.type,
-		label: label,
+		label,
 		position: options.position,
 	};
 

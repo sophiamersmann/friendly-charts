@@ -50,7 +50,7 @@ export default function group(
 
 	let data: Record<string, any> = {
 		element: 'group',
-		id: id as string,
+		id,
 		label,
 		position: options.position,
 	};
