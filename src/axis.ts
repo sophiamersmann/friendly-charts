@@ -61,12 +61,20 @@ export default function axis(
 		}
 	}
 
-	// set data on the dom element
-	utils.setFriendlyData(node, {
+	let data: Record<string, any> = {
 		element: 'axis',
-		type: hasTicks ? options.type : '',
-		direction: options.direction || '',
 		label,
 		ticks,
-	});
+	};
+
+	if (hasTicks) {
+		data.type = options.type;
+	}
+
+	if (options.direction) {
+		data.direction = options.direction;
+	}
+
+	// set data on the dom element
+	utils.setFriendlyData(node, data);
 }

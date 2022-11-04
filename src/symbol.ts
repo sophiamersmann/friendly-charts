@@ -50,13 +50,21 @@ export default function symbol(
 		label = element?.textContent || '';
 	}
 
-	const data = {
-		...options,
+	let data: Record<string, any> = {
 		element: 'symbol',
 		id: id as string,
-		label,
-		highlight: options.highlight || '',
+		type: options.type,
+		label: label,
+		position: options.position,
 	};
+
+	if (options.highlight) {
+		data.highlight = options.highlight;
+	}
+
+	if (options.parentId) {
+		data.parentId = options.parentId;
+	}
 
 	// set data on the dom element
 	utils.setFriendlyData(node, data);
