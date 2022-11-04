@@ -80,21 +80,27 @@ export default function chart(node: HTMLElement, options: Options | undefined) {
 		return Array.from(nodes).map(toFriendlyData);
 	};
 
-	const axes = getDataFromDOM('axis') as FriendlyAxis[];
+	const getAxesFromDOM = () => {
+		const axes = getDataFromDOM('axis') as FriendlyAxis[];
+
+		if (options.axes) {
+			for (let i = 0; i < options.axes.length; i++) {
+				const axis = options.axes[i];
+				axis.element = 'axis';
+				axes.push(axis as FriendlyAxis);
+			}
+		}
+
+		if (axes.length === 0) {
+			utils.warn('No axis is specified.');
+		}
+
+		return axes;
+	};
+
+	let axes = getAxesFromDOM();
 	const groups = getDataFromDOM('group') as FriendlyGroup[];
 	const symbols = getDataFromDOM('symbol') as FriendlySymbol[];
-
-	if (options.axes) {
-		for (let i = 0; i < options.axes.length; i++) {
-			const axis = options.axes[i];
-			axis.element = 'axis';
-			axes.push(axis as FriendlyAxis);
-		}
-	}
-
-	if (axes.length === 0) {
-		utils.warn('No axis is specified.');
-	}
 
 	const {
 		element: instructionsElement,
@@ -164,7 +170,7 @@ export default function chart(node: HTMLElement, options: Options | undefined) {
 				}
 
 				if (friendly === 'axis') {
-					axes.push(data as FriendlyAxis);
+					axes = getAxesFromDOM(); // necessary to make sure axes are not duplicated
 					dirty.axis = true;
 				} else if (friendly === 'group') {
 					groups.push(data as FriendlyGroup);
