@@ -2,18 +2,7 @@ import type { ChartType } from '../chart';
 import type { AxisDirection, AxisType, Tick } from '../axis';
 import type { SymbolType } from '../symbol';
 
-const listToText = (ls: any[], and = true) => {
-	if (ls.length === 0) return '';
-	if (ls.length === 1) return ls[0].toString();
-
-	if (!and) return ls.join(', ');
-
-	return ls.slice(0, -1).join(', ') + ' and ' + ls[ls.length - 1];
-};
-
-function capitalize(s: string) {
-	return s.charAt(0).toUpperCase() + s.slice(1);
-}
+import * as utils from './utils';
 
 function chartName(type: ChartType) {
 	switch (type) {
@@ -103,23 +92,25 @@ export default {
 		chartType: ChartType;
 		nChartElements: number;
 	}) => {
+		let s = `This is a ${chartName(chartType)} `;
+
 		switch (chartType) {
 			case 'bar':
 				return nChartElements === 1
-					? 'This is a bar chart with a single bar.'
-					: `This is a bar chart with ${nChartElements} bars.`;
+					? s + 'with a single bar.'
+					: s + `with ${nChartElements} bars.`;
 			case 'line':
 				return nChartElements === 1
-					? 'This is a line chart with a single line.'
-					: `This is a line chart with ${nChartElements} lines.`;
+					? s + 'with a single line.'
+					: s + `with ${nChartElements} lines.`;
 			case 'scatter':
 				return nChartElements === 1
-					? 'This is a scatter plot with a single data point.'
-					: `This is a scatter plot with ${nChartElements} data points.`;
+					? s + 'with a single data point.'
+					: s + `with ${nChartElements} data points.`;
 			case 'slope':
 				return nChartElements === 1
-					? 'This is a slope chart with a single slope.'
-					: `This is a slope chart with ${nChartElements} slopes.`;
+					? s + 'with a single slope.'
+					: s + `with ${nChartElements} slopes.`;
 		}
 	},
 
@@ -155,11 +146,13 @@ export default {
 			} else if (ticks.length === 2) {
 				return s + `with ticks ${ticks[0]} and ${ticks[1]}`;
 			} else if (ticks.length <= 6) {
-				return s + `with ticks ${listToText(ticks)}.`;
+				return s + `with ticks ${utils.listToText(ticks)}.`;
 			} else {
 				return (
 					s +
-					`with ticks ${listToText(ticks.slice(0, 3), false)}, and more.` +
+					`with ticks ${utils.listToText(ticks.slice(0, 3), {
+						useAnd: false,
+					})}, and more.` +
 					`The last tick is ${ticks[ticks.length - 1]}.`
 				);
 			}
@@ -183,7 +176,9 @@ export default {
 	}) => {
 		let s = label + '.';
 		if (highlight) s += ' ' + highlight + '.';
-		return s + ` ${capitalize(type)} ${position} of ${nSiblings}.`;
+		return (
+			s + ` ${utils.capitalize(symbolName(type))} ${position} von ${nSiblings}.`
+		);
 	},
 
 	root: ({
