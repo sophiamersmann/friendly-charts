@@ -4,7 +4,7 @@ import { getChartFeatures } from './node';
 import * as CONST from './const';
 import { ChartType } from './chart';
 
-import type { FriendlyLocale } from './types';
+import type { FriendlyLocale } from './locale';
 
 interface Options {
 	title: string;

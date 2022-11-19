@@ -6,7 +6,7 @@ import Controller from './controller';
 import type { FriendlyAxis } from './axis';
 import type { FriendlySymbol } from './symbol';
 import type { FriendlyGroup } from './group';
-import type { FriendlyLocale } from './types';
+import type { FriendlyLocale } from './locale';
 
 export type ChartType = 'line' | 'scatter' | 'bar' | 'slope';
 
