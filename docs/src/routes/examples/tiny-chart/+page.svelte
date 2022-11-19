@@ -1,6 +1,6 @@
 <script>
 	import * as friendly from 'friendly-charts';
-	import locale from 'friendly-charts/locale/en-US.json';
+	import locale from 'friendly-charts/locale/en-US';
 
 	// data
 	const data = [

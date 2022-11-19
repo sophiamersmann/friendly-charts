@@ -4,7 +4,7 @@
 	import { descending } from 'd3-array';
 
 	import * as friendly from 'friendly-charts';
-	import locale from 'friendly-charts/locale/en-US.json';
+	import locale from 'friendly-charts/locale/en-US';
 
 	import AxisX from './AxisX.svelte';
 	import AxisY from './AxisY.svelte';
