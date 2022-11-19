@@ -101,16 +101,6 @@ export function insertAfter(node: Node, refNode: Node) {
 	refNode.parentNode?.insertBefore(node, refNode.nextSibling);
 }
 
-export function handlebars(
-	templateString: string,
-	values: Record<string, any>
-) {
-	return templateString.replace(
-		/{{\s?([^{}\s]*)\s?}}/g,
-		(_, value) => /** @type {string} */ values[value]
-	);
-}
-
 export function concat(...s: string[]) {
 	return s.join('-');
 }

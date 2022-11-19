@@ -2,30 +2,21 @@ import * as utils from './utils';
 
 export type AxisType = 'continuous' | 'categorical';
 export type AxisDirection = 'x' | 'y';
-type Tick = string | number;
+export type Tick = string | number;
 
-interface Axis {
+export interface FriendlyAxis {
 	element: 'axis';
 	label: string;
 	direction?: AxisDirection;
-}
-
-interface AxisWithTicks extends Axis {
 	type: AxisType;
 	ticks: Tick[];
 }
-
-export type FriendlyAxis = Axis | AxisWithTicks;
 
 export interface Options {
 	label: string;
 	direction?: AxisDirection;
 	type?: AxisType;
 	ticks?: Tick[] | string;
-}
-
-export function isAxisWithTicks(axis: unknown): axis is AxisWithTicks {
-	return (axis as any).ticks !== undefined;
 }
 
 export default function axis(
@@ -47,17 +38,17 @@ export default function axis(
 	}
 
 	// get ticks
-	const hasTicks = isAxisWithTicks(options);
 	let ticks: Tick[] = [];
-	if (hasTicks) {
-		ticks = options.ticks;
-		if (typeof ticks === 'string') {
-			const elements = utils.querySelectorAll(node, ticks);
+	if (options.ticks) {
+		if (typeof options.ticks === 'string') {
+			const elements = utils.querySelectorAll(node, options.ticks);
 			if (elements) {
 				ticks = Array.from(elements)
 					.map((element) => element.textContent)
 					.filter((s) => s) as string[];
 			}
+		} else {
+			ticks = options.ticks;
 		}
 	}
 
@@ -67,7 +58,7 @@ export default function axis(
 		ticks,
 	};
 
-	if (hasTicks) {
+	if (options.type) {
 		data.type = options.type;
 	}
 

@@ -8,4 +8,4 @@ export type { AxisType, AxisDirection, Options as AxisOptions } from './axis';
 export type { ChartType, Options as ChartOptions } from './chart';
 export type { SymbolType, Options as SymbolOptions } from './symbol';
 export type { Options as GroupOptions } from './group';
-export type { FriendlyLocale as Locale } from './locale/types';
+export type { FriendlyLocale as Locale } from './locale';

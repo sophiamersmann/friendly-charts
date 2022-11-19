@@ -2,12 +2,11 @@ import * as CONST from './const';
 import * as utils from './utils';
 import FriendlyNode, { createTree, getChartFeatures } from './node';
 import Controller from './controller';
-import { isAxisWithTicks } from './axis';
 
 import type { FriendlyAxis } from './axis';
 import type { FriendlySymbol } from './symbol';
 import type { FriendlyGroup } from './group';
-import type { FriendlyLocale } from './locale/types';
+import type { FriendlyLocale } from './locale';
 
 export type ChartType = 'line' | 'scatter' | 'bar' | 'slope';
 
@@ -123,7 +122,7 @@ export default function chart(node: HTMLElement, options: Options | undefined) {
 			debug,
 		});
 
-		const root = createTree([...groups, ...symbols], locale.elements);
+		const root = createTree([...groups, ...symbols], locale);
 		updateChartDescription({
 			axes,
 			tree: root,
@@ -193,7 +192,7 @@ export default function chart(node: HTMLElement, options: Options | undefined) {
 		}
 
 		if (dirty.tree) {
-			const root = createTree([...groups, ...symbols], locale.elements);
+			const root = createTree([...groups, ...symbols], locale);
 			updateChartDescription({
 				tree: root,
 				title,
@@ -263,7 +262,7 @@ function initChartDescription(
 	const hgroupElem = document.createElement('hgroup');
 	const titleElem = utils.createElement(
 		'h2',
-		utils.handlebars(locale.chartTitle, { CHART_TITLE: title })
+		locale.chartTitle({ chartTitle: title })
 	);
 	titleElem.classList.add(CONST.TITLE);
 	hgroupElem.appendChild(titleElem);
@@ -284,7 +283,7 @@ function initChartDescription(
 		subtitle = subtitle.trim();
 		const subtitleElem = utils.createElement(
 			'p',
-			utils.handlebars(locale.chartSubtitle, { CHART_SUBTITLE: subtitle })
+			locale.chartSubtitle({ chartSubtitle: subtitle })
 		);
 		subtitleElem.classList.add(CONST.SUBTITLE);
 		hgroupElem.appendChild(subtitleElem);
@@ -297,12 +296,9 @@ function initChartDescription(
 	const srInfoElem = document.createElement('p');
 	srInfoElem.classList.add(CONST.SCREEN_READER_INFO);
 	srInfoElem.id = utils.concat(CONST.SCREEN_READER_INFO, chartId);
-	srInfoElem.textContent = utils.handlebars(
-		locale.screenReaderInformation.static,
-		{
-			CHART_TITLE: title,
-		}
-	);
+	srInfoElem.textContent = locale.screenReaderInformation.static({
+		chartTitle: title,
+	});
 
 	if (a11yElem.firstChild) {
 		utils.insertBefore(srInfoElem, a11yElem.firstChild);
@@ -337,7 +333,7 @@ function initChartDescription(
 	}
 
 	if (purpose) {
-		const element = utils.createElement('h3', locale.headings.purpose);
+		const element = utils.createElement('h3', locale.headings.purpose());
 		element.classList.add(CONST.PURPOSE);
 		a11yElem.appendChild(element);
 		a11yElem.appendChild(utils.createElement('p', purpose));
@@ -354,7 +350,7 @@ function initChartDescription(
 	}
 
 	if (description) {
-		const element = utils.createElement('h3', locale.headings.description);
+		const element = utils.createElement('h3', locale.headings.description());
 		element.classList.add(CONST.DESCRIPTION);
 		a11yElem.appendChild(element);
 		a11yElem.appendChild(utils.createElement('p', description));
@@ -392,7 +388,7 @@ function updateChartDescription({
 }: {
 	tree?: FriendlyNode;
 	axes?: FriendlyAxis[];
-	title?: string;
+	title: string;
 	chartType: ChartType;
 	locale: FriendlyLocale;
 	chartId: string;
@@ -401,7 +397,7 @@ function updateChartDescription({
 		const elem = document.createElement('h4');
 		elem.classList.add(CONST.LAYOUT_DESCRIPTION);
 		elem.id = id;
-		elem.textContent = locale.headings.chartLayoutDescription;
+		elem.textContent = locale.headings.chartLayoutDescription();
 		return elem;
 	}
 
@@ -426,10 +422,10 @@ function updateChartDescription({
 			utils.concat(CONST.SCREEN_READER_INFO, chartId)
 		);
 		if (srInfoElem) {
-			srInfoElem.textContent = utils.handlebars(
-				locale.screenReaderInformation.interactive[chartType],
-				{ CHART_TITLE: title }
-			);
+			srInfoElem.textContent = locale.screenReaderInformation.interactive({
+				chartTitle: title,
+				chartType,
+			});
 		}
 
 		//
@@ -446,13 +442,13 @@ function updateChartDescription({
 		if (!keyboardInstructionsElem) {
 			const heading = utils.createElement(
 				'h4',
-				locale.headings.keyboardInstructions
+				locale.headings.keyboardInstructions()
 			);
 			heading.classList.add(CONST.KEYBOARD_INSTRUCTIONS);
 			heading.id = utils.concat(CONST.KEYBOARD_INSTRUCTIONS, chartId);
 			a11yElem.appendChild(heading);
 
-			const p = utils.createElement('p', locale.keyboardInstructions);
+			const p = utils.createElement('p', locale.keyboardInstructions());
 			p.classList.add(CONST.KEYBOARD_INSTRUCTIONS_PARAGRAPH);
 			p.id = utils.concat(CONST.KEYBOARD_INSTRUCTIONS_PARAGRAPH, chartId);
 			a11yElem.appendChild(p);
@@ -486,14 +482,10 @@ function updateChartDescription({
 		}
 
 		// general chart information
-		if (nElements === 1) {
-			locale.chartLayout[chartType].withSingleSymbol;
-		} else {
-			generalLayoutDescriptionElem.textContent = utils.handlebars(
-				locale.chartLayout[chartType].withMultipleSymbols,
-				{ N_CHART_ELEMENTS: nElements }
-			);
-		}
+		generalLayoutDescriptionElem.textContent = locale.chartLayout({
+			chartType,
+			nChartElements: nElements,
+		});
 	}
 
 	function handleAxesUpdate(axes: FriendlyAxis[]) {
@@ -541,25 +533,12 @@ function updateChartDescription({
 		let anchor = generalLayoutDescriptionElem;
 		for (let i = 0; i < axes.length; i++) {
 			const axis = axes[i];
-			const hasTicks = isAxisWithTicks(axis) && axis.ticks.length > 0;
 
-			let template;
-			if (axis.direction && hasTicks) {
-				template = locale.axis.withLabelAndDirectionAndTicks[axis.type];
-			} else if (hasTicks) {
-				template = locale.axis.withLabelAndTicks[axis.type];
-			} else if (axis.direction) {
-				template = locale.axis.withLabelAndDirection;
-			} else {
-				template = locale.axis.withLabel;
-			}
-
-			const content = utils.handlebars(template, {
-				AXIS_LABEL: axis.label,
-				AXIS_DIRECTION: axis.direction,
-				TICKS: hasTicks ? axis.ticks.join(', ') : '',
-				START_TICK: hasTicks ? axis.ticks[0] : '',
-				END_TICK: hasTicks ? axis.ticks[axis.ticks.length - 1] : '',
+			const content = locale.axis({
+				label: axis.label,
+				type: axis.type,
+				direction: axis.direction,
+				ticks: axis.ticks,
 			});
 
 			const element = utils.createElement('p', content);

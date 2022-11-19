@@ -4,7 +4,7 @@ import { getChartFeatures } from './node';
 import * as CONST from './const';
 import { ChartType } from './chart';
 
-import type { FriendlyLocale } from './locale/types';
+import type { FriendlyLocale } from './locale';
 
 interface Options {
 	title: string;
@@ -170,23 +170,14 @@ export default class Controller {
 	}
 
 	get #label() {
-		if (this.chartDescription.subtitle) {
-			return utils.handlebars(this.locale.label.withTitleAndSubtitle, {
-				CHART_TITLE: this.chartDescription.title,
-				CHART_SUBTITLE: this.chartDescription.subtitle,
-			});
-		} else {
-			return utils.handlebars(this.locale.label.withTitle, {
-				CHART_TITLE: this.chartDescription.title,
-			});
-		}
+		return this.locale.label({
+			chartTitle: this.chartDescription.title,
+			chartSubtitle: this.chartDescription.subtitle,
+		});
 	}
 
 	get #shortLabel() {
-		if (this.chartFeatures && this.chartFeatures.nElements > 0) {
-			return this.locale.shortLabel.withChartType[this.chartType];
-		}
-		return this.locale.shortLabel.default;
+		return this.locale.shortLabel({ chartType: this.chartType });
 	}
 
 	#focus(bbox: { width: number; height: number; top: number; left: number }) {

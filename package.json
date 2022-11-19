@@ -1,6 +1,6 @@
 {
 	"name": "friendly-charts",
-	"version": "0.0.13",
+	"version": "0.0.14",
 	"description": "Screen reader friendly charts with minimal effort",
 	"type": "module",
 	"main": "dist/index.js",
@@ -9,11 +9,11 @@
 	"types": "dist/index.d.ts",
 	"files": [
 		"dist/*",
-		"locale/*.json"
+		"locale/*"
 	],
 	"scripts": {
 		"prepare": "npm run build",
-		"build": "tsup src/index.ts --format esm,iife --sourcemap --dts && mkdir -p locale && cp src/locale/*.json locale",
+		"build": "tsup src/index.ts --format esm,iife --sourcemap --dts --clean && tsup src/locale/*.ts --format esm --sourcemap --dts -d locale --clean",
 		"check": "tsc --noEmit",
 		"check:watch": "npm run check -- --watch",
 		"format": "prettier --ignore-path .gitignore --write src README.md"
