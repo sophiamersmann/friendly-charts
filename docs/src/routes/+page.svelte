@@ -1,9 +1,3 @@
-<script>
-	// example imports
-	import * as friendly from 'friendly-charts';
-	import locale from 'friendly-charts/locale/de-DE.json';
-</script>
-
 <svelte:head>
 	<title>Home</title>
 	<meta name="description" content="Svelte demo app" />

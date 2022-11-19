@@ -2,7 +2,7 @@ import * as utils from './utils';
 
 import type { FriendlySymbol } from './symbol';
 import type { FriendlyGroup } from './group';
-import type { FriendlyLocale } from './locale/types';
+import type { FriendlyLocale } from './types';
 
 export default class FriendlyNode {
 	parent: FriendlyNode | null;
@@ -161,7 +161,7 @@ export function getChartFeatures(tree: FriendlyNode): {
 
 export function createTree(
 	friendlyElements: (FriendlyGroup | FriendlySymbol)[],
-	locale: FriendlyLocale['elements']
+	locale: FriendlyLocale
 ) {
 	// create root element with a unique id
 	const rootId = ['root', utils.uniqueId()].join('-');
@@ -214,29 +214,11 @@ export function createTree(
 		}
 	}
 
-	function getGroupLabel(
-		node: FriendlyNode,
-		locale: FriendlyLocale['elements']['group']['withHighlight']['default'],
-		data: Record<string, any>
-	) {
-		// empty group
-		if (node.children.length === 0) {
-			return utils.handlebars(locale.empty, data);
-		}
-
+	function getMemberType(node: FriendlyNode) {
+		if (node.children.length === 0) return;
 		const child = node.children[0];
-
-		// group contains other groups
-		if (child.data.element === 'group' && !child.data.type) {
-			return utils.handlebars(locale.withMembers.containsGroups, data);
-		}
-
-		// group contains symbols
-		const symbolType = child.data.type as FriendlySymbol['type'];
-		return utils.handlebars(
-			locale.withMembers.containsSymbols[symbolType],
-			data
-		);
+		if (child.data.element === 'group' && !child.data.type) return 'group';
+		return child.data.type;
 	}
 
 	map(root, (node) => {
@@ -267,49 +249,28 @@ export function createTree(
 
 		const parent = node.parent as FriendlyNode;
 		if (node.data.element === 'root') {
-			const data = { N_MEMBERS: node.children.length };
-			node.label = getGroupLabel(node, locale.root, data);
-		} else if (node.data.element === 'group' && node.data.type) {
-			node.label = getGroupLabel(
-				node,
-				node.data.highlight
-					? locale.group.withHighlight.withSymbolType
-					: locale.group.withoutHighlight.withSymbolType,
-				{
-					GROUP_LABEL: node.data.label,
-					GROUP_HIGHLIGHT: node.data.highlight,
-					SYMBOL_TYPE: locale.symbolTypeMap[node.data.type],
-					GROUP_POSITION: parent.children.indexOf(node) + 1,
-					N_SIBLINGS: parent.children.length,
-					N_MEMBERS: node.children.length,
-				}
-			);
+			node.label = locale.root({
+				nMembers: node.children.length,
+				memberType: getMemberType(node),
+			});
 		} else if (node.data.element === 'group') {
-			node.label = getGroupLabel(
-				node,
-				node.data.highlight
-					? locale.group.withHighlight.default
-					: locale.group.withoutHighlight.default,
-				{
-					GROUP_LABEL: node.data.label,
-					GROUP_HIGHLIGHT: node.data.highlight,
-					N_MEMBERS: node.children.length,
-				}
-			);
+			node.label = locale.group({
+				label: node.data.label,
+				position: parent.children.indexOf(node) + 1,
+				nSiblings: parent.children.length,
+				nMembers: node.children.length,
+				memberType: getMemberType(node),
+				symbolType: node.data.type,
+				highlight: node.data.highlight,
+			});
 		} else if (node.data.element === 'symbol') {
-			const data: Record<string, any> = {
-				SYMBOL_LABEL: node.data.label,
-				SYMBOL_TYPE:
-					locale.symbolTypeMap[node.data.type as FriendlySymbol['type']],
-				SYMBOL_POSITION: parent.children.indexOf(node) + 1,
-				N_SIBLINGS: parent.children.length,
-			};
-			if (!node.data.highlight) {
-				node.label = utils.handlebars(locale.symbol.withoutHighlight, data);
-			} else {
-				data['SYMBOL_HIGHLIGHT'] = node.data.highlight;
-				node.label = utils.handlebars(locale.symbol.withHighlight, data);
-			}
+			node.label = locale.symbol({
+				label: node.data.label,
+				type: node.data.type as FriendlySymbol['type'],
+				position: parent.children.indexOf(node) + 1,
+				nSiblings: parent.children.length,
+				highlight: node.data.highlight,
+			});
 		}
 	});
 
