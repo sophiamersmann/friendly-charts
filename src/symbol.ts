@@ -1,6 +1,6 @@
 import * as utils from './utils';
 
-export type SymbolType = 'line' | 'point' | 'bar';
+export type SymbolType = 'line' | 'point' | 'bar' | 'area';
 
 export interface FriendlySymbol {
 	element: 'symbol';

@@ -25,6 +25,8 @@ function symbolName(type: SymbolType, { plural = false } = {}) {
 			return plural ? 'lines' : 'line';
 		case 'point':
 			return plural ? 'points' : 'point';
+		case 'area':
+			return plural ? 'areas' : 'area';
 	}
 }
 
