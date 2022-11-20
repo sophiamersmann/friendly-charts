@@ -79,7 +79,7 @@ export default function chart(node: HTMLElement, options: Options | undefined) {
 		return Array.from(nodes).map(toFriendlyData);
 	};
 
-	const getAxesFromDOM = () => {
+	const getAxes = () => {
 		const axes = getDataFromDOM('axis') as FriendlyAxis[];
 
 		if (options.axes) {
@@ -97,7 +97,7 @@ export default function chart(node: HTMLElement, options: Options | undefined) {
 		return axes;
 	};
 
-	let axes = getAxesFromDOM();
+	let axes = getAxes();
 	const groups = getDataFromDOM('group') as FriendlyGroup[];
 	const symbols = getDataFromDOM('symbol') as FriendlySymbol[];
 
@@ -169,7 +169,7 @@ export default function chart(node: HTMLElement, options: Options | undefined) {
 				}
 
 				if (friendly === 'axis') {
-					axes = getAxesFromDOM(); // necessary to make sure axes are not duplicated
+					axes = getAxes(); // necessary to make sure axes are not duplicated
 					dirty.axis = true;
 				} else if (friendly === 'group') {
 					groups.push(data as FriendlyGroup);

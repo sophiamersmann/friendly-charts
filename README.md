@@ -218,14 +218,6 @@ symbol(node, { label: 'Symbol label', type: 'line', position: 0 });
 // bar
 symbol(node, { label: 'Symbol label', type: 'bar', position: 0 });
 
-// add additional description to highlight the symbol
-symbol(node, {
-	label: 'Symbol label',
-	type: 'line',
-	position: 0,
-	highlight: 'Some interesting remark to highlight this line',
-});
-
 // symbol contained within a group with id `some-unique-group-id`
 // (only necessary if the symbol is not nested within that group)
 symbol(node, {
@@ -243,7 +235,6 @@ symbol(node, {
 - `position` **(required)**: position of the symbol among sibling symbols, determines the order on LEFT/RIGHT navigation
 - `id`: symbol id (automatically generated if not given)
 - `parentId`: id of the group that contains the symbol, only needed if the symbol is not a descendant of the group element
-- `highlight`: additional description to highlight the symbol (e.g. could be used to describe its significance within the chart)
 
 ### `group(node, options)`
 
@@ -272,7 +263,6 @@ group(node, {
 - `position` **(required)**: position of the group among sibling groups, determines the order on LEFT/RIGHT navigation
 - `id`: group id (automatically generated if not given)
 - `type` (`'line'`, `'bar'` or `'point'`): some groups also represent a symbol of some type (e.g. a line that contains the points it is made of)
-- `highlight`: additional group description, could be used to describe a trend or the importance of the group within the chart
 
 ### `focus(node)`
 

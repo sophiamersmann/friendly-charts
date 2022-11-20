@@ -261,7 +261,6 @@ export function createTree(
 				nMembers: node.children.length,
 				memberType: getMemberType(node),
 				symbolType: node.data.type,
-				highlight: node.data.highlight,
 			});
 		} else if (node.data.element === 'symbol') {
 			node.label = locale.symbol({
@@ -269,7 +268,6 @@ export function createTree(
 				type: node.data.type as FriendlySymbol['type'],
 				position: parent.children.indexOf(node) + 1,
 				nSiblings: parent.children.length,
-				highlight: node.data.highlight,
 			});
 		}
 	});

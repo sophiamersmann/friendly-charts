@@ -7,7 +7,6 @@ export interface FriendlySymbol {
 	id: string;
 	type: SymbolType;
 	label: string;
-	highlight?: string;
 	parentId: string;
 	position: number;
 }
@@ -16,7 +15,6 @@ export type Options = {
 	id?: FriendlySymbol['id'];
 	type: FriendlySymbol['type'];
 	label: FriendlySymbol['label'];
-	highlight?: FriendlySymbol['highlight'];
 	parentId?: FriendlySymbol['parentId'];
 	position: FriendlySymbol['position'];
 };
@@ -57,10 +55,6 @@ export default function symbol(
 		label,
 		position: options.position,
 	};
-
-	if (options.highlight) {
-		data.highlight = options.highlight;
-	}
 
 	if (options.parentId) {
 		data.parentId = options.parentId;

@@ -7,7 +7,6 @@ export interface FriendlyGroup {
 	id: string;
 	type?: SymbolType;
 	label: string;
-	highlight?: string;
 	parentId: string;
 	position: number;
 }
@@ -15,7 +14,6 @@ export interface FriendlyGroup {
 export interface Options {
 	id?: FriendlyGroup['id'];
 	type?: FriendlyGroup['type'];
-	highlight?: FriendlyGroup['highlight'];
 	label: FriendlyGroup['label'];
 	position: FriendlyGroup['position'];
 }
@@ -57,10 +55,6 @@ export default function group(
 
 	if (options.type) {
 		data.type = options.type;
-	}
-
-	if (options.highlight) {
-		data.highlight = options.highlight;
 	}
 
 	// set data on the dom element

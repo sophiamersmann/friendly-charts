@@ -166,20 +166,15 @@ export default {
 		type,
 		position,
 		nSiblings,
-		highlight,
 	}: {
 		label: string;
 		type: SymbolType;
 		position: number;
 		nSiblings: number;
-		highlight?: string;
-	}) => {
-		let s = label + '.';
-		if (highlight) s += ' ' + highlight + '.';
-		return (
-			s + ` ${utils.capitalize(symbolName(type))} ${position} von ${nSiblings}.`
-		);
-	},
+	}) =>
+		label +
+		'.' +
+		` ${utils.capitalize(symbolName(type))} ${position} von ${nSiblings}.`,
 
 	root: ({
 		nMembers,
@@ -206,7 +201,6 @@ export default {
 		nMembers,
 		memberType,
 		symbolType,
-		highlight,
 	}: {
 		label: string;
 		position: number;
@@ -214,10 +208,8 @@ export default {
 		nMembers: number;
 		memberType?: 'group' | SymbolType;
 		symbolType?: SymbolType;
-		highlight?: string;
 	}) => {
 		let s = symbolType ? label + '.' : 'Group ' + label + '.';
-		if (highlight) s += ' ' + highlight + '.';
 		if (symbolType)
 			s += `${symbolName(symbolType)} ${position} of ${nSiblings}.`;
 
