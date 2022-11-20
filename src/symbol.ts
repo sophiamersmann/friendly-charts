@@ -16,7 +16,6 @@ export type Options = {
 	type: FriendlySymbol['type'];
 	label: FriendlySymbol['label'];
 	parentId?: FriendlySymbol['parentId'];
-	position: FriendlySymbol['position'];
 };
 
 export default function symbol(
@@ -53,7 +52,6 @@ export default function symbol(
 		id,
 		type: options.type,
 		label,
-		position: options.position,
 	};
 
 	if (options.parentId) {

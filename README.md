@@ -40,7 +40,7 @@ To make a chart friendly, apply the `chart` function to a container element, pro
 
 <script>
   import { chart } from 'friendly-charts';
-  import locale from 'friendly-charts/locale/en-US.json';
+  import locale from 'friendly-charts/locale/en-US';
 
   const data = [
     { category: "A", value: 82 },
@@ -95,7 +95,7 @@ To make a chart friendly, apply the `chart` function to a container element, pro
     <g class="bar" transform="translate(0,{getY(i)})">
 
       <!-- FRIENDLY ACTION: declare a bar and give it an accessible label -->
-      <rect use:symbol={{ label: `${d.category}. ${d.value}`, type: 'bar', position: i }} width={getX(d.value)} height={barHeight} fill="#0284c7" />
+      <rect use:symbol={{ label: `${d.category}. ${d.value}`, type: 'bar' }} width={getX(d.value)} height={barHeight} fill="#0284c7" />
 
       <text y="0.75em"> {d.category} </text>
     </g>
@@ -213,17 +213,16 @@ _Declares a symbol (e.g. a single bar)_
 import { symbol } from 'friendly-charts';
 
 // line
-symbol(node, { label: 'Symbol label', type: 'line', position: 0 });
+symbol(node, { label: 'Symbol label', type: 'line' });
 
 // bar
-symbol(node, { label: 'Symbol label', type: 'bar', position: 0 });
+symbol(node, { label: 'Symbol label', type: 'bar' });
 
 // symbol contained within a group with id `some-unique-group-id`
 // (only necessary if the symbol is not nested within that group)
 symbol(node, {
 	label: 'Symbol label',
 	type: 'point',
-	position: 0,
 	parentId: 'some-unique-group-id',
 });
 ```
@@ -232,7 +231,6 @@ symbol(node, {
 
 - `label` **(required)**: symbol label, either the label itself or a selector that points to the label element
 - `type` (**required**; `'line'`, `'bar'` or `'point'`): symbol type
-- `position` **(required)**: position of the symbol among sibling symbols, determines the order on LEFT/RIGHT navigation
 - `id`: symbol id (automatically generated if not given)
 - `parentId`: id of the group that contains the symbol, only needed if the symbol is not a descendant of the group element
 
@@ -246,12 +244,11 @@ _Declares a group of symbols (e.g. bars of the same category)_
 import { group } from 'friendly-charts';
 
 // minimal configuration
-group(node, { label: 'Group label', position: 0 });
+group(node, { label: 'Group label' });
 
 // a group that also represents a symbol of type line (e.g. a line that contains the points it is made of)
 group(node, {
 	label: 'Group label',
-	position: 0,
 	id: 'unique-group-id',
 	type: 'line',
 });
@@ -260,7 +257,6 @@ group(node, {
 **Options:**
 
 - `label` **(required)**: group label, either the label itself or a selector that points to a descendant of `node`
-- `position` **(required)**: position of the group among sibling groups, determines the order on LEFT/RIGHT navigation
 - `id`: group id (automatically generated if not given)
 - `type` (`'line'`, `'bar'` or `'point'`): some groups also represent a symbol of some type (e.g. a line that contains the points it is made of)
 

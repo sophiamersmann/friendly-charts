@@ -15,7 +15,6 @@ export interface Options {
 	id?: FriendlyGroup['id'];
 	type?: FriendlyGroup['type'];
 	label: FriendlyGroup['label'];
-	position: FriendlyGroup['position'];
 }
 
 export default function group(
@@ -50,7 +49,6 @@ export default function group(
 		element: 'group',
 		id,
 		label,
-		position: options.position,
 	};
 
 	if (options.type) {

@@ -186,7 +186,11 @@ export function createTree(
 				node.data.parentId === currFriendlyNode.data.id ||
 				(!node.data.parentId && currFriendlyNode.data.id === rootId)
 		);
-		children.sort((a, b) => a.data.position - b.data.position);
+
+		// assign positions
+		for (let i = 0; i < children.length; i++) {
+			children[i].data.position = i;
+		}
 
 		for (let i = 0; i < children.length; i++) {
 			const leftIndex = i - 1 >= 0 ? i - 1 : children.length - 1;
