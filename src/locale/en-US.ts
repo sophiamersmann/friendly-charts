@@ -4,7 +4,7 @@ import type { SymbolType } from '../symbol';
 
 import * as utils from '../locale';
 
-function chartName(type: ChartType) {
+function chartName(type: ChartType): string {
 	switch (type) {
 		case 'bar':
 			return 'bar chart';
@@ -14,10 +14,12 @@ function chartName(type: ChartType) {
 			return 'scatter plot';
 		case 'slope':
 			return 'slope chart';
+		case 'area':
+			return 'Area chart';
 	}
 }
 
-function symbolName(type: SymbolType, { plural = false } = {}) {
+function symbolName(type: SymbolType, { plural = false } = {}): string {
 	switch (type) {
 		case 'bar':
 			return plural ? 'bars' : 'bar';
@@ -113,6 +115,10 @@ export default {
 				return nChartElements === 1
 					? s + 'with a single slope.'
 					: s + `with ${nChartElements} slopes.`;
+			case 'area':
+				return nChartElements === 1
+					? s + 'with a single area.'
+					: s + `with ${nChartElements} areas.`;
 		}
 	},
 

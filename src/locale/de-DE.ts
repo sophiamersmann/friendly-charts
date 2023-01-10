@@ -4,7 +4,7 @@ import type { SymbolType } from '../symbol';
 
 import * as utils from '../locale';
 
-function chartName(type: ChartType) {
+function chartName(type: ChartType): string {
 	switch (type) {
 		case 'bar':
 			return 'Balkendiagramm';
@@ -14,10 +14,12 @@ function chartName(type: ChartType) {
 			return 'Steigungsdiagramm';
 		case 'slope':
 			return 'Streudiagramm';
+		case 'area':
+			return 'Flächendiagramm';
 	}
 }
 
-function symbolName(type: SymbolType, { plural = false } = {}) {
+function symbolName(type: SymbolType, { plural = false } = {}): string {
 	switch (type) {
 		case 'bar':
 			return plural ? 'Balken' : 'Balken';
@@ -115,6 +117,10 @@ export default {
 				return nChartElements === 1
 					? s + 'mit einer Linie.'
 					: s + `mit ${nChartElements} Linien.`;
+			case 'area':
+				return nChartElements === 1
+					? s + 'mit einer Fläche.'
+					: s + `mit ${nChartElements} Flächen.`;
 		}
 	},
 

@@ -148,7 +148,7 @@ chart(node, {
 **Options:**
 
 - `title` **(required)**: chart title, either the title itself or a selector that points to an element within the chart container
-- `type` (**required**; `'line'`, `'bar'`, `'scatter'` or `'slope'`): chart type
+- `type` (**required**; `'line'`, `'bar'`, `'scatter'`, `'slope'` or `'area'`): chart type
 - `locale` **(required)**: locale, usually imported from Friendly Charts, but you can bring your own
 - `subtitle`: chart subtitle, either the subtitle itself or a selector that points to an element within the chart container
 - `summary`: brief summary of the chart, either the summary itself or a selector that points to an element within the chart container
@@ -230,7 +230,7 @@ symbol(node, {
 **Options:**
 
 - `label` **(required)**: symbol label, either the label itself or a selector that points to the label element
-- `type` (**required**; `'line'`, `'bar'` or `'point'`): symbol type
+- `type` (**required**; `'line'`, `'bar'`, `'point'` or `'area'`): symbol type
 - `id`: symbol id (automatically generated if not given)
 - `parentId`: id of the group that contains the symbol, only needed if the symbol is not a descendant of the group element
 
