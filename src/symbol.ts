@@ -24,6 +24,9 @@ export default function symbol(
 ) {
 	if (options === undefined) return;
 
+	// make sure the visual element itself is never focused
+	node.tabIndex = -1;
+
 	let { id } = options;
 
 	// generate random id if not given

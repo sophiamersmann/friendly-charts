@@ -23,6 +23,9 @@ export default function group(
 ) {
 	if (options === undefined) return;
 
+	// make sure the visual element itself is never focused
+	node.tabIndex = -1;
+
 	let { id } = options;
 
 	if (!id) {

@@ -208,6 +208,18 @@ export default class Controller {
 	};
 
 	handleBlur = () => {
+		// dispatch blur event for the currently active node
+		const activeControlId = this.element.getAttribute('aria-activedescendant');
+		const activeNodeId = activeControlId
+			? FriendlyNode.toId(activeControlId)
+			: null;
+		if (activeNodeId) {
+			const activeElement = document.getElementById(activeNodeId);
+			if (activeElement) {
+				activeElement.dispatchEvent(new FocusEvent('blur'));
+			}
+		}
+
 		this.#reset();
 	};
 
@@ -277,6 +289,12 @@ export default class Controller {
 			? FriendlyNode.toId(activeControlId)
 			: null;
 
+		// dispatch blur event for the currently active node
+		if (activeNodeId) {
+			const activeElement = document.getElementById(activeNodeId);
+			if (activeElement) activeElement.dispatchEvent(new FocusEvent('blur'));
+		}
+
 		const nextActiveId = activeOnKeyDown(
 			activeControlId ? FriendlyNode.toId(activeControlId) : null,
 			key
@@ -328,6 +346,11 @@ export default class Controller {
 		// update focus
 		const bbox = nextActiveNode.boundingBox;
 		if (bbox) this.#focus(bbox);
+
+		// dispatch focus event
+		const nextActiveElement = document.getElementById(nextActiveNode.data.id);
+		if (nextActiveElement)
+			nextActiveElement.dispatchEvent(new FocusEvent('focus'));
 
 		// update debug element
 		if (this.debug) this.#debug(nextActiveNode.label);
