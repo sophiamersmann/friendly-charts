@@ -3,15 +3,22 @@
 	"version": "0.0.18",
 	"description": "Screen reader friendly charts with minimal effort",
 	"type": "module",
-	"module": "dist/index.js",
-	"types": "dist/index.d.ts",
 	"files": [
 		"dist/*"
 	],
 	"exports": {
-		".": "./dist/index.js",
-		"./locale/en-US": "./dist/locale/en-US.js",
-		"./locale/de-DE": "./dist/locale/de-DE.js"
+		".": {
+			"types": "./dist/index.d.ts",
+			"import": "./dist/index.js"
+		},
+		"./locale/en-US": {
+			"types": "./dist/locale/en-US.d.ts",
+			"import": "./dist/locale/en-US.js"
+		},
+		"./locale/de-DE": {
+			"types": "./dist/locale/de-DE.d.ts",
+			"import": "./dist/locale/de-DE.js"
+		}
 	},
 	"scripts": {
 		"prepare": "npm run build",
