@@ -1,6 +1,6 @@
 {
 	"include": ["src/*.ts"],
-	"exclude": ["node_modules/*", "site/*"],
+	"exclude": ["node_modules/*", "docs/*"],
 	"compilerOptions": {
 		/* Language and Environment */
 		"target": "es2020",

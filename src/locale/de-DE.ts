@@ -2,7 +2,7 @@ import type { ChartType } from '../chart';
 import type { AxisDirection, AxisType, Tick } from '../axis';
 import type { SymbolType } from '../symbol';
 
-import * as utils from '../locale';
+import * as utils from './utils';
 
 function chartName(type: ChartType): string {
 	switch (type) {

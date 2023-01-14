@@ -2,7 +2,7 @@ import * as utils from './utils';
 
 import type { FriendlySymbol } from './symbol';
 import type { FriendlyGroup } from './group';
-import type { FriendlyLocale } from './locale';
+import type { FriendlyLocale } from './locale/types';
 
 export default class FriendlyNode {
 	parent: FriendlyNode | null;
