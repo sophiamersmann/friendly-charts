@@ -8,7 +8,14 @@ import type { FriendlySymbol } from './symbol';
 import type { FriendlyGroup } from './group';
 import type { FriendlyLocale } from './locale/types';
 
-export type ChartType = 'line' | 'scatter' | 'bar' | 'slope' | 'area';
+export type ChartType =
+	| 'line'
+	| 'scatter'
+	| 'bar'
+	| 'slope'
+	| 'area'
+	| 'sankey'
+	| 'generic';
 
 interface Chart {
 	title: string;

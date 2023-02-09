@@ -15,7 +15,11 @@ function chartName(type: ChartType): string {
 		case 'slope':
 			return 'slope chart';
 		case 'area':
-			return 'Area chart';
+			return 'area chart';
+		case 'sankey':
+			return 'Sankey diagram';
+		case 'generic':
+			return 'chart';
 	}
 }
 
@@ -29,6 +33,12 @@ function symbolName(type: SymbolType, { plural = false } = {}): string {
 			return plural ? 'points' : 'point';
 		case 'area':
 			return plural ? 'areas' : 'area';
+		case 'node':
+			return plural ? 'nodes' : 'node';
+		case 'link':
+			return plural ? 'links' : 'link';
+		case 'generic':
+			return plural ? 'elements' : 'element';
 	}
 }
 
@@ -119,6 +129,14 @@ export default {
 				return nChartElements === 1
 					? s + 'with a single area.'
 					: s + `with ${nChartElements} areas.`;
+			case 'sankey':
+				return nChartElements === 1
+					? s + 'with a single link.'
+					: s + `with ${nChartElements} links.`;
+			case 'generic':
+				return nChartElements === 1
+					? s + 'with a single element.'
+					: s + `with ${nChartElements} elements.`;
 		}
 	},
 

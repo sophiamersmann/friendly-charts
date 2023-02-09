@@ -16,6 +16,10 @@ function chartName(type: ChartType): string {
 			return 'Streudiagramm';
 		case 'area':
 			return 'Flächendiagramm';
+		case 'sankey':
+			return 'Sankey-Diagramm';
+		case 'generic':
+			return 'Diagramm';
 	}
 }
 
@@ -29,6 +33,12 @@ function symbolName(type: SymbolType, { plural = false } = {}): string {
 			return plural ? 'Datenpunkten' : 'Punkt';
 		case 'area':
 			return plural ? 'Flächen' : 'Fläche';
+		case 'node':
+			return plural ? 'Knoten' : 'Knoten';
+		case 'link':
+			return plural ? 'Verbindungen' : 'Verbindung';
+		case 'generic':
+			return plural ? 'Elemente' : 'Element';
 	}
 }
 
