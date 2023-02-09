@@ -97,10 +97,6 @@ export default function chart(node: HTMLElement, options: Options | undefined) {
 			}
 		}
 
-		if (axes.length === 0) {
-			utils.warn('No axis is specified.');
-		}
-
 		return axes;
 	};
 
@@ -116,6 +112,10 @@ export default function chart(node: HTMLElement, options: Options | undefined) {
 
 	let controller: Controller | undefined;
 	if (symbols.length > 0) {
+		if (axes.length === 0) {
+			utils.warn('No axis is specified.');
+		}
+
 		controller = new Controller(node, {
 			title,
 			subtitle,
